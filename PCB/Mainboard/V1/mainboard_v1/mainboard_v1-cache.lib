@@ -297,33 +297,16 @@ C 0 0 50 0 1 50 N
 ENDDRAW
 ENDDEF
 #
-# Mylib_527450697
+# Mylib_1_pin_sig
 #
-DEF Mylib_527450697 J 0 40 Y Y 1 F N
-F0 "J" 0 150 50 H V C CNN
-F1 "Mylib_527450697" 0 75 50 H V C CNN
+DEF Mylib_1_pin_sig J 0 40 Y Y 1 F N
+F0 "J" 0 50 50 H V C CNN
+F1 "Mylib_1_pin_sig" 0 0 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
-P 2 0 1 0 -300 -400 -300 -550 N
-P 2 0 1 0 300 -400 300 -550 N
-P 2 0 1 0 400 -550 400 -600 N
-P 3 0 1 0 -400 -550 -400 -600 400 -600 N
-P 3 0 1 0 -400 -550 -250 -550 -250 -500 N
-P 3 0 1 0 250 -500 250 -550 400 -550 N
-P 4 0 1 0 -300 -400 -325 -425 -325 -475 -300 -500 N
-P 4 0 1 0 -300 -400 -300 -275 -275 -275 -275 -400 N
-P 4 0 1 0 300 -400 300 -275 275 -275 275 -400 N
-P 4 0 1 0 300 -400 325 -425 325 -475 300 -500 N
-P 10 0 1 0 -350 -200 -375 -200 -375 -225 -425 -225 -425 -250 -375 -250 -375 -275 -425 -275 -425 -300 -350 -300 N
-P 10 0 1 0 -350 -200 0 -200 350 -200 350 -400 250 -400 250 -500 -250 -500 -250 -400 -350 -400 -350 -200 N
-P 10 0 1 0 350 -200 375 -200 375 -225 425 -225 425 -250 375 -250 375 -275 425 -275 425 -300 350 -300 N
-X ~ 1 -250 -100 100 D 50 50 1 1 I
-X ~ 2 -150 -100 100 D 50 50 1 1 I
-X ~ 3 -50 -100 100 D 50 50 1 1 I
-X ~ 4 50 -100 100 D 50 50 1 1 I
-X ~ 5 150 -100 100 D 50 50 1 1 I
-X ~ 6 250 -100 100 D 50 50 1 1 I
+C 50 -100 50 0 1 0 N
+X ~ 1 -100 -100 100 R 50 50 1 1 I
 ENDDRAW
 ENDDEF
 #
@@ -345,6 +328,119 @@ X GND 2 0 -300 100 U 50 50 1 1 W
 X EN 3 -300 0 100 R 50 50 1 1 I
 X NC 4 200 0 100 L 50 50 1 1 N N
 X VOUT 5 300 100 100 L 50 50 1 1 w
+ENDDRAW
+ENDDEF
+#
+# SamacSys_Parts_1734592-6
+#
+DEF SamacSys_Parts_1734592-6 J 0 30 Y Y 1 F N
+F0 "J" 750 300 50 H V L CNN
+F1 "SamacSys_Parts_1734592-6" 750 200 50 H V L CNN
+F2 "17345926" 750 100 50 H I L CNN
+F3 "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1734592&DocType=Customer+Drawing&DocLang=English&DocFormat=pdf&PartCntxt=1-1734592-6" 750 0 50 H I L CNN
+F4 "FFC & FPC Connectors FPC CONN. 0.5MM PITCH B/C 6P" 750 -100 50 H I L CNN "Description"
+F5 "2" 750 -200 50 H I L CNN "Height"
+F6 "TE Connectivity" 750 -300 50 H I L CNN "Manufacturer_Name"
+F7 "1734592-6" 750 -400 50 H I L CNN "Manufacturer_Part_Number"
+F8 "571-1734592-6" 750 -500 50 H I L CNN "Mouser Part Number"
+F9 "https://www.mouser.co.uk/ProductDetail/TE-Connectivity/1734592-6?qs=n3Ybsy482HHDh9IzLv%252BLHw%3D%3D" 750 -600 50 H I L CNN "Mouser Price/Stock"
+F10 "1734592-6" 750 -700 50 H I L CNN "Arrow Part Number"
+F11 "https://www.arrow.com/en/products/1734592-6/te-connectivity?region=nac" 750 -800 50 H I L CNN "Arrow Price/Stock"
+DRAW
+P 5 0 1 6 200 100 700 100 700 -600 200 -600 200 100 f
+X 1 1 900 0 200 L 50 50 0 0 P
+X 2 2 900 -100 200 L 50 50 0 0 P
+X 3 3 900 -200 200 L 50 50 0 0 P
+X 4 4 900 -300 200 L 50 50 0 0 P
+X 5 5 900 -400 200 L 50 50 0 0 P
+X 6 6 900 -500 200 L 50 50 0 0 P
+X MP1 MP1 0 0 200 R 50 50 0 0 P
+X MP2 MP2 0 -100 200 R 50 50 0 0 P
+ENDDRAW
+ENDDEF
+#
+# SamacSys_Parts_20021321-00014C1LF
+#
+DEF SamacSys_Parts_20021321-00014C1LF J 0 30 Y Y 1 F N
+F0 "J" 750 300 50 H V L CNN
+F1 "SamacSys_Parts_20021321-00014C1LF" 750 200 50 H V L CNN
+F2 "2002132100014C1LF" 750 100 50 H I L CNN
+F3 "https://4donline.ihs.com/images/VipMasterIC/IC/AFCI/AFCI-S-A0003555143/AFCI-S-A0003555143-1.pdf?hkey=EF798316E3902B6ED9A73243A3159BB0" 750 0 50 H I L CNN
+F4 "Headers & Wire Housings 20021321-00014C1LF-RECEPTACLE VT SMT" 750 -100 50 H I L CNN "Description"
+F5 "4.75" 750 -200 50 H I L CNN "Height"
+F6 "Amphenol" 750 -300 50 H I L CNN "Manufacturer_Name"
+F7 "20021321-00014C1LF" 750 -400 50 H I L CNN "Manufacturer_Part_Number"
+F8 "649-20213210014C1LF" 750 -500 50 H I L CNN "Mouser Part Number"
+F9 "https://www.mouser.co.uk/ProductDetail/Amphenol-FCI/20021321-00014C1LF?qs=fmpTyLOWOeyzBByVTT8pPA%3D%3D" 750 -600 50 H I L CNN "Mouser Price/Stock"
+F10 "20021321-00014C1LF" 750 -700 50 H I L CNN "Arrow Part Number"
+F11 "https://www.arrow.com/en/products/20021321-00014c1lf/amphenol-fci?region=nac" 750 -800 50 H I L CNN "Arrow Price/Stock"
+DRAW
+P 5 0 1 6 200 100 700 100 700 -700 200 -700 200 100 f
+X 1 1 900 -600 200 L 50 50 0 0 P
+X 10 10 0 -200 200 R 50 50 0 0 P
+X 11 11 900 -100 200 L 50 50 0 0 P
+X 12 12 0 -100 200 R 50 50 0 0 P
+X 13 13 900 0 200 L 50 50 0 0 P
+X 14 14 0 0 200 R 50 50 0 0 P
+X 2 2 0 -600 200 R 50 50 0 0 P
+X 3 3 900 -500 200 L 50 50 0 0 P
+X 4 4 0 -500 200 R 50 50 0 0 P
+X 5 5 900 -400 200 L 50 50 0 0 P
+X 6 6 0 -400 200 R 50 50 0 0 P
+X 7 7 900 -300 200 L 50 50 0 0 P
+X 8 8 0 -300 200 R 50 50 0 0 P
+X 9 9 900 -200 200 L 50 50 0 0 P
+ENDDRAW
+ENDDEF
+#
+# SamacSys_Parts_MP6513GJ-Z
+#
+DEF SamacSys_Parts_MP6513GJ-Z IC 0 30 Y Y 1 F N
+F0 "IC" 950 300 50 H V L CNN
+F1 "SamacSys_Parts_MP6513GJ-Z" 950 200 50 H V L CNN
+F2 "SOT95P280X100-6N" 950 100 50 H I L CNN
+F3 "https://www.mouser.com/datasheet/2/277/MP6513_r1.0-1384349.pdf" 950 0 50 H I L CNN
+F4 "Power Switch ICs - Power Distribution 2.5V-21V 0.8A Half Bridge Motor Driver" 950 -100 50 H I L CNN "Description"
+F5 "1" 950 -200 50 H I L CNN "Height"
+F6 "Monolithic Power Systems (MPS)" 950 -300 50 H I L CNN "Manufacturer_Name"
+F7 "MP6513GJ-Z" 950 -400 50 H I L CNN "Manufacturer_Part_Number"
+F8 "946-MP6513GJ-Z" 950 -500 50 H I L CNN "Mouser Part Number"
+F9 "https://www.mouser.co.uk/ProductDetail/Monolithic-Power-Systems-MPS/MP6513GJ-Z?qs=FfNbArp%252BdljFzTtslD%252B1UQ%3D%3D" 950 -600 50 H I L CNN "Mouser Price/Stock"
+DRAW
+P 5 0 1 6 200 100 900 100 900 -300 200 -300 200 100 f
+X IN1 1 0 0 200 R 50 50 0 0 P
+X GND 2 0 -100 200 R 50 50 0 0 P
+X IN2 3 0 -200 200 R 50 50 0 0 P
+X OUT2 4 1100 -200 200 L 50 50 0 0 P
+X VCC 5 1100 -100 200 L 50 50 0 0 P
+X OUT1 6 1100 0 200 L 50 50 0 0 P
+ENDDRAW
+ENDDEF
+#
+# SamacSys_Parts_TAJP106K010RNJ
+#
+DEF SamacSys_Parts_TAJP106K010RNJ C 0 30 Y Y 1 F N
+F0 "C" 350 250 50 H V L CNN
+F1 "SamacSys_Parts_TAJP106K010RNJ" 350 150 50 H V L CNN
+F2 "CAPPM2014X170N" 350 50 50 H I L CNN
+F3 "http://datasheets.avx.com/TAJ.pdf" 350 -50 50 H I L CNN
+F4 "Tantalum Capacitors - Solid SMD 10V 10uF 10%" 350 -150 50 H I L CNN "Description"
+F5 "1.7" 350 -250 50 H I L CNN "Height"
+F6 "AVX" 350 -350 50 H I L CNN "Manufacturer_Name"
+F7 "TAJP106K010RNJ" 350 -450 50 H I L CNN "Manufacturer_Part_Number"
+F8 "581-TAJP106K010RNJ" 350 -550 50 H I L CNN "Mouser Part Number"
+F9 "https://www.mouser.co.uk/ProductDetail/AVX/TAJP106K010RNJ?qs=vQJa%252BfcOt8MTne6Zr4ogJg%3D%3D" 350 -650 50 H I L CNN "Mouser Price/Stock"
+F10 "TAJP106K010RNJ" 350 -750 50 H I L CNN "Arrow Part Number"
+F11 "https://www.arrow.com/en/products/tajp106k010rnj/avx?region=nac" 350 -850 50 H I L CNN "Arrow Price/Stock"
+DRAW
+P 2 0 1 6 100 0 200 0 N
+P 2 0 1 6 160 70 160 30 N
+P 2 0 1 6 180 50 140 50 N
+P 2 0 1 6 300 0 400 0 N
+P 5 0 1 6 200 100 200 -100 230 -100 230 100 200 100 N
+P 5 0 1 10 300 100 300 -100 270 -100 270 100 300 100 F
+X ~ 1 0 0 100 R 50 50 0 0 P
+X ~ 2 500 0 100 L 50 50 0 0 P
 ENDDRAW
 ENDDEF
 #
@@ -442,6 +538,35 @@ X ~ 2 100 100 100 D 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
+# dk_Tactile-Switches_B3U-1000P
+#
+DEF dk_Tactile-Switches_B3U-1000P S 0 40 Y Y 1 F N
+F0 "S" 0 160 60 H V C CNN
+F1 "dk_Tactile-Switches_B3U-1000P" 0 -100 60 H V C CNN
+F2 "digikey-footprints:Switch_Tactile_SMD_B3U-1000P" 200 200 60 H I L CNN
+F3 "https://omronfs.omron.com/en_US/ecb/products/pdf/en-b3u.pdf" 200 300 60 H I L CNN
+F4 "SW1020CT-ND" 200 400 60 H I L CNN "Digi-Key_PN"
+F5 "B3U-1000P" 200 500 60 H I L CNN "MPN"
+F6 "Switches" 200 600 60 H I L CNN "Category"
+F7 "Tactile Switches" 200 700 60 H I L CNN "Family"
+F8 "https://omronfs.omron.com/en_US/ecb/products/pdf/en-b3u.pdf" 200 800 60 H I L CNN "DK_Datasheet_Link"
+F9 "/product-detail/en/omron-electronics-inc-emc-div/B3U-1000P/SW1020CT-ND/1534357" 200 900 60 H I L CNN "DK_Detail_Page"
+F10 "SWITCH TACTILE SPST-NO 0.05A 12V" 200 1000 60 H I L CNN "Description"
+F11 "Omron Electronics Inc-EMC Div" 200 1100 60 H I L CNN "Manufacturer"
+F12 "Active" 200 1200 60 H I L CNN "Status"
+DRAW
+C -60 0 10 0 1 0 N
+C 60 0 10 0 1 0 N
+P 2 0 1 0 -100 0 -70 0 N
+P 2 0 1 0 -70 50 70 50 N
+P 2 0 1 0 -40 110 40 110 N
+P 2 0 1 0 0 50 0 110 N
+P 2 0 1 0 100 0 70 0 N
+X ~ 1 -200 0 100 R 50 50 1 1 P
+X ~ 2 200 0 100 L 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
 # power_+3.3V
 #
 DEF power_+3.3V #PWR 0 0 Y Y 1 F P
@@ -483,6 +608,21 @@ P 2 0 1 0 -30 50 0 100 N
 P 2 0 1 0 0 0 0 100 N
 P 2 0 1 0 0 100 30 50 N
 X VBUS 1 0 0 0 U 50 50 1 1 W N
+ENDDRAW
+ENDDEF
+#
+# power_VCC
+#
+DEF power_VCC #PWR 0 0 Y Y 1 F P
+F0 "#PWR" 0 -150 50 H I C CNN
+F1 "power_VCC" 0 150 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+P 2 0 1 0 -30 50 0 100 N
+P 2 0 1 0 0 0 0 100 N
+P 2 0 1 0 0 100 30 50 N
+X VCC 1 0 0 0 U 50 50 1 1 W N
 ENDDRAW
 ENDDEF
 #

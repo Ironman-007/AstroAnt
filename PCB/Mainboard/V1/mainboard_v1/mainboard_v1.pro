@@ -1,4 +1,4 @@
-update=15-Aug-21 07:53:14 PM
+update=24-Aug-21 10:59:39 AM
 version=1
 last_client=kicad
 [general]
@@ -26,7 +26,7 @@ ERC_TestSimilarLabels=1
 version=1
 PageLayoutDescrFile=
 LastNetListRead=mainboard_v1.net
-CopperLayerCount=2
+CopperLayerCount=4
 BoardThickness=1
 AllowMicroVias=0
 AllowBlindVias=0
@@ -44,10 +44,10 @@ ViaDrill1=0.3048
 dPairWidth1=0.2
 dPairGap1=0.25
 dPairViaGap1=0.25
-SilkLineWidth=0.09999999999999999
-SilkTextSizeV=0.7999999999999999
-SilkTextSizeH=0.7999999999999999
-SilkTextSizeThickness=0.09999999999999999
+SilkLineWidth=0.1016
+SilkTextSizeV=0.6604
+SilkTextSizeH=0.6604
+SilkTextSizeThickness=0.1016
 SilkTextItalic=0
 SilkTextUpright=1
 CopperLineWidth=0.2
@@ -73,13 +73,13 @@ Name=F.Cu
 Type=0
 Enabled=1
 [pcbnew/Layer.In1.Cu]
-Name=In1.Cu
-Type=0
-Enabled=0
+Name=GND
+Type=1
+Enabled=1
 [pcbnew/Layer.In2.Cu]
-Name=In2.Cu
-Type=0
-Enabled=0
+Name=PWR
+Type=1
+Enabled=1
 [pcbnew/Layer.In3.Cu]
 Name=In3.Cu
 Type=0

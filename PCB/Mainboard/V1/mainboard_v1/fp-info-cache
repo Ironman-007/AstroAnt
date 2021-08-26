@@ -1,4 +1,4 @@
-19896755773425706
+19887099765811366
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -58674,6 +58674,13 @@ Mounting 4.5mm 9774100982
 8
 1
 Mylib
+1.27mm_pin_hole
+
+
+0
+1
+1
+Mylib
 1_in_2_select
 
 
@@ -76790,19 +76797,89 @@ Antenna
 6
 6
 SamacSys_Parts
+52745-0633
+52745-0633
+Connector
+0
+8
+8
+SamacSys_Parts
+17345926
+1734592-6-2
+Connector
+0
+8
+8
+SamacSys_Parts
+0527450697
+0527450697-2
+Connector
+0
+8
+8
+SamacSys_Parts
+2002132100014C1LF
+20021321-00014C1LF-1
+Connector
+0
+14
+14
+SamacSys_Parts
+2002132100016C4LF
+20021321-00016C4LF-5
+Connector
+0
+16
+16
+SamacSys_Parts
 A20040
 A-20040-1
 Connector
 0
-4
-4
+6
+6
 SamacSys_Parts
-NE555DR
-D (R-PDSO-G8)
+CAPPM2014X120N
+CASE R
+Capacitor Polarised
+0
+2
+2
+SamacSys_Parts
+CAPPM2014X170N
+P CASE
+Capacitor Polarised
+0
+2
+2
+SamacSys_Parts
+DRV8835DSSR
+DRV8835DSSR-4
 Integrated Circuit
 0
-8
-8
+13
+13
+SamacSys_Parts
+ECS32712512QSTR
+ECS-.327-12.5-12QS-TR-2
+Crystal or Oscillator
+0
+2
+2
+SamacSys_Parts
+ECS32712512TR
+ECS-.327-12.5-12-TR-1
+Crystal or Oscillator
+0
+2
+2
+SamacSys_Parts
+MLX90614ESFBAA000TU
+MLX90614ESF-BAA-000-TU
+Integrated Circuit
+0
+4
+4
 SamacSys_Parts
 NX2520SA
 NX2520SA
@@ -76831,6 +76908,20 @@ Switch
 0
 15
 15
+SamacSys_Parts
+SOIC127P600X175-8N
+D (R-PDSO-G8)
+Integrated Circuit
+0
+8
+8
+SamacSys_Parts
+SOT95P280X100-6N
+TSOT-23-6
+Integrated Circuit
+0
+6
+6
 Sensor
 Aosong_DHT11_5.5x12.0_P2.54mm
 Temperature and humidity module, http://akizukidenshi.com/download/ds/aosong/DHT11.pdf
@@ -77195,13 +77286,6 @@ LEM Hall Effect Voltage transducer
 0
 5
 5
-SnapEDA Library
-HARWIN_M50-3100545
-
-
-0
-10
-10
 Socket
 3M_Textool_240-1288-00-0602J_2x20_P2.54mm
 3M 40-pin zero insertion force socket, though-hole, row spacing 25.4 mm (1000 mils)
