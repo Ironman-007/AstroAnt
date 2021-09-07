@@ -1,4 +1,4 @@
-19887099765811366
+19887100014498865
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -76839,6 +76839,13 @@ Connector
 6
 6
 SamacSys_Parts
+B3U-1000P
+B3U-1000P(M)
+Switch
+0
+2
+2
+SamacSys_Parts
 CAPPM2014X120N
 CASE R
 Capacitor Polarised
@@ -76873,6 +76880,13 @@ Crystal or Oscillator
 0
 2
 2
+SamacSys_Parts
+KMR621NGLFS
+KMR621NGLFS-2
+Switch
+0
+4
+4
 SamacSys_Parts
 MLX90614ESFBAA000TU
 MLX90614ESF-BAA-000-TU
