@@ -1422,9 +1422,7 @@ NoConn ~ 1700 2800
 NoConn ~ 1700 2900
 NoConn ~ 1700 3100
 NoConn ~ 1700 3300
-NoConn ~ 1700 3200
 NoConn ~ 1700 3500
-NoConn ~ 1700 3400
 Text Label 1700 3600 0    50   ~ 0
 RXD
 Text Label 4550 2600 2    50   ~ 0
@@ -2163,9 +2161,9 @@ SCL
 Text Label 6500 3800 2    50   ~ 0
 SDA
 Text Label 4850 4000 0    50   ~ 0
-D5
+D9
 Text Label 4850 4100 0    50   ~ 0
-D13
+D11
 Text Label 4850 3800 0    50   ~ 0
 D6
 Text Label 4850 3900 0    50   ~ 0
@@ -2234,11 +2232,11 @@ NoConn ~ 2050 2200
 Text Label 5650 2350 0    50   ~ 0
 D6
 Text Label 5650 2250 0    50   ~ 0
-D13
+D11
 Text Label 7150 1400 2    50   ~ 0
 D6
 Text Label 7150 1300 2    50   ~ 0
-D13
+D11
 Text Label 650  4850 0    50   ~ 0
 A5
 $Comp
@@ -2322,4 +2320,8 @@ D5
 Text Label 10750 5350 2    50   ~ 0
 D13
 NoConn ~ 10100 2350
+Text Label 1700 3200 0    50   ~ 0
+M2_IN1
+Text Label 1700 3400 0    50   ~ 0
+M2_IN2
 $EndSCHEMATC

@@ -1,4 +1,4 @@
-19887100014498865
+19890363840779675
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -58975,6 +58975,13 @@ Lipo_connect
 2
 2
 Mylib
+M1.6_mounthole
+
+
+0
+0
+0
+Mylib
 M1_1mm_MountingHole
 
 
@@ -59074,6 +59081,13 @@ SWD_adapter
 10
 Mylib
 Sparkfun_LSM9DS1_Module
+
+
+0
+4
+4
+Mylib
+TO-46-4
 
 
 0
@@ -76818,6 +76832,13 @@ Connector
 8
 8
 SamacSys_Parts
+2002132100010C4LF
+20021321-00010C4LF-2
+Connector
+0
+10
+10
+SamacSys_Parts
 2002132100014C1LF
 20021321-00014C1LF-1
 Connector
@@ -76881,6 +76902,13 @@ Crystal or Oscillator
 2
 2
 SamacSys_Parts
+HDRV10W50P127_2X5_635X340X430P
+GRPB052VWVN-RC
+Connector
+0
+10
+10
+SamacSys_Parts
 KMR621NGLFS
 KMR621NGLFS-2
 Switch
@@ -76909,6 +76937,13 @@ Integrated Circuit
 49
 49
 SamacSys_Parts
+QFN50P400X400X80-25N-D
+(CP-24-14)_1
+Integrated Circuit
+0
+25
+25
+SamacSys_Parts
 QFN50P400X400X95-21N-D
 QFN20 4x4
 Integrated Circuit
@@ -76924,11 +76959,46 @@ Switch
 15
 SamacSys_Parts
 SOIC127P600X175-8N
-D (R-PDSO-G8)
+- [SOIC_N]-
 Integrated Circuit
 0
 8
 8
+SamacSys_Parts
+SOP50P310X90-8N
+DCU (R-PDSO-G8)
+Integrated Circuit
+0
+8
+8
+SamacSys_Parts
+SOP65P490X110-8N
+RM-8 (MSOP)
+Integrated Circuit
+0
+8
+8
+SamacSys_Parts
+SOP65P640X120-14N
+PW (R-PDSO-G14)
+Integrated Circuit
+0
+14
+14
+SamacSys_Parts
+SOP65P780X200-16N
+RS-16
+Integrated Circuit
+0
+16
+16
+SamacSys_Parts
+SOT65P210X110-6N
+6-Lead SC70
+Switch
+0
+6
+6
 SamacSys_Parts
 SOT95P280X100-6N
 TSOT-23-6
@@ -76936,6 +77006,13 @@ Integrated Circuit
 0
 6
 6
+SamacSys_Parts
+ZTP135SR
+ZTP-135SR-2
+Undefined or Miscellaneous
+0
+4
+4
 Sensor
 Aosong_DHT11_5.5x12.0_P2.54mm
 Temperature and humidity module, http://akizukidenshi.com/download/ds/aosong/DHT11.pdf
