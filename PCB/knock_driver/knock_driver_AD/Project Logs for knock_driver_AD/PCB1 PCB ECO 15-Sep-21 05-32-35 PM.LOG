@@ -1,0 +1,12 @@
+Added Component: Designator=J1(1mm_single_pin_thr)
+Added Component: Designator=J2(1mm_single_pin_thr)
+Added Component: Designator=J5(M1.6_mount_hole)
+Added Component: Designator=J6(M1.6_mount_hole)
+Added Component: Designator=J7(M1.6_mount_hole)
+Added Component: Designator=J8(M1.6_mount_hole)
+Added Member To Class: ClassName=Sheet1 Member=Component J1 single_pin
+Added Member To Class: ClassName=Sheet1 Member=Component J2 single_pin
+Added Member To Class: ClassName=Sheet1 Member=Component J5 M1.6_mount_hole
+Added Member To Class: ClassName=Sheet1 Member=Component J6 M1.6_mount_hole
+Added Member To Class: ClassName=Sheet1 Member=Component J7 M1.6_mount_hole
+Added Member To Class: ClassName=Sheet1 Member=Component J8 M1.6_mount_hole
