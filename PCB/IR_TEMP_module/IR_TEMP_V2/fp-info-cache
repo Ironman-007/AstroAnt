@@ -1,4 +1,4 @@
-19893630426338389
+19890363840751598
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -58807,13 +58807,6 @@ AH086M555003-T
 6
 2
 Mylib
-ANT-916-USP
-
-
-0
-3
-3
-Mylib
 ASFLMB-16.000MHz-LY-T
 
 
@@ -59100,13 +59093,6 @@ TO-46-4
 0
 4
 4
-Mylib
-TPIS_1T_1084
-
-
-0
-0
-0
 Mylib
 TP_SMD_1mmx1.5mm
 
@@ -76964,13 +76950,6 @@ Integrated Circuit
 0
 21
 21
-SamacSys_Parts
-QFP50P900X900X120-48N
-TQFP 48_1
-Integrated Circuit
-0
-48
-48
 SamacSys_Parts
 SKY13416485LF
 SKY13416-485LF-2
