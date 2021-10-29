@@ -28,7 +28,11 @@ async function initializeAllServices(flowio){
 ////You can find the names of service names defined in the Web Bluetooth API at
 //https://googlechrome.github.io/samples/web-bluetooth/characteristic-properties-async-await.html
 let listOfServices = ['generic_access']; //NEVER modify this, and let each sdrvice push its UUID to it using .push() method.
+<<<<<<< HEAD
 const DEVICE_NAME_PREFIX = 'FZ'; //Allow devices STARTING with this name
+=======
+const DEVICE_NAME_PREFIX = 'FlowIO'; //Allow devices STARTING with this name
+>>>>>>> 2d34b99e5713db9c35350437761a65dbaa9e3cf3
 
 let flowios = []; //this will hold all of our flowio object instances.
 createNewInstance(); //automatically create the "flowio[0]" instance
@@ -119,8 +123,12 @@ function createNewInstance(){
 async function connectDevice(flowio) { //the argument is a SINGLE instance, not an array of instances.
   flowio.showLoadingBtn();
   flowio.hideReconnectBtn();
+<<<<<<< HEAD
   // let deviceOptions = {filters: [{namePrefix: DEVICE_NAME_PREFIX}],  optionalServices: listOfServices};
   let deviceOptions = {filters: [{namePrefix: DEVICE_NAME_PREFIX}]};
+=======
+  let deviceOptions = {filters: [{namePrefix: DEVICE_NAME_PREFIX}],  optionalServices: listOfServices};
+>>>>>>> 2d34b99e5713db9c35350437761a65dbaa9e3cf3
   //the 'listOfServices' is defined in the conditions.js file.
   try{
     let bleDevice = await navigator.bluetooth.requestDevice(deviceOptions);
@@ -154,12 +162,20 @@ async function connectDevice(flowio) { //the argument is a SINGLE instance, not 
   }
 }
 
+<<<<<<< HEAD
 async function reconnectDevice(flowio, reconnectAttempt=0) {
+=======
+async function reconnectDevice(flowio, reconnectAttempt=0){
+>>>>>>> 2d34b99e5713db9c35350437761a65dbaa9e3cf3
   //NOTE: If we reconnect immediately after having disconnected, the reconnection will
   //happen fine, but the service initialization will fail, and then the connection
   //will drop. To fix this problem, we recursively call the reconnect() function
   //in the catch block below until we reconnect successffully or up to 3 tries.
+<<<<<<< HEAD
   if (flowio.bleDevice && !flowio.bleDevice.gatt.connected) { //if a device exists but is not connected:
+=======
+  if (flowio.bleDevice && !flowio.bleDevice.gatt.connected){ //if a device exists but is not connected:
+>>>>>>> 2d34b99e5713db9c35350437761a65dbaa9e3cf3
     flowio.log("\nReconnecting...");
     try{
       await flowio.bleDevice.gatt.connect(); //connect to the same bleDevice.

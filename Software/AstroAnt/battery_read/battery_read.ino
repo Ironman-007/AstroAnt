@@ -50,7 +50,7 @@ void loop() {
 
   // print the results to the Serial Monitor:
   Serial.print("sensor = ");
-  batt_v = float(sensorValue)/1024*3.3*2*1.1;
+  batt_v = float(sensorValue)/1024*3.3*2*1.05;
   Serial.println(batt_v);
 //  Serial.print("\t output = ");
 //  Serial.println(outputValue);

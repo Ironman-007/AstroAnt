@@ -1,7 +1,15 @@
 This firmware uses the updated library featuring the optimizePower() function. 
 
+<<<<<<< HEAD
 The _holdPWM value is set to a fixed 150, based on the various measurements I did on the valves and battery. I can lowere this value even further when the battery is fresh, to save even more power. But then I gradually needs to increase it back to 150 as the battery voltage starts dropping - in order to maintain a steady average voltage at the valves.
 
 There are also some commends added to the batteryService.ino file about what needs to be done there in the futre. Namely to include the battery features directly into the API, so that the optimizePower() function takes care of even adjusting the _holdPWM value. 
 
 The next immediate step is to add a battery fuction in the API itself, and thus simplify the battery service a little bit. After that is done, I can then implement the low battery LED indicator properly, as well as implement the dynamic _holdPWM value.
+=======
+The _holdPWM value is set to a fixed 150, based on the various measurements I did on the valves and battery. I can lower this value even further when the battery is fresh, to save even more power. But then I gradually needs to increase it back to 150 as the battery voltage starts dropping - in order to maintain a steady average voltage at the valves.
+
+There are also some commends added to the batteryService.ino file about what needs to be done there in the future. Namely to include the battery features directly into the API, so that the optimizePower() function takes care of even adjusting the _holdPWM value. 
+
+The next immediate step is to add a battery function in the API itself, and thus simplify the battery service a little bit. After that is done, I can then implement the low battery LED indicator properly, as well as implement the dynamic _holdPWM value.
+>>>>>>> 2d34b99e5713db9c35350437761a65dbaa9e3cf3
