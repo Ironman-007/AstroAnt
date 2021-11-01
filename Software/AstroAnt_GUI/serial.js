@@ -56,7 +56,7 @@ async function connect() {
 async function disconnect() {
 //   drawGrid(GRID_OFF);
 //   sendGrid();
-
+  let now = new Date();
   toplogc.textContent = toplogc.textContent +  "disconnecting...." + "\n";
 
   // CODELAB: Close the input stream (reader).

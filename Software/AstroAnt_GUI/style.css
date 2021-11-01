@@ -62,12 +62,11 @@ hr{
 }
 .grid-centerColumn{
   display:grid;
-  grid-template-columns:1fr 2fr;
-  grid-template-rows: 2fr 37fr 6fr;
+  grid-template-columns:10fr;
+  grid-template-rows: 2fr 37fr;
   grid-template-areas:
-    "title btns"
-    "tbl tbl"
-    "run run";
+    "title"
+    "vis_chart";
 }
 .grid-rightColumn{
   display:grid;

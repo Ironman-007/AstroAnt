@@ -123,20 +123,24 @@ function createNewInstance(){
 async function connectDevice(flowio) { //the argument is a SINGLE instance, not an array of instances.
   flowio.showLoadingBtn();
   flowio.hideReconnectBtn();
-  // console.log('connectDevice(flowio)');
+  console.log('connectDevice(flowio)');
   let deviceOptions = {filters: [{namePrefix: DEVICE_NAME_PREFIX}],  optionalServices: listOfServices};
   // let deviceOptions = {filters: [{namePrefix: DEVICE_NAME_PREFIX}]};
   //the 'listOfServices' is defined in the conditions.js file.
   try{
     let bleDevice = await navigator.bluetooth.requestDevice(deviceOptions);
+    console.log('requestDevice');
 
     bleDevice.addEventListener('gattserverdisconnected', event => {
       flowio.log("Disconnected from: " + event.target.name + ", " + event.target.id);
       flowio.disableControls(); //disable controls on DISCONNECT EVENT
     }); //create and event listener for disconnect events.
+    console.log('addEventListener');
+
+    console.log('Connecting to GATT server...');
 
     let bleServer = await bleDevice.gatt.connect();
-    // console.log(bleServer);
+    console.log('GATT server connected.');
 
     //This is how we define IMMUTABLE properties.
     Object.defineProperty(flowio, 'bleDevice',{value:bleDevice}); //Equivalent to: this.bleDevice = bleDevice. (IMMUTABLE)

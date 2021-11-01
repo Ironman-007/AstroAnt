@@ -24,7 +24,7 @@
 BLEService batteryService;
   BLECharacteristic chrBattPercentage;
 
-char* devece_name = "FZ_Astroant_1";
+char* devece_name = "FZ_Astroant_tst";
 
 void setup() {
   Serial.begin(115200);
@@ -47,7 +47,7 @@ void setup() {
   // Setup the BLE LED to be enabled on CONNECT
   // Note: This is actually the default behavior, but provided
   // here in case you want to control this LED manually via PIN 19
-  Bluefruit.autoConnLed(true);
+//  Bluefruit.autoConnLed(true);
 
   // Config the peripheral connection with maximum bandwidth
   // more SRAM required by SoftDevice
@@ -111,7 +111,7 @@ void startAdv(void)
   Bluefruit.Advertising.restartOnDisconnect(true);
   Bluefruit.Advertising.setInterval(32, 244);    // in unit of 0.625 ms
   Bluefruit.Advertising.setFastTimeout(30);      // number of seconds in fast mode
-  Bluefruit.Advertising.start(0);                // 0 = Don't stop advertising after n seconds  
+  Bluefruit.Advertising.start(0);                // 0 = Don't stop advertising after n seconds
 }
 
 void loop()
@@ -124,22 +124,6 @@ void loop()
 
   analogWrite(M2_IN1, 10);   // turn the LED on (HIGH is the voltage level)
   analogWrite(M2_IN2, 255);    // turn the LED off by making the voltage LOW
-
-//  while (Serial.available()) {
-    // Delay to wait for enough input, since we have a limited transmission buffer
-//    delay(2);
-//
-//    uint8_t buf[64];
-//    int count = Serial.readBytes(buf, sizeof(buf));
-//    bleuart.write( buf, count );
-//  }
-
-  // Forward from BLEUART to HW Serial
-//  while ( bleuart.available() ) {
-//    uint8_t ch;
-//    ch = (uint8_t) bleuart.read();
-//    Serial.write(ch);
-//  }
 }
 
 // callback invoked when central connects
