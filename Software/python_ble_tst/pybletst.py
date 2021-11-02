@@ -1,8 +1,22 @@
-# simple inquiry example
-import bluetooth
+import asyncio
+from bleak import BleakScanner
+from bleak.backends.device import BLEDevice
+from bleak.backends.scanner import AdvertisementData
+import logging
 
-nearby_devices = bluetooth.discover_devices(lookup_names=True)
-print("found %d devices" % len(nearby_devices))
+logging.basicConfig()
 
-for addr, name in nearby_devices:
-    print("  %s - %s" % (addr, name))
+def simple_callback(device: BLEDevice, advertisement_data: AdvertisementData):
+    print(device.address, "RSSI:", device.rssi, advertisement_data)
+
+async def main():
+    scanner = BleakScanner()
+    scanner.register_detection_callback(simple_callback)
+
+    while True:
+        await scanner.start()
+        await asyncio.sleep(5.0)
+        await scanner.stop()
+
+if __name__ == "__main__":
+    asyncio.run(main())

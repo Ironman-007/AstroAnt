@@ -1,32 +1,17 @@
-/*********************************************************************
- This is an example for our nRF52 based Bluefruit LE modules
-
- Pick one up today in the adafruit shop!
-
- Adafruit invests time and resources providing this open source code,
- please support Adafruit and open-source hardware by purchasing
- products from Adafruit!
-
- MIT license, check LICENSE for more information
- All text above, and the splash screen below must be included in
- any redistribution
-*********************************************************************/
 #include <bluefruit.h>
 #include <Adafruit_LittleFS.h>
 #include <InternalFileSystem.h>
 
 // BLE Service
-//BLEDfu  bledfu;  // OTA DFU service
-//BLEDis  bledis;  // device information
-//BLEUart bleuart; // uart over ble
-//BLEBas  blebas;  // battery
+BLEDfu  bledfu;  // OTA DFU service
+BLEDis  bledis;  // device information
+BLEUart bleuart; // uart over ble
+BLEBas  blebas;  // battery
 
-BLEService batteryService;
-  BLECharacteristic chrBattPercentage;
+char* devece_name = "ThermoAnt";
 
-char* devece_name = "FZ_Astroant_tst";
-
-void setup() {
+void setup()
+{
   Serial.begin(115200);
 
 #if CFG_DEBUG
@@ -34,49 +19,40 @@ void setup() {
   while ( !Serial ) yield();
 #endif
 
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(M1_IN1, OUTPUT);
-  pinMode(M1_IN2, OUTPUT);
-
-  pinMode(M2_IN1, OUTPUT);
-  pinMode(M2_IN2, OUTPUT);
-
   Serial.println("Bluefruit52 BLEUART Example");
   Serial.println("---------------------------\n");
 
   // Setup the BLE LED to be enabled on CONNECT
   // Note: This is actually the default behavior, but provided
   // here in case you want to control this LED manually via PIN 19
-//  Bluefruit.autoConnLed(true);
+  Bluefruit.autoConnLed(true);
 
-  // Config the peripheral connection with maximum bandwidth
+  // Config the peripheral connection with maximum bandwidth 
   // more SRAM required by SoftDevice
   // Note: All config***() function must be called before begin()
   Bluefruit.configPrphBandwidth(BANDWIDTH_MAX);
 
   Bluefruit.begin();
   Bluefruit.setTxPower(4);    // Check bluefruit.h for supported values
-//  Bluefruit.setName(getMcuUniqueID()); // useful testing with multiple central connections
+  // Bluefruit.setName(getMcuUniqueID()); // useful testing with multiple central connections
   Bluefruit.setName(devece_name);
   Bluefruit.Periph.setConnectCallback(connect_callback);
   Bluefruit.Periph.setDisconnectCallback(disconnect_callback);
 
   // To be consistent OTA DFU should be added first if it exists
-//  bledfu.begin();
+  bledfu.begin();
 
   // Configure and Start Device Information Service
-//  bledis.setManufacturer("Adafruit Industries");
-//  bledis.setModel("Bluefruit Feather52");
-//  bledis.begin();
+  bledis.setManufacturer("Adafruit Industries");
+  bledis.setModel("Feather nRF52840");
+  bledis.begin();
 
   // Configure and Start BLE Uart Service
-//  bleuart.begin();
+  bleuart.begin();
 
   // Start BLE Battery Service
-//  blebas.begin();
-//  blebas.notify(10);
-  updateBatteryLevelEvery(1);
-  createBatteryService(); //this is defined in "batteryService.ino"
+  blebas.begin();
+  blebas.write(100);
 
   // Set up and start advertising
   startAdv();
@@ -85,15 +61,13 @@ void setup() {
   Serial.println("Once connected, enter character(s) that you wish to send");
 }
 
-void startAdv(void)
-{
+void startAdv(void) {
   // Advertising packet
   Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);
   Bluefruit.Advertising.addTxPower();
 
   // Include bleuart 128-bit uuid
-//  Bluefruit.Advertising.addService(bleuart);
-  Bluefruit.Advertising.addService(batteryService);
+  Bluefruit.Advertising.addService(bleuart);
 
   // Secondary Scan Response packet (optional)
   // Since there is no room for 'Name' in Advertising packet
@@ -114,16 +88,23 @@ void startAdv(void)
   Bluefruit.Advertising.start(0);                // 0 = Don't stop advertising after n seconds
 }
 
-void loop()
-{
+void loop() {
   // Forward data from HW Serial to BLEUART
-  updateBatteryLevelEvery(1000);
+  while (Serial.available()) {
+    // Delay to wait for enough input, since we have a limited transmission buffer
+    delay(2);
 
-  analogWrite(M1_IN1, 255);   // turn the LED on (HIGH is the voltage level)
-  analogWrite(M1_IN2, 10);    // turn the LED off by making the voltage LOW
+    uint8_t buf[64];
+    int count = Serial.readBytes(buf, sizeof(buf));
+    bleuart.write( buf, count );
+  }
 
-  analogWrite(M2_IN1, 10);   // turn the LED on (HIGH is the voltage level)
-  analogWrite(M2_IN2, 255);    // turn the LED off by making the voltage LOW
+  // Forward from BLEUART to HW Serial
+  while (bleuart.available()) {
+    uint8_t ch;
+    ch = (uint8_t) bleuart.read();
+    Serial.write(ch);
+  }
 }
 
 // callback invoked when central connects
@@ -143,7 +124,8 @@ void connect_callback(uint16_t conn_handle) {
  * @param conn_handle connection where this event happens
  * @param reason is a BLE_HCI_STATUS_CODE which can be found in ble_hci.h
  */
-void disconnect_callback(uint16_t conn_handle, uint8_t reason) {
+void disconnect_callback(uint16_t conn_handle, uint8_t reason)
+{
   (void) conn_handle;
   (void) reason;
 
