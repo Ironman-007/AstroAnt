@@ -1,4 +1,4 @@
-update=27-Sep-21 02:35:53 PM
+update=05-Nov-21 03:29:13 PM
 version=1
 last_client=kicad
 [general]
@@ -238,8 +238,8 @@ dPairGap=0.25
 dPairViaGap=0.25
 [schematic_editor]
 version=1
-PageLayoutDescrFile=
-PlotDirectoryName=
+PageLayoutDescrFile=C:/DATA/Software/KiCAD/Page_layout/ML_small.kicad_wks
+PlotDirectoryName=../../../../../../../../Users/l1534/OneDrive/Desktop/
 SubpartIdSeparator=0
 SubpartFirstId=65
 NetFmtName=Pcbnew
