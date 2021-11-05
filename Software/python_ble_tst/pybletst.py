@@ -1,20 +1,12 @@
-<<<<<<< HEAD
 import asyncio
-from bleak import discover
+from bleak import BleakClient
 
-async def main():
-    devices = await discover()
-    for d in devices:
-        print(d)
+address = "24:71:89:cc:09:05"
+MODEL_NBR_UUID = "00002a24-0000-1000-8000-00805f9b34fb"
 
-asyncio.run(main())
-=======
-# simple inquiry example
-import bluetooth
+async def main(address):
+    async with BleakClient(address) as client:
+        model_number = await client.read_gatt_char(MODEL_NBR_UUID)
+        print("Model Number: {0}".format("".join(map(chr, model_number))))
 
-nearby_devices = bluetooth.discover_devices(lookup_names=True)
-print("found %d devices" % len(nearby_devices))
-
-for addr, name in nearby_devices:
-    print("  %s - %s" % (addr, name))
->>>>>>> 0c1f1d1b5374e65f93eebe6e9e240c64f5d1306d
+asyncio.run(main(address))
