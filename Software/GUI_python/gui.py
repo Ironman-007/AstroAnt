@@ -26,7 +26,6 @@ interval_cmd = 0x22
 sleep_cmd    = 0x33
 aq_cmd       = 0x44
 
-nbins = 20
 data_len = 100
 
 class bcolors:
@@ -49,16 +48,34 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
-        self.setFixedSize(1650, 955)
+        self.setFixedSize(1650, 650)
 
         #Load the UI Page
         uic.loadUi('astroant.ui', self)
 
-        self.gyroz1.setBackground('w')
+        # self.gyroz1.setBackground('w')
 
-        self.enl1.setBackground('w')
+        # self.enl1.setBackground('w')
+        # self.enl2.setBackground('w')
+        # self.enl3.setBackground('w')
+        # self.enl4.setBackground('w')
+        # self.enl5.setBackground('w')
+        # self.enl6.setBackground('w')
+        # self.enl7.setBackground('w')
+        # self.enl8.setBackground('w')
+        # self.enl9.setBackground('w')
+        # self.enl10.setBackground('w')
 
-        self.enr1.setBackground('w')
+        # self.enr1.setBackground('w')
+        # self.enr2.setBackground('w')
+        # self.enr3.setBackground('w')
+        # self.enr4.setBackground('w')
+        # self.enr5.setBackground('w')
+        # self.enr6.setBackground('w')
+        # self.enr7.setBackground('w')
+        # self.enr8.setBackground('w')
+        # self.enr9.setBackground('w')
+        # self.enr10.setBackground('w')
 
         self.serial_ports_list = []
         self.serial_speed = [115200]
@@ -75,10 +92,25 @@ class MainWindow(QtWidgets.QMainWindow):
         self.cali_btn.clicked.connect(self.send_cali_cmd)
 
         self.gyroz1_data = [0] * data_len
+        self.gyroz2_data = [0] * data_len
+        self.gyroz3_data = [0] * data_len
+        self.gyroz4_data = [0] * data_len
+        self.gyroz5_data = [0] * data_len
+        self.gyroz6_data = [0] * data_len
 
         self.enl1_data = [0] * data_len
+        self.enl2_data = [0] * data_len
+        self.enl3_data = [0] * data_len
+        self.enl4_data = [0] * data_len
+        self.enl5_data = [0] * data_len
+        self.enl6_data = [0] * data_len
 
         self.enr1_data = [0] * data_len
+        self.enr2_data = [0] * data_len
+        self.enr3_data = [0] * data_len
+        self.enr4_data = [0] * data_len
+        self.enr5_data = [0] * data_len
+        self.enr6_data = [0] * data_len
 
         self.time_index = list(range(1, data_len+1))
 
@@ -129,55 +161,94 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def start_read_port(self):
         self.gyroz1_data = [0] * data_len
+        self.gyroz2_data = [0] * data_len
+        self.gyroz3_data = [0] * data_len
+        self.gyroz4_data = [0] * data_len
+        self.gyroz5_data = [0] * data_len
+        self.gyroz6_data = [0] * data_len
+
         self.enl1_data = [0] * data_len
+        self.enl2_data = [0] * data_len
+        self.enl3_data = [0] * data_len
+        self.enl4_data = [0] * data_len
+        self.enl5_data = [0] * data_len
+        self.enl6_data = [0] * data_len
+
         self.enr1_data = [0] * data_len
+        self.enr2_data = [0] * data_len
+        self.enr3_data = [0] * data_len
+        self.enr4_data = [0] * data_len
+        self.enr5_data = [0] * data_len
+        self.enr6_data = [0] * data_len
 
         self.gyroz1.clear()
+        self.gyroz2.clear()
+        self.gyroz3.clear()
+        self.gyroz4.clear()
+        self.gyroz5.clear()
+        self.gyroz6.clear()
+
         self.enr1.clear()
+        self.enr2.clear()
+        self.enr3.clear()
+        self.enr4.clear()
+        self.enr5.clear()
+        self.enr6.clear()
+
         self.enl1.clear()
+        self.enl2.clear()
+        self.enl3.clear()
+        self.enl4.clear()
+        self.enl5.clear()
+        self.enl6.clear()
 
-        cmd_id = self.start_id & 0xFF
-        start_cmd_chk = (cmd_id+0xAA+0xFF) & 0xFF
+        # cmd_id = self.start_id & 0xFF
+        # start_cmd_chk = (cmd_id+0xAA+0xFF) & 0xFF
 
-        self.botnum = self.whichbot.text()
-        self.botnumh = int(self.botnum, 16)
+        # self.botnum = self.whichbot.text()
+        # self.botnumh = int(self.botnum, 16)
 
-        if (self.botnumh == 0x01 or self.botnumh == 0x04 or self.botnumh == 0x0E):
-            self.address = 0x01
-        elif (self.botnumh == 0x02 or self.botnumh == 0x05 or self.botnumh == 0x09):
-            self.address = 0x02
-        elif (self.botnumh == 0x06):
-            self.address = 0x03
-        elif (self.botnumh == 0x07):
-            self.address = 0x04
-        elif (self.botnumh == 0x08 or self.botnumh == 0x0A):
-            self.address = 0x05
-        else:
-            print(bcolors.WARNING + "Err: wrong Rovable number" + bcolors.ENDC)
+        # if (self.botnumh == 0x01 or self.botnumh == 0x04 or self.botnumh == 0x0E):
+        #     self.address = 0x01
+        # elif (self.botnumh == 0x02 or self.botnumh == 0x05 or self.botnumh == 0x09):
+        #     self.address = 0x02
+        # elif (self.botnumh == 0x06):
+        #     self.address = 0x03
+        # elif (self.botnumh == 0x07):
+        #     self.address = 0x04
+        # elif (self.botnumh == 0x08 or self.botnumh == 0x0A):
+        #     self.address = 0x05
+        # else:
+        #     print(bcolors.WARNING + "Err: wrong Astroant number" + bcolors.ENDC)
 
-        start_cmd = [0xAA, self.address]
-        start_cmd = bytearray(start_cmd)
-        print(start_cmd)
-        self.ser.write(start_cmd)
+        self.timer.start() # Start monitoring the serialport
+
+        # start_cmd = [0xAA, self.address]
+        # start_cmd = bytearray(start_cmd)
+        # print(start_cmd)
+        # self.ser.write(start_cmd)
+
+        # current_time = read_current_time()
+        # print(Back.LIGHTYELLOW_EX, "   -> ", current_time,"Start cmd sent",Style.RESET_ALL)
 
         current_time = read_current_time()
-        print(Back.LIGHTYELLOW_EX, "   -> ", current_time,"Start cmd sent",Style.RESET_ALL)
 
-        current_time = read_current_time()
+        self.log.append(current_time + " :  Start monitoring the Serial Port...\n")
 
-        self.log.append(current_time + ": Start Cmd sent." + str(start_cmd) + "\n")
+        self.msg_btn.setText("Start monitoring the Serial Port...")
+        self.msg_btn.setStyleSheet("background-color : Green")
 
-        self.data_num = 0
-        self.timer.start() # Start the timer
+        # self.data_num = 0
+        # self.timer.start() # Start the timer
 
-        self.start_id = self.start_id + 1
+        # self.start_id = self.start_id + 1
 
-        recordingname = self.botnum
+        # recordingname = self.botnum
 
-        while (os.path.isfile(recordingname)):
-            recordingname = recordingname + "1"
+        # while (os.path.isfile(recordingname)):
+        #     recordingname = recordingname + "1"
 
-        self.file = open(recordingname, "wb")
+        # self.file = open(recordingname, "wb")
 
     def send_cali_cmd(self):
         self.gyroz1_data = [0] * data_len
