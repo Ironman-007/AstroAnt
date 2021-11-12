@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1650</width>
-    <height>984</height>
+    <height>674</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <widget class="QPushButton" name="close_btn">
     <property name="geometry">
      <rect>
-      <x>875</x>
-      <y>895</y>
-      <width>771</width>
+      <x>1255</x>
+      <y>590</y>
+      <width>391</width>
       <height>31</height>
      </rect>
     </property>
@@ -59,7 +59,7 @@
      <widget class="QLabel" name="label_3">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>58</width>
         <height>16</height>
@@ -72,7 +72,7 @@
      <widget class="QLabel" name="gyroz1_label">
       <property name="geometry">
        <rect>
-        <x>110</x>
+        <x>130</x>
         <y>0</y>
         <width>58</width>
         <height>16</height>
@@ -95,7 +95,7 @@
      <widget class="QLabel" name="label_4">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>71</width>
         <height>16</height>
@@ -108,7 +108,7 @@
      <widget class="QLabel" name="enl1_label">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>150</x>
         <y>0</y>
         <width>51</width>
         <height>20</height>
@@ -131,7 +131,7 @@
      <widget class="QLabel" name="label_5">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>71</width>
         <height>16</height>
@@ -144,7 +144,7 @@
      <widget class="QLabel" name="enr1_label">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>150</x>
         <y>0</y>
         <width>51</width>
         <height>20</height>
@@ -300,7 +300,7 @@
     <widget class="QProgressBar" name="bat1">
      <property name="geometry">
       <rect>
-       <x>80</x>
+       <x>70</x>
        <y>20</y>
        <width>61</width>
        <height>21</height>
@@ -315,7 +315,7 @@
       <number>90</number>
      </property>
     </widget>
-    <widget class="QLabel" name="label_9">
+    <widget class="QLabel" name="batper1">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -333,12 +333,48 @@
       <string>battery</string>
      </property>
     </widget>
+    <widget class="QLabel" name="batper1_2">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>15</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>100</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="batper1_3">
+     <property name="geometry">
+      <rect>
+       <x>168</x>
+       <y>15</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>%</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QFrame" name="frame_2">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>760</y>
+      <y>455</y>
       <width>861</width>
       <height>161</height>
      </rect>
@@ -352,8 +388,8 @@
     <widget class="QPushButton" name="scan_btn">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>5</y>
+       <x>10</x>
+       <y>10</y>
        <width>261</width>
        <height>32</height>
       </rect>
@@ -365,8 +401,8 @@
     <widget class="QComboBox" name="serial_comboBox">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>35</y>
+       <x>10</x>
+       <y>50</y>
        <width>261</width>
        <height>32</height>
       </rect>
@@ -375,18 +411,29 @@
     <widget class="QComboBox" name="speed_comboBox">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>65</y>
-       <width>171</width>
-       <height>32</height>
+       <x>280</x>
+       <y>10</y>
+       <width>201</width>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+      </font>
      </property>
     </widget>
     <widget class="QPushButton" name="open_btn">
      <property name="geometry">
       <rect>
-       <x>165</x>
-       <y>65</y>
+       <x>480</x>
+       <y>10</y>
        <width>96</width>
        <height>32</height>
       </rect>
@@ -398,10 +445,10 @@
     <widget class="QPushButton" name="cali_btn">
      <property name="geometry">
       <rect>
-       <x>290</x>
-       <y>10</y>
+       <x>580</x>
+       <y>5</y>
        <width>91</width>
-       <height>31</height>
+       <height>81</height>
       </rect>
      </property>
      <property name="text">
@@ -411,83 +458,45 @@
     <widget class="QPushButton" name="stop_btn">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>10</y>
+       <x>760</x>
+       <y>5</y>
        <width>91</width>
-       <height>31</height>
+       <height>81</height>
       </rect>
      </property>
      <property name="text">
       <string>Stop</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="whichbot">
-     <property name="geometry">
-      <rect>
-       <x>750</x>
-       <y>20</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QPushButton" name="start_btn">
      <property name="geometry">
       <rect>
-       <x>390</x>
-       <y>10</y>
+       <x>670</x>
+       <y>5</y>
        <width>91</width>
-       <height>31</height>
+       <height>81</height>
       </rect>
      </property>
      <property name="text">
       <string>Start</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_7">
+    <widget class="QPushButton" name="msg_btn">
      <property name="geometry">
       <rect>
-       <x>610</x>
-       <y>10</y>
-       <width>131</width>
-       <height>41</height>
+       <x>10</x>
+       <y>90</y>
+       <width>841</width>
+       <height>61</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>16</pointsize>
+       <pointsize>30</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>Rovable number #</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="speed">
-     <property name="geometry">
-      <rect>
-       <x>750</x>
-       <y>50</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_8">
-     <property name="geometry">
-      <rect>
-       <x>610</x>
-       <y>50</y>
-       <width>131</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Speed</string>
+      <string>Message is shown here...</string>
      </property>
     </widget>
    </widget>
@@ -495,7 +504,7 @@
     <property name="geometry">
      <rect>
       <x>880</x>
-      <y>760</y>
+      <y>455</y>
       <width>761</width>
       <height>131</height>
      </rect>
@@ -520,8 +529,8 @@
    <widget class="QFrame" name="frame_5">
     <property name="geometry">
      <rect>
-      <x>830</x>
-      <y>10</y>
+      <x>10</x>
+      <y>160</y>
       <width>811</width>
       <height>141</height>
      </rect>
@@ -532,19 +541,19 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="PlotWidget" name="gyroz6" native="true">
+    <widget class="PlotWidget" name="gyroz2" native="true">
      <property name="geometry">
       <rect>
-       <x>250</x>
+       <x>190</x>
        <y>10</y>
-       <width>171</width>
+       <width>191</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_6">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>58</width>
         <height>16</height>
@@ -557,7 +566,7 @@
      <widget class="QLabel" name="gyroz1_label_2">
       <property name="geometry">
        <rect>
-        <x>110</x>
+        <x>130</x>
         <y>0</y>
         <width>58</width>
         <height>16</height>
@@ -568,19 +577,19 @@
       </property>
      </widget>
     </widget>
-    <widget class="PlotWidget" name="enl6" native="true">
+    <widget class="PlotWidget" name="enl2" native="true">
      <property name="geometry">
       <rect>
-       <x>430</x>
+       <x>390</x>
        <y>10</y>
-       <width>181</width>
+       <width>201</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_10">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>71</width>
         <height>16</height>
@@ -593,7 +602,7 @@
      <widget class="QLabel" name="enl1_label_2">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>150</x>
         <y>0</y>
         <width>51</width>
         <height>20</height>
@@ -604,19 +613,19 @@
       </property>
      </widget>
     </widget>
-    <widget class="PlotWidget" name="enr6" native="true">
+    <widget class="PlotWidget" name="enr2" native="true">
      <property name="geometry">
       <rect>
-       <x>620</x>
+       <x>600</x>
        <y>10</y>
-       <width>181</width>
+       <width>201</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_11">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>71</width>
         <height>16</height>
@@ -629,7 +638,7 @@
      <widget class="QLabel" name="enr1_label_2">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>150</x>
         <y>0</y>
         <width>51</width>
         <height>20</height>
@@ -643,8 +652,8 @@
     <widget class="QFrame" name="frame_6">
      <property name="geometry">
       <rect>
-       <x>140</x>
-       <y>40</y>
+       <x>50</x>
+       <y>50</y>
        <width>101</width>
        <height>81</height>
       </rect>
@@ -768,7 +777,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>60</y>
+       <y>70</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -779,14 +788,14 @@
       </font>
      </property>
      <property name="text">
-      <string>6</string>
+      <string>2</string>
      </property>
     </widget>
     <widget class="QProgressBar" name="bat1_2">
      <property name="geometry">
       <rect>
        <x>70</x>
-       <y>36</y>
+       <y>20</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -800,11 +809,11 @@
       <number>90</number>
      </property>
     </widget>
-    <widget class="QLabel" name="label_12">
+    <widget class="QLabel" name="batper2">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>10</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -818,12 +827,48 @@
       <string>battery</string>
      </property>
     </widget>
+    <widget class="QLabel" name="batper1_5">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>10</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>100</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="batper1_4">
+     <property name="geometry">
+      <rect>
+       <x>168</x>
+       <y>10</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>%</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QFrame" name="frame_7">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>160</y>
+      <y>310</y>
       <width>811</width>
       <height>141</height>
      </rect>
@@ -834,19 +879,19 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="PlotWidget" name="gyroz2" native="true">
+    <widget class="PlotWidget" name="gyroz3" native="true">
      <property name="geometry">
       <rect>
-       <x>250</x>
+       <x>190</x>
        <y>10</y>
-       <width>171</width>
+       <width>191</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_13">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>58</width>
         <height>16</height>
@@ -859,7 +904,7 @@
      <widget class="QLabel" name="gyroz1_label_3">
       <property name="geometry">
        <rect>
-        <x>110</x>
+        <x>130</x>
         <y>0</y>
         <width>58</width>
         <height>16</height>
@@ -870,19 +915,19 @@
       </property>
      </widget>
     </widget>
-    <widget class="PlotWidget" name="enl2" native="true">
+    <widget class="PlotWidget" name="enl3" native="true">
      <property name="geometry">
       <rect>
-       <x>430</x>
+       <x>390</x>
        <y>10</y>
-       <width>181</width>
+       <width>201</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_14">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>71</width>
         <height>16</height>
@@ -895,7 +940,7 @@
      <widget class="QLabel" name="enl1_label_3">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>150</x>
         <y>0</y>
         <width>51</width>
         <height>20</height>
@@ -906,19 +951,19 @@
       </property>
      </widget>
     </widget>
-    <widget class="PlotWidget" name="enr2" native="true">
+    <widget class="PlotWidget" name="enr3" native="true">
      <property name="geometry">
       <rect>
-       <x>620</x>
+       <x>600</x>
        <y>10</y>
-       <width>181</width>
+       <width>201</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_15">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>71</width>
         <height>16</height>
@@ -931,7 +976,7 @@
      <widget class="QLabel" name="enr1_label_3">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>150</x>
         <y>0</y>
         <width>51</width>
         <height>20</height>
@@ -942,11 +987,11 @@
       </property>
      </widget>
     </widget>
-    <widget class="QFrame" name="frame_11">
+    <widget class="QFrame" name="frame_8">
      <property name="geometry">
       <rect>
-       <x>140</x>
-       <y>40</y>
+       <x>50</x>
+       <y>50</y>
        <width>101</width>
        <height>81</height>
       </rect>
@@ -1070,611 +1115,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>60</y>
-       <width>41</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>18</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>2</string>
-     </property>
-    </widget>
-    <widget class="QProgressBar" name="bat1_3">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>36</y>
-       <width>61</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>20</pointsize>
-      </font>
-     </property>
-     <property name="value">
-      <number>90</number>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_17">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>18</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>battery</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QFrame" name="frame_12">
-    <property name="geometry">
-     <rect>
-      <x>830</x>
-      <y>160</y>
-      <width>811</width>
-      <height>141</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="PlotWidget" name="gyroz1_4" native="true">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>10</y>
-       <width>171</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <widget class="QLabel" name="label_18">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>gyroz</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="gyroz1_label_4">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>0</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>0.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="PlotWidget" name="enl7" native="true">
-     <property name="geometry">
-      <rect>
-       <x>430</x>
-       <y>10</y>
-       <width>181</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <widget class="QLabel" name="label_19">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Encoder_L</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="enl1_label_4">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>0</y>
-        <width>51</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>0.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="PlotWidget" name="enr1_4" native="true">
-     <property name="geometry">
-      <rect>
-       <x>620</x>
-       <y>10</y>
-       <width>181</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <widget class="QLabel" name="label_20">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Encoder_R</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="enr1_label_4">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>0</y>
-        <width>51</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>0.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QFrame" name="frame_14">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>40</y>
-       <width>101</width>
-       <height>81</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <widget class="QLabel" name="label_21">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>31</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>X:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="accelx1_4">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>10</y>
-        <width>61</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>00.00</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_29">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>21</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Y:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="accely1_4">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>30</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>00.00</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_30">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>21</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Z:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="accelz1_4">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>50</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>00.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QLabel" name="bat1_percentage_4">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>41</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>18</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>7</string>
-     </property>
-    </widget>
-    <widget class="QProgressBar" name="bat1_4">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>36</y>
-       <width>61</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>20</pointsize>
-      </font>
-     </property>
-     <property name="value">
-      <number>90</number>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_22">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>18</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>battery</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QFrame" name="frame_15">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>310</y>
-      <width>811</width>
-      <height>141</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="PlotWidget" name="gyroz3" native="true">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>10</y>
-       <width>171</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <widget class="QLabel" name="label_31">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>gyroz</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="gyroz1_label_5">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>0</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>0.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="PlotWidget" name="enl3" native="true">
-     <property name="geometry">
-      <rect>
-       <x>430</x>
-       <y>10</y>
-       <width>181</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <widget class="QLabel" name="label_32">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Encoder_L</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="enl1_label_5">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>0</y>
-        <width>51</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>0.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="PlotWidget" name="enr3" native="true">
-     <property name="geometry">
-      <rect>
-       <x>620</x>
-       <y>10</y>
-       <width>181</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <widget class="QLabel" name="label_33">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Encoder_R</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="enr1_label_5">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>0</y>
-        <width>51</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>0.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QFrame" name="frame_17">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>40</y>
-       <width>101</width>
-       <height>81</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <widget class="QLabel" name="label_34">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>31</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>X:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="accelx1_5">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>10</y>
-        <width>61</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>00.00</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_35">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>21</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Y:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="accely1_5">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>30</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>00.00</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_36">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>21</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Z:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="accelz1_5">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>50</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>00.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QLabel" name="bat1_percentage_5">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
+       <y>70</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -1688,11 +1129,11 @@
       <string>3</string>
      </property>
     </widget>
-    <widget class="QProgressBar" name="bat1_5">
+    <widget class="QProgressBar" name="bat1_3">
      <property name="geometry">
       <rect>
        <x>70</x>
-       <y>36</y>
+       <y>20</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -1706,11 +1147,11 @@
       <number>90</number>
      </property>
     </widget>
-    <widget class="QLabel" name="label_37">
+    <widget class="QLabel" name="batper3">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>10</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -1724,12 +1165,48 @@
       <string>battery</string>
      </property>
     </widget>
+    <widget class="QLabel" name="batper1_7">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>10</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>100</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="batper1_6">
+     <property name="geometry">
+      <rect>
+       <x>168</x>
+       <y>10</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>%</string>
+     </property>
+    </widget>
    </widget>
-   <widget class="QFrame" name="frame_18">
+   <widget class="QFrame" name="frame_13">
     <property name="geometry">
      <rect>
       <x>830</x>
-      <y>310</y>
+      <y>10</y>
       <width>811</width>
       <height>141</height>
      </rect>
@@ -1740,19 +1217,19 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="PlotWidget" name="gyroz1_6" native="true">
+    <widget class="PlotWidget" name="gyroz4" native="true">
      <property name="geometry">
       <rect>
-       <x>250</x>
+       <x>190</x>
        <y>10</y>
-       <width>171</width>
+       <width>191</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_38">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>58</width>
         <height>16</height>
@@ -1765,7 +1242,7 @@
      <widget class="QLabel" name="gyroz1_label_6">
       <property name="geometry">
        <rect>
-        <x>110</x>
+        <x>130</x>
         <y>0</y>
         <width>58</width>
         <height>16</height>
@@ -1776,19 +1253,19 @@
       </property>
      </widget>
     </widget>
-    <widget class="PlotWidget" name="enl8" native="true">
+    <widget class="PlotWidget" name="enl4" native="true">
      <property name="geometry">
       <rect>
-       <x>430</x>
+       <x>390</x>
        <y>10</y>
-       <width>181</width>
+       <width>201</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_39">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>71</width>
         <height>16</height>
@@ -1801,7 +1278,7 @@
      <widget class="QLabel" name="enl1_label_6">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>150</x>
         <y>0</y>
         <width>51</width>
         <height>20</height>
@@ -1812,19 +1289,19 @@
       </property>
      </widget>
     </widget>
-    <widget class="PlotWidget" name="enr1_6" native="true">
+    <widget class="PlotWidget" name="enr4" native="true">
      <property name="geometry">
       <rect>
-       <x>620</x>
+       <x>600</x>
        <y>10</y>
-       <width>181</width>
+       <width>201</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_40">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>71</width>
         <height>16</height>
@@ -1837,7 +1314,7 @@
      <widget class="QLabel" name="enr1_label_6">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>150</x>
         <y>0</y>
         <width>51</width>
         <height>20</height>
@@ -1848,11 +1325,11 @@
       </property>
      </widget>
     </widget>
-    <widget class="QFrame" name="frame_20">
+    <widget class="QFrame" name="frame_14">
      <property name="geometry">
       <rect>
-       <x>140</x>
-       <y>40</y>
+       <x>50</x>
+       <y>50</y>
        <width>101</width>
        <height>81</height>
       </rect>
@@ -1976,7 +1453,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>60</y>
+       <y>70</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -1987,14 +1464,14 @@
       </font>
      </property>
      <property name="text">
-      <string>8</string>
+      <string>4</string>
      </property>
     </widget>
     <widget class="QProgressBar" name="bat1_6">
      <property name="geometry">
       <rect>
        <x>70</x>
-       <y>36</y>
+       <y>20</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -2008,11 +1485,11 @@
       <number>90</number>
      </property>
     </widget>
-    <widget class="QLabel" name="label_44">
+    <widget class="QLabel" name="batper6">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>10</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -2026,12 +1503,48 @@
       <string>battery</string>
      </property>
     </widget>
+    <widget class="QLabel" name="batper1_9">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>15</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>100</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="batper1_8">
+     <property name="geometry">
+      <rect>
+       <x>168</x>
+       <y>15</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>%</string>
+     </property>
+    </widget>
    </widget>
-   <widget class="QFrame" name="frame_21">
+   <widget class="QFrame" name="frame_15">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>460</y>
+      <x>830</x>
+      <y>160</y>
       <width>811</width>
       <height>141</height>
      </rect>
@@ -2042,19 +1555,19 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="PlotWidget" name="gyroz4" native="true">
+    <widget class="PlotWidget" name="gyroz5" native="true">
      <property name="geometry">
       <rect>
-       <x>250</x>
+       <x>190</x>
        <y>10</y>
-       <width>171</width>
+       <width>191</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_45">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>58</width>
         <height>16</height>
@@ -2067,7 +1580,7 @@
      <widget class="QLabel" name="gyroz1_label_7">
       <property name="geometry">
        <rect>
-        <x>110</x>
+        <x>130</x>
         <y>0</y>
         <width>58</width>
         <height>16</height>
@@ -2078,19 +1591,19 @@
       </property>
      </widget>
     </widget>
-    <widget class="PlotWidget" name="enl4" native="true">
+    <widget class="PlotWidget" name="enl5" native="true">
      <property name="geometry">
       <rect>
-       <x>430</x>
+       <x>390</x>
        <y>10</y>
-       <width>181</width>
+       <width>201</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_46">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>71</width>
         <height>16</height>
@@ -2103,7 +1616,7 @@
      <widget class="QLabel" name="enl1_label_7">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>150</x>
         <y>0</y>
         <width>51</width>
         <height>20</height>
@@ -2114,19 +1627,19 @@
       </property>
      </widget>
     </widget>
-    <widget class="PlotWidget" name="enr4" native="true">
+    <widget class="PlotWidget" name="enr5" native="true">
      <property name="geometry">
       <rect>
-       <x>620</x>
+       <x>600</x>
        <y>10</y>
-       <width>181</width>
+       <width>201</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_47">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>71</width>
         <height>16</height>
@@ -2139,7 +1652,7 @@
      <widget class="QLabel" name="enr1_label_7">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>150</x>
         <y>0</y>
         <width>51</width>
         <height>20</height>
@@ -2150,11 +1663,11 @@
       </property>
      </widget>
     </widget>
-    <widget class="QFrame" name="frame_23">
+    <widget class="QFrame" name="frame_16">
      <property name="geometry">
       <rect>
-       <x>140</x>
-       <y>40</y>
+       <x>50</x>
+       <y>50</y>
        <width>101</width>
        <height>81</height>
       </rect>
@@ -2278,7 +1791,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>60</y>
+       <y>70</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -2289,14 +1802,14 @@
       </font>
      </property>
      <property name="text">
-      <string>4</string>
+      <string>5</string>
      </property>
     </widget>
     <widget class="QProgressBar" name="bat1_7">
      <property name="geometry">
       <rect>
        <x>70</x>
-       <y>36</y>
+       <y>20</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -2310,11 +1823,11 @@
       <number>90</number>
      </property>
     </widget>
-    <widget class="QLabel" name="label_51">
+    <widget class="QLabel" name="batper7">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>10</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -2328,12 +1841,48 @@
       <string>battery</string>
      </property>
     </widget>
+    <widget class="QLabel" name="batper1_11">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>15</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>100</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="batper1_10">
+     <property name="geometry">
+      <rect>
+       <x>168</x>
+       <y>15</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>%</string>
+     </property>
+    </widget>
    </widget>
-   <widget class="QFrame" name="frame_24">
+   <widget class="QFrame" name="frame_17">
     <property name="geometry">
      <rect>
       <x>830</x>
-      <y>460</y>
+      <y>310</y>
       <width>811</width>
       <height>141</height>
      </rect>
@@ -2344,19 +1893,19 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="PlotWidget" name="gyroz1_8" native="true">
+    <widget class="PlotWidget" name="gyroz6" native="true">
      <property name="geometry">
       <rect>
-       <x>250</x>
+       <x>190</x>
        <y>10</y>
-       <width>171</width>
+       <width>191</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_52">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>58</width>
         <height>16</height>
@@ -2369,7 +1918,7 @@
      <widget class="QLabel" name="gyroz1_label_8">
       <property name="geometry">
        <rect>
-        <x>110</x>
+        <x>130</x>
         <y>0</y>
         <width>58</width>
         <height>16</height>
@@ -2380,19 +1929,19 @@
       </property>
      </widget>
     </widget>
-    <widget class="PlotWidget" name="enl1_8" native="true">
+    <widget class="PlotWidget" name="enl6" native="true">
      <property name="geometry">
       <rect>
-       <x>430</x>
+       <x>390</x>
        <y>10</y>
-       <width>181</width>
+       <width>201</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_53">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>71</width>
         <height>16</height>
@@ -2405,7 +1954,7 @@
      <widget class="QLabel" name="enl1_label_8">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>150</x>
         <y>0</y>
         <width>51</width>
         <height>20</height>
@@ -2416,19 +1965,19 @@
       </property>
      </widget>
     </widget>
-    <widget class="PlotWidget" name="enr1_8" native="true">
+    <widget class="PlotWidget" name="enr6" native="true">
      <property name="geometry">
       <rect>
-       <x>620</x>
+       <x>600</x>
        <y>10</y>
-       <width>181</width>
+       <width>201</width>
        <height>121</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_54">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>0</y>
         <width>71</width>
         <height>16</height>
@@ -2441,7 +1990,7 @@
      <widget class="QLabel" name="enr1_label_8">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>150</x>
         <y>0</y>
         <width>51</width>
         <height>20</height>
@@ -2452,11 +2001,11 @@
       </property>
      </widget>
     </widget>
-    <widget class="QFrame" name="frame_26">
+    <widget class="QFrame" name="frame_18">
      <property name="geometry">
       <rect>
-       <x>140</x>
-       <y>40</y>
+       <x>50</x>
+       <y>50</y>
        <width>101</width>
        <height>81</height>
       </rect>
@@ -2580,7 +2129,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>60</y>
+       <y>70</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -2591,14 +2140,14 @@
       </font>
      </property>
      <property name="text">
-      <string>9</string>
+      <string>6</string>
      </property>
     </widget>
     <widget class="QProgressBar" name="bat1_8">
      <property name="geometry">
       <rect>
        <x>70</x>
-       <y>36</y>
+       <y>20</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -2612,11 +2161,11 @@
       <number>90</number>
      </property>
     </widget>
-    <widget class="QLabel" name="label_58">
+    <widget class="QLabel" name="batper8">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>10</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -2628,612 +2177,62 @@
      </property>
      <property name="text">
       <string>battery</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="batper1_13">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>15</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>100</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="batper1_12">
+     <property name="geometry">
+      <rect>
+       <x>168</x>
+       <y>15</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>%</string>
      </property>
     </widget>
    </widget>
-   <widget class="QFrame" name="frame_27">
+   <widget class="QPushButton" name="log_clear_btn">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>610</y>
-      <width>811</width>
-      <height>141</height>
+      <x>870</x>
+      <y>590</y>
+      <width>391</width>
+      <height>31</height>
      </rect>
     </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
     </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
+    <property name="text">
+     <string>Clear Log</string>
     </property>
-    <widget class="PlotWidget" name="gyroz5" native="true">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>10</y>
-       <width>171</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <widget class="QLabel" name="label_59">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>gyroz</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="gyroz1_label_9">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>0</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>0.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="PlotWidget" name="enl5" native="true">
-     <property name="geometry">
-      <rect>
-       <x>430</x>
-       <y>10</y>
-       <width>181</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <widget class="QLabel" name="label_60">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Encoder_L</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="enl1_label_9">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>0</y>
-        <width>51</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>0.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="PlotWidget" name="enr5" native="true">
-     <property name="geometry">
-      <rect>
-       <x>620</x>
-       <y>10</y>
-       <width>181</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <widget class="QLabel" name="label_61">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Encoder_R</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="enr1_label_9">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>0</y>
-        <width>51</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>0.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QFrame" name="frame_29">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>40</y>
-       <width>101</width>
-       <height>81</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <widget class="QLabel" name="label_62">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>31</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>X:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="accelx1_9">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>10</y>
-        <width>61</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>00.00</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_63">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>21</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Y:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="accely1_9">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>30</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>00.00</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_64">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>21</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Z:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="accelz1_9">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>50</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>00.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QLabel" name="bat1_percentage_9">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>41</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>18</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>5</string>
-     </property>
-    </widget>
-    <widget class="QProgressBar" name="bat1_9">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>36</y>
-       <width>61</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>20</pointsize>
-      </font>
-     </property>
-     <property name="value">
-      <number>90</number>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_65">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>18</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>battery</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QFrame" name="frame_30">
-    <property name="geometry">
-     <rect>
-      <x>830</x>
-      <y>610</y>
-      <width>811</width>
-      <height>141</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="PlotWidget" name="gyroz1_10" native="true">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>10</y>
-       <width>171</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <widget class="QLabel" name="label_66">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>gyroz</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="gyroz1_label_10">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>0</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>0.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="PlotWidget" name="enl1_10" native="true">
-     <property name="geometry">
-      <rect>
-       <x>430</x>
-       <y>10</y>
-       <width>181</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <widget class="QLabel" name="label_67">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Encoder_L</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="enl1_label_10">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>0</y>
-        <width>51</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>0.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="PlotWidget" name="enr1_10" native="true">
-     <property name="geometry">
-      <rect>
-       <x>620</x>
-       <y>10</y>
-       <width>181</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <widget class="QLabel" name="label_68">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Encoder_R</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="enr1_label_10">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>0</y>
-        <width>51</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>0.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QFrame" name="frame_32">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>40</y>
-       <width>101</width>
-       <height>81</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <widget class="QLabel" name="label_69">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>31</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>X:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="accelx1_10">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>10</y>
-        <width>61</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>00.00</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_70">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>21</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Y:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="accely1_10">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>30</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>00.00</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_71">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>21</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Z:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="accelz1_10">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>50</y>
-        <width>58</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>00.00</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QLabel" name="bat1_percentage_10">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>41</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>18</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>10</string>
-     </property>
-    </widget>
-    <widget class="QProgressBar" name="bat1_10">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>36</y>
-       <width>61</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>20</pointsize>
-      </font>
-     </property>
-     <property name="value">
-      <number>90</number>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_72">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>18</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>battery</string>
-     </property>
-    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

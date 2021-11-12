@@ -205,14 +205,14 @@ void bleuart_rx_callback(BLEClientUart& uart_svc)
 
   int id = findConnHandle(conn_handle);
   prph_info_t* peer = &prphs[id];
-  
+
   // Print sender's name
   Serial.printf("[From %s]: ", peer->name);
 
   // Read then forward to all peripherals
   while ( uart_svc.available() ) {
     // default MTU with an extra byte for string terminator
-    char buf[20+1] = { 0 };
+    char buf[30+1] = { 0 };
 
     if ( uart_svc.read(buf,sizeof(buf)-1) ) {
       Serial.println(buf);
@@ -242,7 +242,7 @@ void loop() {
   // First check if we are connected to any peripherals
   if ( Bluefruit.Central.connected() ) {
     // default MTU with an extra byte for string terminator
-    char buf[20+1] = { 0 };
+    char buf[30+1] = { 0 };
 
     // Read from HW Serial (normally USB Serial) and send to all peripherals
     if ( Serial.readBytes(buf, sizeof(buf)-1) ) {
