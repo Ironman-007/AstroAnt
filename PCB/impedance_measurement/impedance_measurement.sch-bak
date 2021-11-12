@@ -702,8 +702,6 @@ Text Label 6550 5400 0    50   ~ 0
 SCL
 Text Label 6550 5300 0    50   ~ 0
 SDA
-Wire Wire Line
-	9150 5450 9200 5450
 NoConn ~ 7650 5000
 $Comp
 L Device:R_Small R9
@@ -836,15 +834,5 @@ F 3 "" H 7100 2750 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	7100 2750 7100 2700
-$Comp
-L power:GND #PWR0120
-U 1 1 619A305A
-P 9200 5450
-F 0 "#PWR0120" H 9200 5200 50  0001 C CNN
-F 1 "GND" V 9200 5250 50  0000 C CNN
-F 2 "" H 9200 5450 50  0001 C CNN
-F 3 "" H 9200 5450 50  0001 C CNN
-	1    9200 5450
-	0    -1   -1   0   
-$EndComp
+NoConn ~ 9150 4850
 $EndSCHEMATC

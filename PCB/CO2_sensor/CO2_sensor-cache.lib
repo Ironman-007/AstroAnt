@@ -1,0 +1,173 @@
+EESchema-LIBRARY Version 2.4
+#encoding utf-8
+#
+# Device_C_Small
+#
+DEF Device_C_Small C 0 10 N N 1 F N
+F0 "C" 10 70 50 H V L CNN
+F1 "Device_C_Small" 10 -80 50 H V L CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ C_*
+$ENDFPLIST
+DRAW
+P 2 0 1 13 -60 -20 60 -20 N
+P 2 0 1 12 -60 20 60 20 N
+X ~ 1 0 100 80 D 50 50 1 1 P
+X ~ 2 0 -100 80 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# Device_LED
+#
+DEF Device_LED D 0 40 N N 1 F N
+F0 "D" 0 100 50 H V C CNN
+F1 "Device_LED" 0 -100 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ LED*
+ LED_SMD:*
+ LED_THT:*
+$ENDFPLIST
+DRAW
+P 2 0 1 10 -50 -50 -50 50 N
+P 2 0 1 0 -50 0 50 0 N
+P 4 0 1 10 50 -50 50 50 -50 0 50 -50 N
+P 5 0 1 0 -120 -30 -180 -90 -150 -90 -180 -90 -180 -60 N
+P 5 0 1 0 -70 -30 -130 -90 -100 -90 -130 -90 -130 -60 N
+X K 1 -150 0 100 R 50 50 1 1 P
+X A 2 150 0 100 L 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# Device_R_Small
+#
+DEF Device_R_Small R 0 10 N N 1 F N
+F0 "R" 30 20 50 H V L CNN
+F1 "Device_R_Small" 30 -40 50 H V L CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ R_*
+$ENDFPLIST
+DRAW
+S -30 70 30 -70 0 1 8 N
+X ~ 1 0 100 30 D 50 50 1 1 P
+X ~ 2 0 -100 30 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# SamacSys_Parts_SCD41-D-R2
+#
+DEF SamacSys_Parts_SCD41-D-R2 IC 0 30 Y Y 1 F N
+F0 "IC" 1150 700 50 H V L CNN
+F1 "SamacSys_Parts_SCD41-D-R2" 1150 600 50 H V L CNN
+F2 "SCD41DR2" 1150 500 50 H I L CNN
+F3 "https://cz.mouser.com/datasheet/2/682/Sensirion_CO2_Sensors_SCD4x_Datasheet-2010009.pdf" 1150 400 50 H I L CNN
+F4 "Air Quality Sensor CO2 Sensor 2.5V/3.3V/5V 20-Pin SMD EP" 1150 300 50 H I L CNN "Description"
+F5 "6.8" 1150 200 50 H I L CNN "Height"
+F6 "Sensirion" 1150 100 50 H I L CNN "Manufacturer_Name"
+F7 "SCD41-D-R2" 1150 0 50 H I L CNN "Manufacturer_Part_Number"
+F8 "403-SCD41-D-R2" 1150 -100 50 H I L CNN "Mouser Part Number"
+F9 "https://www.mouser.co.uk/ProductDetail/Sensirion/SCD41-D-R2?qs=HBWAp0VN4Ri4o7ei4T3s0g%3D%3D" 1150 -200 50 H I L CNN "Mouser Price/Stock"
+F10 "SCD41-D-R2" 1150 -300 50 H I L CNN "Arrow Part Number"
+F11 "https://www.arrow.com/en/products/scd41-d-r2/sensirion-ag?region=nac" 1150 -400 50 H I L CNN "Arrow Price/Stock"
+DRAW
+P 5 0 1 6 200 500 1100 500 1100 -900 200 -900 200 500 f
+X DNC_1 1 0 0 200 R 50 50 0 0 P
+X SDA 10 800 -1100 200 U 50 50 0 0 P
+X DNC_7 11 1300 -400 200 L 50 50 0 0 P
+X DNC_8 12 1300 -300 200 L 50 50 0 0 P
+X DNC_9 13 1300 -200 200 L 50 50 0 0 P
+X DNC_10 14 1300 -100 200 L 50 50 0 0 P
+X DNC_11 15 1300 0 200 L 50 50 0 0 P
+X DNC_12 16 900 700 200 D 50 50 0 0 P
+X DNC_13 17 800 700 200 D 50 50 0 0 P
+X DNC_14 18 700 700 200 D 50 50 0 0 P
+X VDDH 19 600 700 200 D 50 50 0 0 P
+X DNC_2 2 0 -100 200 R 50 50 0 0 P
+X GND_2 20 500 700 200 D 50 50 0 0 P
+X GND_3 21 400 700 200 D 50 50 0 0 P
+X DNC_3 3 0 -200 200 R 50 50 0 0 P
+X DNC_4 4 0 -300 200 R 50 50 0 0 P
+X DNC_5 5 0 -400 200 R 50 50 0 0 P
+X GND_1 6 400 -1100 200 U 50 50 0 0 P
+X VDD 7 500 -1100 200 U 50 50 0 0 P
+X DNC_6 8 600 -1100 200 U 50 50 0 0 P
+X SCL 9 700 -1100 200 U 50 50 0 0 P
+ENDDRAW
+ENDDEF
+#
+# dk_Rectangular-Connectors-Headers-Male-Pins_20021121-00010C4LF
+#
+DEF dk_Rectangular-Connectors-Headers-Male-Pins_20021121-00010C4LF J 0 40 Y Y 1 F N
+F0 "J" 0 300 50 H V C CNN
+F1 "dk_Rectangular-Connectors-Headers-Male-Pins_20021121-00010C4LF" 0 -300 50 H V C CNN
+F2 "digikey-footprints:PinHeader_2x5_P1.27mm" 200 200 60 H I L CNN
+F3 "https://cdn.amphenol-icc.com/media/wysiwyg/files/drawing/20021121.pdf" 200 300 60 H I L CNN
+F4 "609-3695-1-ND" 200 400 60 H I L CNN "Digi-Key_PN"
+F5 "20021121-00010C4LF" 200 500 60 H I L CNN "MPN"
+F6 "Connectors, Interconnects" 200 600 60 H I L CNN "Category"
+F7 "Rectangular Connectors - Headers, Male Pins" 200 700 60 H I L CNN "Family"
+F8 "https://cdn.amphenol-icc.com/media/wysiwyg/files/drawing/20021121.pdf" 200 800 60 H I L CNN "DK_Datasheet_Link"
+F9 "/product-detail/en/amphenol-icc-fci/20021121-00010C4LF/609-3695-1-ND/2209147" 200 900 60 H I L CNN "DK_Detail_Page"
+F10 "CONN HEADER SMD 10POS 1.27MM" 200 1000 60 H I L CNN "Description"
+F11 "Amphenol ICC (FCI)" 200 1100 60 H I L CNN "Manufacturer"
+F12 "Active" 200 1200 60 H I L CNN "Status"
+DRAW
+S -100 250 100 -250 1 1 0 f
+S -60 -190 -40 -210 1 1 0 F
+S -60 -90 -40 -110 1 1 0 F
+S -60 10 -40 -10 1 1 0 F
+S -60 110 -40 90 1 1 0 F
+S -60 210 -40 190 1 1 0 F
+S 40 -190 60 -210 1 1 0 F
+S 40 -90 60 -110 1 1 0 F
+S 40 10 60 -10 1 1 0 F
+S 40 110 60 90 1 1 0 F
+S 40 210 60 190 1 1 0 F
+X ~ 1 -200 200 100 R 50 50 1 1 P
+X ~ 10 200 -200 100 L 50 50 1 1 P
+X ~ 2 200 200 100 L 50 50 1 1 P
+X ~ 3 -200 100 100 R 50 50 1 1 P
+X ~ 4 200 100 100 L 50 50 1 1 P
+X ~ 5 -200 0 100 R 50 50 1 1 P
+X ~ 6 200 0 100 L 50 50 1 1 P
+X ~ 7 -200 -100 100 R 50 50 1 1 P
+X ~ 8 200 -100 100 L 50 50 1 1 P
+X ~ 9 -200 -200 100 R 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# power_+3.3V
+#
+DEF power_+3.3V #PWR 0 0 Y Y 1 F P
+F0 "#PWR" 0 -150 50 H I C CNN
+F1 "power_+3.3V" 0 140 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+ALIAS +3.3V
+DRAW
+P 2 0 1 0 -30 50 0 100 N
+P 2 0 1 0 0 0 0 100 N
+P 2 0 1 0 0 100 30 50 N
+X +3V3 1 0 0 0 U 50 50 1 1 W N
+ENDDRAW
+ENDDEF
+#
+# power_GND
+#
+DEF power_GND #PWR 0 0 Y Y 1 F P
+F0 "#PWR" 0 -250 50 H I C CNN
+F1 "power_GND" 0 -150 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+P 6 0 1 0 0 0 0 -50 50 -50 0 -100 -50 -50 0 -50 N
+X GND 1 0 0 0 D 50 50 1 1 W N
+ENDDRAW
+ENDDEF
+#
+#End Library
