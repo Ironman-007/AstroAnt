@@ -1,52 +1,21 @@
- /*********************************************************************
- This is an example for our nRF52 based Bluefruit LE modules
+/* 08/16/2017 Copyright Tlera Corporation
+ *  
+ *  Created by Kris Winer
+ *
+ This sketch is to operate Excelitas' CaliPile TPiS1S1385/5029 IR Thermopile
+ https://media.digikey.com/pdf/Data%20Sheets/Excelitas%20PDFs/TPiS_1S_1385.pdf 
 
- Pick one up today in the adafruit shop!
+ The sketch uses default SDA/SCL pins on 20/21 of the Butterfly development board.
+ The CaliPile breakout board has 4K7 pullus on SDA and SCL.
 
- Adafruit invests time and resources providing this open source code,
- please support Adafruit and open-source hardware by purchasing
- products from Adafruit!
+ Library may be used freely and without limit with attribution.
+ 
+  */
 
- MIT license, check LICENSE for more information
- All text above, and the splash screen below must be included in
- any redistribution
-*********************************************************************/
 #include <Wire.h>
 #include <bluefruit.h>
 #include <Adafruit_LittleFS.h>
 #include <InternalFileSystem.h>
-
-// BLE Service
-BLEDfu  bledfu;  // OTA DFU service
-BLEDis  bledis;  // device information
-BLEUart bleuart; // uart over ble
-BLEBas  blebas;  // battery
-
-char* devece_name = "ThermoAnt";
-
-const int msg_bye_cnt = 20;
-
-// Data for test
-uint8_t reply_buf[20] = {0xEB,0x9F,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-// ACK frame
-uint8_t start_ack_buf[20] = {0xEB,0x90,0x00,0xAA,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-uint8_t cali_ack_buf[20]  = {0xEB,0x90,0x00,0x11,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-uint8_t stop_ack_buf[20]  = {0xEB,0x90,0x00,0xEE,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-uint8_t err_ack_buf[20]   = {0xEB,0x90,0x00,0xFF,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-
-uint8_t recv_msg[msg_bye_cnt+1] = {0};
-
-int start_cmd_flag = 0;
-int stop_cmd_flag = 0;
-int cali_cmd_flag = 0;
-int error_cmd_flag = 0;
-
-uint8_t recv_cmd = 0;
-
-const int batt_pin = A0;
-int batt_v = 0;
-int battValue = 0;
-uint8_t batt_level = 0x00;
 
 //https://www.pacer-usa.com/Assets/User/2077-CaliPile_TPiS_1S_1385_5029_27.04.2017.pdf
 // CaliPile Registers
@@ -112,6 +81,14 @@ uint8_t batt_level = 0x00;
 #define cycTime_120ms 0x02
 #define cycTime_140ms 0x03
 
+// Define pins
+/*
+#define intPin 9
+#define myLed1 13  // red led
+#define myLed2 26  // green led
+#define myLed3 38  // blue led
+*/
+
 bool serialDebug = true, presSign = false, motSign = false;
 
 uint8_t lookUp, rawData[3] = {0, 0, 0}, intStatus, chipStatus, temp;
@@ -124,34 +101,19 @@ uint8_t  TOBJ1, TPPRESENCE, TPMOTION, TPAMBSHK;
 // output data for comparisons
 float Tamb, Tamblp3, Tobj, Tobjlp1, Tobjlp2, Tobjlp2frzn, Tpres, Tmot, Tambshk, k;
 
-// Encoder counter
-uint16_t encoder1Counter = 0;
-uint16_t encoder2Counter = 0;
+// bool newInt = false;
 
-void setup()
-{
-  // Serial.begin(115200);
+void setup() {
 
-#if CFG_DEBUG
+  Serial.begin(115200);
+  // delay(100);
+
   // Blocking wait for connection when debug mode is enabled via IDE
   while ( !Serial ) yield();
-#endif
 
-  // Serial.println("BLE_GATT_ATT_MTU_DEFAULT = ");
-  // Serial.println(BLE_GATT_ATT_MTU_DEFAULT);
+  // pinMode(intPin, INPUT);
 
-  pinMode(M1_IN1, OUTPUT);
-  pinMode(M1_IN2, OUTPUT);
-  pinMode(M2_IN1, OUTPUT);
-  pinMode(M2_IN2, OUTPUT);
-
-  pinMode(Encoder_A1, INPUT);
-  pinMode(Encoder_A2, INPUT);
-
-  attachInterrupt(Encoder_A1, ENC1_INT_Routine, RISING);
-  attachInterrupt(Encoder_A2, ENC2_INT_Routine, RISING);
-
-  /* Setup of CaliPile*/
+//  Wire.begin(TWI_PINS_20_21); // set master mode
   Wire.begin();
   Wire.setClock(400000); // I2C frequency at 400 kHz  
   delay(500);
@@ -173,6 +135,10 @@ void setup()
   // Serial.println("CaliPile EEPROM protocol number should be 3"); 
 
   uint8_t d = readByte(CALIPILE_ADDRESS, CALIPILE_SLAVE_ADDRESS);
+  // Serial.print("CaliPile EEPROM slave address is "); Serial.println(d); 
+  // Serial.println("CaliPile EEPROM slave address should be 140"); 
+  // Serial.println(" ");
+
   // Read the EEPROM calibration constants
 
   lookUp = readByte(CALIPILE_ADDRESS, CALIPILE_EEPROM_LOOKUPNUM);
@@ -245,217 +211,142 @@ void setup()
   // read interrupt status register(s) to unlatch interrupt before entering main loop
   intStatus  = readByte(CALIPILE_ADDRESS, CALIPILE_INTERRUPT_STATUS);
   // Serial.print("Int status = "); Serial.println(intStatus, HEX);
-
-  /* end of setup of CaliPile*/
-
-  // Setup the BLE LED to be enabled on CONNECT
-  // Note: This is actually the default behavior, but provided
-  // here in case you want to control this LED manually via PIN 19
-  Bluefruit.autoConnLed(true);
-
-  // Config the peripheral connection with maximum bandwidth 
-  // more SRAM required by SoftDevice
-  // Note: All config***() function must be called before begin()
-  Bluefruit.configPrphBandwidth(BANDWIDTH_MAX);
-
-  Bluefruit.begin();
-  Bluefruit.setTxPower(4);    // Check bluefruit.h for supported values
-  //Bluefruit.setName(getMcuUniqueID()); // useful testing with multiple central connections
-  Bluefruit.setName(devece_name);
-  Bluefruit.Periph.setConnectCallback(connect_callback);
-  Bluefruit.Periph.setDisconnectCallback(disconnect_callback);
-
-  // To be consistent OTA DFU should be added first if it exists
-  bledfu.begin();
-
-  // Configure and Start Device Information Service
-  bledis.setManufacturer("Adafruit Industries");
-  bledis.setModel("Bluefruit Feather52");
-  bledis.begin();
-
-  // Configure and Start BLE Uart Service
-  bleuart.begin();
-
-  // Start BLE Battery Service
-  blebas.begin();
-  blebas.write(10);
-
-  // Set up and start advertising
-  startAdv();
-
-  // Serial.println("Please use Adafruit's Bluefruit LE app to connect in UART mode");
-  // Serial.println("Once connected, enter character(s) that you wish to send");
-}
-
-void startAdv(void)
-{
-  // Advertising packet
-  Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);
-  Bluefruit.Advertising.addTxPower();
-
-  // Include bleuart 128-bit uuid
-  Bluefruit.Advertising.addService(bleuart);
-
-  // Secondary Scan Response packet (optional)
-  // Since there is no room for 'Name' in Advertising packet
-  Bluefruit.ScanResponse.addName();
   
-  /* Start Advertising
-   * - Enable auto advertising if disconnected
-   * - Interval:  fast mode = 20 ms, slow mode = 152.5 ms
-   * - Timeout for fast mode is 30 seconds
-   * - Start(timeout) with timeout = 0 will advertise forever (until connected)
-   * 
-   * For recommended advertising interval
-   * https://developer.apple.com/library/content/qa/qa1931/_index.html   
-   */
-  Bluefruit.Advertising.restartOnDisconnect(true);
-  Bluefruit.Advertising.setInterval(32, 244);    // in unit of 0.625 ms
-  Bluefruit.Advertising.setFastTimeout(30);      // number of seconds in fast mode
-  Bluefruit.Advertising.start(0);                // 0 = Don't stop advertising after n seconds  
+  /* end of setup */
 }
 
-void loop()
-{
-  // Forward from BLEUART to HW Serial
-  if ( bleuart.available() )
-  {
-    // char ch[msg_bye_cnt+1] = {0};
-    int ch = 0;
-    ch = bleuart.read(recv_msg, msg_bye_cnt);
 
-    recv_cmd = recv_msg[3];
-    // Serial.print(bleuart.available());
-    // Serial.print(" | ");
-    // Serial.println(recv_cmd, HEX);
+void loop() {
+  /*
+  if(newInt == true) {  // handle interrupt on receipt
+    newInt = false;
 
-    bleuart.flush();
+    // read interrupt status register(s) to clear interrupt
+    intStatus  = readByte(CALIPILE_ADDRESS, CALIPILE_INTERRUPT_STATUS);
+ 
+    if(intStatus & 0x08) {
+      Serial.println("Presence detected!");
+      digitalWrite(myLed2, LOW); delay(10); digitalWrite(myLed2, HIGH);  // flash green led
+      if(intStatus & 0x80) presSign = true;
+      else presSign = false;
+    }
 
-    if (recv_msg[2] == 0x00) // Cmd is for this ant.
-    {
-      if (recv_msg[3] == 0xAA) { // Start cmd
-        start_cmd_flag = 1;
-        stop_cmd_flag  = 0;
-        cali_cmd_flag  = 0;
-        // send back command ack
-        bleuart.write(start_ack_buf, msg_bye_cnt);
-        delay(5);
+    if(intStatus & 0x04) {
+      Serial.println("Motion detected!");
+      digitalWrite(myLed3, LOW); delay(10); digitalWrite(myLed3, HIGH); // flash blue led
+      if(intStatus & 0x40) motSign = true;
+      else motSign = false;
       }
-      else if (recv_msg[3] == 0xEE) { // Stop cmd
-        start_cmd_flag = 0;
-        stop_cmd_flag  = 1;
-        cali_cmd_flag  = 0;
-        // send back command ack
-        bleuart.write(stop_ack_buf, msg_bye_cnt);
-        delay(5);
-      }
-      else if (recv_msg[3] == 0x11) { // Cali cmd
-        start_cmd_flag = 0;
-        stop_cmd_flag  = 0;
-        cali_cmd_flag  = 1;
-        // send back command ack
-        bleuart.write(cali_ack_buf, msg_bye_cnt);
-        delay(5);
-      }
-      else { // Wrong cmd
-        start_cmd_flag = 0;
-        stop_cmd_flag  = 0;
-        cali_cmd_flag  = 0;
-        // error_cmd_flag = 1;
-        // send back command ack
-        bleuart.write(err_ack_buf, msg_bye_cnt);
-        delay(5);
-      }
+
+    if(intStatus & 0x10) {
+      Serial.println("Temp threshold exceeded!");
     }
   }
+    */
 
-  if (start_cmd_flag == 1)
+  // read the ambient temperature
+  readBytes(CALIPILE_ADDRESS, CALIPILE_TPAMBIENT, 2, &rawData[0]);
+  TPAMB = ( (uint16_t)(rawData[0] & 0x7F) << 8) | rawData[1] ; 
+
+  Tamb = 298.15f + ((float)TPAMB - (float)PTAT25) * (1.0f/(float) M);
+
+  // read the object temperature
+  readBytes(CALIPILE_ADDRESS, CALIPILE_TPOBJECT, 3, &rawData[0]);
+  TPOBJ = ( (uint32_t) ( (uint32_t)rawData[0] << 24) | ( (uint32_t)rawData[1] << 16) | ( (uint32_t)rawData[2] & 0x80) << 8) >> 15; 
+
+  float temp0 = powf(Tamb, 3.8f);
+  float temp1 = ( ((float) TPOBJ) - ((float) U0)  ) / k ;
+  Tobj = powf( (temp0 + temp1), 0.2631578947f );
+
+  // Read the time-integrated registers
+
+  /*
+  // 20-bit wide, divide by 8 to compare with TPOBJ
+  readBytes(CALIPILE_ADDRESS, CALIPILE_TPOBJLP1, 3, &rawData[0]);
+  TPOBJLP1 = ( ((uint32_t) rawData[0] << 16) | ((uint32_t) rawData[1] << 8) | ( (uint32_t)rawData[2] & 0xF0) ) >> 4;
+  TPOBJLP1 /= 8;
+
+  // 20-bit wide, divide by 8 to compare with TPOBJ
+  readBytes(CALIPILE_ADDRESS, CALIPILE_TPOBJLP2, 3, &rawData[0]);
+  TPOBJLP2 = ((uint32_t) (rawData[0] & 0x0F) << 16) | ((uint32_t) rawData[1] << 8) | rawData[2] ;
+  TPOBJLP2 /= 8;
+
+  // 16-bit wide, divide by 2 to compare with TPAMB
+  readBytes(CALIPILE_ADDRESS, CALIPILE_TPAMBLP3, 2, &rawData[0]);
+  TPAMBLP3 = ((uint16_t) rawData[0] << 8) | rawData[1];
+  TPAMBLP3 /= 2;
+
+  // 24-bit wide, divide by 128 to compare with TPOBJ
+  readBytes(CALIPILE_ADDRESS, CALIPILE_TPOBJLP2_FRZN, 3, &rawData[0]);
+  TPOBJLP2FRZN = ((uint32_t) rawData[0] << 16) | ((uint32_t) rawData[1] << 8) | rawData[2];
+  TPOBJLP2FRZN /= 128;
+
+  TPPRESENCE = readByte(CALIPILE_ADDRESS, CALIPILE_TPPRESENCE);
+  TPMOTION   = readByte(CALIPILE_ADDRESS, CALIPILE_TPMOTION);
+  TPAMBSHK   = readByte(CALIPILE_ADDRESS, CALIPILE_TPAMB_SHOCK);
+  */
+
+  if(serialDebug)
   {
-    // =================== Run motor ===================
-    analogWrite(M1_IN1, 255);
-    analogWrite(M1_IN2, 0);
+    /*
+    Serial.print("Tambient = "); Serial.print(Tamb, 2); Serial.println(" K");
+    Serial.print("TPAMP = "); Serial.println(TPAMB);  
+    Serial.print("TAMBLP3 = "); Serial.println(TPAMBLP3);  
+    Serial.println(" ");
+    */
 
-    analogWrite(M2_IN1, 0);
-    analogWrite(M2_IN2, 255);
+    // Serial.print("Tobj = ");
+    Serial.println(Tobj, 2);
+    // Serial.println(" K");
+    /*
+    Serial.print("TPOBJ = "); Serial.println(TPOBJ);  
+    Serial.print("TPOBJLP1 = "); Serial.println(TPOBJLP1);  
+    Serial.print("TPOBJLP2 = "); Serial.println(TPOBJLP2);  
+    Serial.print("TPOBJLP2FRZN = "); Serial.println(TPOBJLP2FRZN);
+    Serial.println(" ");
+    */
 
-    // =================== Battery level ===================
-    battValue = analogRead(batt_pin);
-    // Serial.print(battValue);
-    // Serial.print(" | ");
-    batt_v = float(battValue)/1024*3.3*2*1.09*1000;
-    // Serial.println(batt_v);
+    /*
+    if(presSign) {
+      Serial.print("TPPRESENCE = ");   Serial.println(-1 * TPPRESENCE);
+    }
 
-    if(batt_v<3300) batt_level = 0;
-    if(batt_v<3600) batt_level = (batt_v-3300)/30;
     else {
-      batt_v = batt_v-3600;
-      batt_level = (10 + (batt_v * 0.15F ))>100? 100:(10 + (batt_v * 0.15F ));
+       Serial.print("TPPRESENCE = ");   Serial.println(TPPRESENCE);
     }
-    reply_buf[7] = batt_level;
 
-    // =================== Read temperature ===================
-    read_temp();
-    byte * calipile_temp_obj = (byte *) &Tobj;
-    memcpy(&reply_buf[8], calipile_temp_obj, 4);
-
-    // =================== Encoder ===================
-    reply_buf[5] = encoder1Counter/256;
-    reply_buf[6] = encoder2Counter/256;
-
-    // =================== Send data back ===================
-    bleuart.write(reply_buf, msg_bye_cnt);
-
-    delay(50);
+    if(motSign) {
+      Serial.print("TPMOTION = ");   Serial.println(-1 * TPMOTION);
+    }
+    else {
+       Serial.print("TPMOTION = ");   Serial.println(TPMOTION);
+    }
+ 
+    Serial.print("TAMBSHK = ");    Serial.println(TPAMBSHK);  
+    Serial.println(" ");
+    */
   }
-  else if (stop_cmd_flag == 1)
-  {
-    analogWrite(M1_IN1, 0);
-    analogWrite(M1_IN2, 0);
 
-    analogWrite(M2_IN1, 0);
-    analogWrite(M2_IN2, 0);
+// Output for serial plotter
+//  Serial.print((Tamb - 273.15));  Serial.print("  "); Serial.print((Tobj - 273.15)); Serial.println("  ");
 
-    encoder1Counter = 0;
-    encoder2Counter = 0;
-  }
+  // Serial.print((TPAMB)); Serial.print("  "); Serial.print((TPAMBLP3)); Serial.println("  ");
+
+//   Serial.print((TPOBJ)); Serial.print("  "); Serial.print((TPOBJLP1)); Serial.print("  ");
+//   Serial.print((TPOBJLP2)); Serial.print("  "); Serial.print((TPOBJLP2FRZN)); Serial.println("  ");
+
+  // digitalWrite(myLed1, LOW); delay(10); digitalWrite(myLed1, HIGH);  delay(500);
+
+  /* end of main loop */
+  delay(20);
 }
 
-//------------HANDLE ENCODER INTERRUPTS---------------
-void ENC1_INT_Routine() { 
-  encoder1Counter++; 
+/* Useful functions */
+/*
+void myinthandler() {
+  newInt = true;
 }
-
-void ENC2_INT_Routine() { 
-  encoder2Counter++;
-}
-
-// callback invoked when central connects
-void connect_callback(uint16_t conn_handle)
-{
-  // Get the reference to current connection
-  BLEConnection* connection = Bluefruit.Connection(conn_handle);
-
-  char central_name[32] = { 0 };
-  connection->getPeerName(central_name, sizeof(central_name));
-
-  // Serial.print("Connected to ");
-  // Serial.println(central_name);
-}
-
-/**
- * Callback invoked when a connection is dropped
- * @param conn_handle connection where this event happens
- * @param reason is a BLE_HCI_STATUS_CODE which can be found in ble_hci.h
- */
-void disconnect_callback(uint16_t conn_handle, uint8_t reason)
-{
-  (void) conn_handle;
-  (void) reason;
-
-  // Serial.println();
-  // Serial.print("Disconnected, reason = 0x");
-  // Serial.println(reason, HEX);
-}
+*/
 
 // I2C scan function
 void I2Cscan() {
@@ -474,23 +365,19 @@ void I2Cscan() {
     error = Wire.endTransmission();
 
     if (error == 0) {
-      /*
-      Serial.print("I2C device found at address 0x");
-      if (address<16) 
-        Serial.print("0");
-      Serial.print(address,HEX);
-      Serial.println("  !");
-      */
+      // Serial.print("I2C device found at address 0x");
+      // if (address<16) 
+      //   Serial.print("0");
+      // Serial.print(address,HEX);
+      // Serial.println("  !");
 
       nDevices++;
     }
     else if (error==4) {
-      /*
-      Serial.print("Unknown error at address 0x");
-      if (address<16) 
-        Serial.print("0");
-      Serial.println(address,HEX);
-      */
+      // Serial.print("Unknown error at address 0x");
+      // if (address<16) 
+      //   Serial.print("0");
+      // Serial.println(address,HEX);
     }
   }
   /*
@@ -528,20 +415,3 @@ void readBytes(uint8_t address, uint8_t subAddress, uint8_t count, uint8_t * des
   Wire.requestFrom(address, count);  // Read bytes from slave register address 
   while (Wire.available()) {dest[i++] = Wire.read(); } // Put read results in the Rx buffer
 }
-
-void read_temp() {
-// read the ambient temperature
-  readBytes(CALIPILE_ADDRESS, CALIPILE_TPAMBIENT, 2, &rawData[0]);
-  TPAMB = ( (uint16_t)(rawData[0] & 0x7F) << 8) | rawData[1] ; 
-
-  Tamb = 298.15f + ((float)TPAMB - (float)PTAT25) * (1.0f/(float) M);
-
-  // read the object temperature
-  readBytes(CALIPILE_ADDRESS, CALIPILE_TPOBJECT, 3, &rawData[0]);
-  TPOBJ = ( (uint32_t) ( (uint32_t)rawData[0] << 24) | ( (uint32_t)rawData[1] << 16) | ( (uint32_t)rawData[2] & 0x80) << 8) >> 15; 
-
-  float temp0 = powf(Tamb, 3.8f);
-  float temp1 = ( ((float) TPOBJ) - ((float) U0)  ) / k ;
-  Tobj = powf( (temp0 + temp1), 0.2631578947f );
-}
-

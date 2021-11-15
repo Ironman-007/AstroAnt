@@ -13,6 +13,9 @@
   */
 
 #include <Wire.h>
+#include <bluefruit.h>
+#include <Adafruit_LittleFS.h>
+#include <InternalFileSystem.h>
 
 //https://www.pacer-usa.com/Assets/User/2077-CaliPile_TPiS_1S_1385_5029_27.04.2017.pdf
 // CaliPile Registers
@@ -79,10 +82,12 @@
 #define cycTime_140ms 0x03
 
 // Define pins
+/*
 #define intPin 9
 #define myLed1 13  // red led
 #define myLed2 26  // green led
 #define myLed3 38  // blue led
+*/
 
 bool serialDebug = true, presSign = false, motSign = false;
 
@@ -96,21 +101,17 @@ uint8_t  TOBJ1, TPPRESENCE, TPMOTION, TPAMBSHK;
 // output data for comparisons
 float Tamb, Tamblp3, Tobj, Tobjlp1, Tobjlp2, Tobjlp2frzn, Tpres, Tmot, Tambshk, k;
 
-bool newInt = false;
+// bool newInt = false;
 
 void setup() {
  
   Serial.begin(115200);
-  delay(4000);
+  delay(1000);
 
-  pinMode(intPin, INPUT);
- 
-  pinMode(myLed1, OUTPUT);
-  digitalWrite(myLed1, HIGH);  // Start with leds off, active LOW on Butterfly
-  pinMode(myLed2, OUTPUT);
-  digitalWrite(myLed2, HIGH);
-  pinMode(myLed3, OUTPUT);
-  digitalWrite(myLed3, HIGH);
+  // Blocking wait for connection when debug mode is enabled via IDE
+  while ( !Serial ) yield();
+
+  // pinMode(intPin, INPUT);
 
 //  Wire.begin(TWI_PINS_20_21); // set master mode
   Wire.begin();
@@ -205,7 +206,7 @@ void setup() {
   // Construct needed calibration constants (just need to calculate once)
   k = ( (float) (UOUT1 - U0) )/(powf((float)(TOBJ1 + 273.15f), 3.8f) - powf(25.0f + 273.15f, 3.8f) );
 
-  attachInterrupt(intPin, myinthandler, FALLING);  // define interrupt for INT pin output of CaliPile
+  // attachInterrupt(intPin, myinthandler, FALLING);  // define interrupt for INT pin output of CaliPile
 
   // read interrupt status register(s) to unlatch interrupt before entering main loop
   intStatus  = readByte(CALIPILE_ADDRESS, CALIPILE_INTERRUPT_STATUS);
@@ -216,33 +217,32 @@ void setup() {
 
 
 void loop() {
-   if(newInt == true) {  // handle interrupt on receipt
-      newInt = false;
+  /*
+  if(newInt == true) {  // handle interrupt on receipt
+    newInt = false;
 
-      // read interrupt status register(s) to clear interrupt
-      intStatus  = readByte(CALIPILE_ADDRESS, CALIPILE_INTERRUPT_STATUS);
-   
-      if(intStatus & 0x08) {
-        Serial.println("Presence detected!");
-        digitalWrite(myLed2, LOW); delay(10); digitalWrite(myLed2, HIGH);  // flash green led
-        if(intStatus & 0x80) presSign = true;
-        else presSign = false;
-      }
-
-      if(intStatus & 0x04) {
-        Serial.println("Motion detected!");
-        digitalWrite(myLed3, LOW); delay(10); digitalWrite(myLed3, HIGH); // flash blue led
-        if(intStatus & 0x40) motSign = true;
-        else motSign = false;
-        }
-  
-      if(intStatus & 0x10) {
-        Serial.println("Temp threshold exceeded!");
-      }
-  
-      /* end of interrupt handling */
+    // read interrupt status register(s) to clear interrupt
+    intStatus  = readByte(CALIPILE_ADDRESS, CALIPILE_INTERRUPT_STATUS);
+ 
+    if(intStatus & 0x08) {
+      Serial.println("Presence detected!");
+      digitalWrite(myLed2, LOW); delay(10); digitalWrite(myLed2, HIGH);  // flash green led
+      if(intStatus & 0x80) presSign = true;
+      else presSign = false;
     }
 
+    if(intStatus & 0x04) {
+      Serial.println("Motion detected!");
+      digitalWrite(myLed3, LOW); delay(10); digitalWrite(myLed3, HIGH); // flash blue led
+      if(intStatus & 0x40) motSign = true;
+      else motSign = false;
+      }
+
+    if(intStatus & 0x10) {
+      Serial.println("Temp threshold exceeded!");
+    }
+  }
+    */
 
   // read the ambient temperature
   readBytes(CALIPILE_ADDRESS, CALIPILE_TPAMBIENT, 2, &rawData[0]);
@@ -253,13 +253,14 @@ void loop() {
   // read the object temperature
   readBytes(CALIPILE_ADDRESS, CALIPILE_TPOBJECT, 3, &rawData[0]);
   TPOBJ = ( (uint32_t) ( (uint32_t)rawData[0] << 24) | ( (uint32_t)rawData[1] << 16) | ( (uint32_t)rawData[2] & 0x80) << 8) >> 15; 
-  
+
   float temp0 = powf(Tamb, 3.8f);
   float temp1 = ( ((float) TPOBJ) - ((float) U0)  ) / k ;
   Tobj = powf( (temp0 + temp1), 0.2631578947f );
 
   // Read the time-integrated registers
 
+  /*
   // 20-bit wide, divide by 8 to compare with TPOBJ
   readBytes(CALIPILE_ADDRESS, CALIPILE_TPOBJLP1, 3, &rawData[0]);
   TPOBJLP1 = ( ((uint32_t) rawData[0] << 16) | ((uint32_t) rawData[1] << 8) | ( (uint32_t)rawData[2] & 0xF0) ) >> 4;
@@ -283,21 +284,27 @@ void loop() {
   TPPRESENCE = readByte(CALIPILE_ADDRESS, CALIPILE_TPPRESENCE);
   TPMOTION   = readByte(CALIPILE_ADDRESS, CALIPILE_TPMOTION);
   TPAMBSHK   = readByte(CALIPILE_ADDRESS, CALIPILE_TPAMB_SHOCK);
+  */
 
   if(serialDebug)
   {
+    /*
     Serial.print("Tambient = "); Serial.print(Tamb, 2); Serial.println(" K");
     Serial.print("TPAMP = "); Serial.println(TPAMB);  
     Serial.print("TAMBLP3 = "); Serial.println(TPAMBLP3);  
     Serial.println(" ");
+    */
 
     Serial.print("Tobj = "); Serial.print(Tobj, 2); Serial.println(" K");
+    /*
     Serial.print("TPOBJ = "); Serial.println(TPOBJ);  
     Serial.print("TPOBJLP1 = "); Serial.println(TPOBJLP1);  
     Serial.print("TPOBJLP2 = "); Serial.println(TPOBJLP2);  
     Serial.print("TPOBJLP2FRZN = "); Serial.println(TPOBJLP2FRZN);
     Serial.println(" ");
+    */
 
+    /*
     if(presSign) {
       Serial.print("TPPRESENCE = ");   Serial.println(-1 * TPPRESENCE);
     }
@@ -305,7 +312,7 @@ void loop() {
     else {
        Serial.print("TPPRESENCE = ");   Serial.println(TPPRESENCE);
     }
-    
+
     if(motSign) {
       Serial.print("TPMOTION = ");   Serial.println(-1 * TPMOTION);
     }
@@ -315,25 +322,29 @@ void loop() {
  
     Serial.print("TAMBSHK = ");    Serial.println(TPAMBSHK);  
     Serial.println(" ");
+    */
   }
- 
+
 // Output for serial plotter
 //  Serial.print((Tamb - 273.15));  Serial.print("  "); Serial.print((Tobj - 273.15)); Serial.println("  ");
 
-  Serial.print((TPAMB)); Serial.print("  "); Serial.print((TPAMBLP3)); Serial.println("  ");
+  // Serial.print((TPAMB)); Serial.print("  "); Serial.print((TPAMBLP3)); Serial.println("  ");
 
 //   Serial.print((TPOBJ)); Serial.print("  "); Serial.print((TPOBJLP1)); Serial.print("  ");
 //   Serial.print((TPOBJLP2)); Serial.print("  "); Serial.print((TPOBJLP2FRZN)); Serial.println("  ");
 
-  digitalWrite(myLed1, LOW); delay(10); digitalWrite(myLed1, HIGH);  delay(500);
+  // digitalWrite(myLed1, LOW); delay(10); digitalWrite(myLed1, HIGH);  delay(500);
   
   /* end of main loop */
+  delay(500);
 }
 
 /* Useful functions */
+/*
 void myinthandler() {
   newInt = true;
 }
+*/
 
 // I2C scan function
 void I2Cscan() {

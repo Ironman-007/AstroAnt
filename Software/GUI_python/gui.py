@@ -160,6 +160,7 @@ class MainWindow(QtWidgets.QMainWindow):
         print(current_time, self.ser.name + " Opened @ " + str(self.serial_speed[index]) + "bps")
 
     def start_read_port(self):
+        self.temp_data = [0] * data_len
         self.gyroz1_data = [0] * data_len
         self.gyroz2_data = [0] * data_len
         self.gyroz3_data = [0] * data_len
@@ -181,7 +182,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.enr5_data = [0] * data_len
         self.enr6_data = [0] * data_len
 
-        self.gyroz1.clear()
+        # self.gyroz1.clear()
         self.gyroz2.clear()
         self.gyroz3.clear()
         self.gyroz4.clear()
@@ -220,7 +221,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #     self.address = 0x05
         # else:
         #     print(bcolors.WARNING + "Err: wrong Astroant number" + bcolors.ENDC)
-
+ 
         self.timer.start() # Start monitoring the serialport
 
         # start_cmd = [0xAA, self.address]
@@ -251,13 +252,12 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.file = open(recordingname, "wb")
 
     def send_cali_cmd(self):
-        self.gyroz1_data = [0] * data_len
+        self.temp_data = [0] * data_len
         self.enl1_data = [0] * data_len
-        self.enr1_data = [0] * data_len
 
-        self.gyroz1.clear()
+        # self.gyroz1.clear()
+        self.temp.clear()
         self.enr1.clear()
-        self.enl1.clear()
 
         self.botnum = self.whichbot.text()
         self.botnumh = int(self.botnum, 16)
@@ -284,7 +284,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ser.write(cali_cmd)
 
         current_time = read_current_time()
-        print(Back.LIGHTYELLOW_EX, "   -> ", current_time,"CALI cmd sent",Style.RESET_ALL)
+        print(Back.LIGHTRED_EX, "   -> ", current_time,"CALI cmd sent",Style.RESET_ALL)
 
         current_time = read_current_time()
 
@@ -296,94 +296,214 @@ class MainWindow(QtWidgets.QMainWindow):
         self.start_id = self.start_id + 1
 
     def stop_read_port(self):
-        self.botnum = self.whichbot.text()
-        self.botnumh = int(self.botnum, 16)
+        # self.botnum = self.whichbot.text()
+        # self.botnumh = int(self.botnum, 16)
 
-        if (self.botnumh == 0x01 or self.botnumh == 0x04 or self.botnumh == 0x0E):
-            self.address = 0x01
-        elif (self.botnumh == 0x02 or self.botnumh == 0x05 or self.botnumh == 0x09):
-            self.address = 0x02
-        elif (self.botnumh == 0x06):
-            self.address = 0x03
-        elif (self.botnumh == 0x07):
-            self.address = 0x04
-        elif (self.botnumh == 0x08 or self.botnumh == 0x0A):
-            self.address = 0x05
-        else:
-            print(bcolors.WARNING + "Err: wrong Rovable number" + bcolors.ENDC)
+        # if (self.botnumh == 0x01 or self.botnumh == 0x04 or self.botnumh == 0x0E):
+        #     self.address = 0x01
+        # elif (self.botnumh == 0x02 or self.botnumh == 0x05 or self.botnumh == 0x09):
+        #     self.address = 0x02
+        # elif (self.botnumh == 0x06):
+        #     self.address = 0x03
+        # elif (self.botnumh == 0x07):
+        #     self.address = 0x04
+        # elif (self.botnumh == 0x08 or self.botnumh == 0x0A):
+        #     self.address = 0x05
+        # else:
+        #     print(bcolors.WARNING + "Err: wrong Rovable number" + bcolors.ENDC)
 
-        stop_cmd = [0xFF, self.address]
-        stop_cmd = bytearray(stop_cmd)
-        print(stop_cmd)
-        self.ser.write(stop_cmd)
-
-        current_time = read_current_time()
-        print(Back.LIGHTYELLOW_EX, "   -> ", current_time,"Stop cmd sent",Style.RESET_ALL)
+        # stop_cmd = [0xFF, self.address]
+        # stop_cmd = bytearray(stop_cmd)
+        # print(stop_cmd)
+        # self.ser.write(stop_cmd)
 
         current_time = read_current_time()
+        print(Back.LIGHTRED_EX, "   -> ", current_time,"Stop cmd sent",Style.RESET_ALL)
 
-        self.log.append(current_time + ": Stop Cmd sent." + str(stop_cmd) + "\n")
+        current_time = read_current_time()
+
+        self.log.append(current_time + " :  Stop monitoring the Serial Port.\n")
+        self.msg_btn.setText("Stop monitoring the Serial Port...")
+        self.msg_btn.setStyleSheet("background-color : Magenta")
 
         self.timer.stop() # Stop the timer
 
-        self.file.close()
+        # self.file.close()
 
     def read_port(self):
         if (self.ser.inWaiting()):
+            # print("data incoming...")
             current_time = read_current_time()
-            recv_data = self.ser.read(29)
+            recv_data = self.ser.read(20)
 
-            self.file.write(recv_data)
+            # print(recv_data)
 
-            rovable_num = self.whichbot.text()
+            if (recv_data[0] == 0xEB and recv_data[1] == 0x90):
+                if (recv_data[3] == 0xAA):   # start cmd ACK
+                    self.msg_btn.setText("Got start cmd ACK")
+                    self.msg_btn.setStyleSheet("background-color : Green")
+                elif (recv_data[3] == 0xEE): # stop cmd ACK
+                    self.msg_btn.setText("Got stop cmd ACK")
+                    self.msg_btn.setStyleSheet("background-color : #ff33ff;")
+                elif (recv_data[3] == 0x11): # cali cmd ACK
+                    self.msg_btn.setText("Got cali cmd ACK")
+                    self.msg_btn.setStyleSheet("background-color : Blue")
+                else:                        # Err cmd ACK
+                    self.msg_btn.setText("Got ERR cmd ACK")
+                    self.msg_btn.setStyleSheet("background-color : Red")
 
-            frame = recv_data[1]
+            # Data back
+            elif (recv_data[0] == 0xEB and recv_data[1] == 0x9F):
+                enl1_i = int(recv_data[5])
+                enr1_i = int(recv_data[6])
 
-            gyrox1_i = recv_data[2:6]
-            gyroy1_i = recv_data[6:10]
-            gyroz1_i = recv_data[10:14]
+                self.bat1.setValue(recv_data[7])
+                self.batper1_2.setText("{:.0f}".format(recv_data[7]))
 
-            gyrox1_d = struct.unpack('f', gyrox1_i)[0]
-            gyroy1_d = struct.unpack('f', gyroy1_i)[0]
-            gyroz1_d = struct.unpack('f', gyroz1_i)[0]
+                objtemperature = recv_data[8:12]
+                objtemperature_f = struct.unpack('f', objtemperature)[0]
+                self.temp_label.setText("{:.1f}".format(objtemperature_f))
 
-            accelx1_i = recv_data[14:18]
-            accely1_i = recv_data[18:22]
-            accelz1_i = recv_data[22:26]
+                # print(objtemperature_f)
 
-            accelx1_d = struct.unpack('f', accelx1_i)[0]
-            accely1_d = struct.unpack('f', accely1_i)[0]
-            accelz1_d = struct.unpack('f', accelz1_i)[0]
+                self.temp_data.pop(0)
+                self.temp_data.append(objtemperature_f)
+                self.temp.clear()
+                self.temp.plot(self.time_index, self.temp_data, pen=pg.mkPen('w', width=2))
 
-            enl1_i = int(recv_data[26])
-            enr1_i = int(recv_data[27])
+                self.enl1_label.setText(str(enl1_i))
+                self.enl1_data.pop(0)
+                self.enl1_data.append(enl1_i)
+                self.enl1.clear()
+                self.enl1.plot(self.time_index, self.enl1_data, pen=pg.mkPen('w', width=2))
 
-            chk_1 = recv_data[28]
+                self.enr1_label.setText(str(enr1_i))
+                self.enr1_data.pop(0)
+                self.enr1_data.append(enr1_i)
+                self.enr1.clear()
+                self.enr1.plot(self.time_index, self.enr1_data, pen=pg.mkPen('w', width=2))
 
-            self.rovable_num.setText(str(rovable_num))
-            self.frame1.setText(str(frame))
+            # print("{:.0f}".format(recv_data[7]))
 
-            self.gyroz1_label.setText(str(round(gyroz1_d, 2)))
-            self.gyroz1_data.pop(0)
-            self.gyroz1_data.append(gyroz1_d)
-            self.gyroz1.clear()
-            self.gyroz1.plot(self.time_index, self.gyroz1_data, pen=pg.mkPen('b', width=2))
+            # if (recv_data[0]==65):
+            #     if (recv_data[28]==49):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     elif (recv_data[28]==50):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     elif (recv_data[28]==51):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     elif (recv_data[28]==52):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     elif (recv_data[28]==53):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     elif (recv_data[28]==54):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     elif (recv_data[28]==55):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     elif (recv_data[28]==56):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     elif (recv_data[28]==57):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     elif (recv_data[28]==65):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     elif (recv_data[28]==66):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     elif (recv_data[28]==67):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     elif (recv_data[28]==68):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     elif (recv_data[28]==69):
+            #         print("tst_cmd_1")
+            #         self.msg_btn.setText("Getting tst_cmd_1")
+            #         self.msg_btn.setStyleSheet("background-color : Blue")
+            #     else:
+            #         print("Unknown command.")
+            #         self.msg_btn.setText("Got Unknown command.")
+            #         self.msg_btn.setStyleSheet("background-color : Red")
 
-            self.enl1_label.setText(str(enl1_i))
-            self.enl1_data.pop(0)
-            self.enl1_data.append(enl1_i)
-            self.enl1.clear()
-            self.enl1.plot(self.time_index, self.enl1_data, pen=pg.mkPen('r', width=2))
+            # else:
+            #     # frame = recv_data[1]
+            #     pass
 
-            self.enr1_label.setText(str(enr1_i))
-            self.enr1_data.pop(0)
-            self.enr1_data.append(enr1_i)
-            self.enr1.clear()
-            self.enr1.plot(self.time_index, self.enr1_data, pen=pg.mkPen('k', width=2))
+            # self.log.append(current_time + " :  Start monitoring the Serial Port...\n")
 
-            self.accelx1.setText(str(round(accelx1_d, 2)))
-            self.accely1.setText(str(round(accely1_d, 2)))
-            self.accelz1.setText(str(round(accelz1_d, 2)))
+            # self.file.write(recv_data)
+
+            # rovable_num = self.whichbot.text()
+
+            # frame = recv_data[1]
+
+            # gyrox1_i = recv_data[2:6]
+            # gyroy1_i = recv_data[6:10]
+            # gyroz1_i = recv_data[10:14]
+
+            # gyrox1_d = struct.unpack('f', gyrox1_i)[0]
+            # gyroy1_d = struct.unpack('f', gyroy1_i)[0]
+            # gyroz1_d = struct.unpack('f', gyroz1_i)[0]
+
+            # accelx1_i = recv_data[14:18]
+            # accely1_i = recv_data[18:22]
+            # accelz1_i = recv_data[22:26]
+
+            # accelx1_d = struct.unpack('f', accelx1_i)[0]
+            # accely1_d = struct.unpack('f', accely1_i)[0]
+            # accelz1_d = struct.unpack('f', accelz1_i)[0]
+
+            # enl1_i = int(recv_data[26])
+            # enr1_i = int(recv_data[27])
+
+            # chk_1 = recv_data[28]
+
+            # self.rovable_num.setText(str(rovable_num))
+            # self.frame1.setText(str(frame))
+
+            # self.gyroz1_label.setText(str(round(gyroz1_d, 2)))
+            # self.gyroz1_data.pop(0)
+            # self.gyroz1_data.append(gyroz1_d)
+            # self.gyroz1.clear()
+            # self.gyroz1.plot(self.time_index, self.gyroz1_data, pen=pg.mkPen('w', width=2))
+
+            # self.enl1_label.setText(str(enl1_i))
+            # self.enl1_data.pop(0)
+            # self.enl1_data.append(enl1_i)
+            # self.enl1.clear()
+            # self.enl1.plot(self.time_index, self.enl1_data, pen=pg.mkPen('w', width=2))
+
+            # self.enr1_label.setText(str(enr1_i))
+            # self.enr1_data.pop(0)
+            # self.enr1_data.append(enr1_i)
+            # self.enr1.clear()
+            # self.enr1.plot(self.time_index, self.enr1_data, pen=pg.mkPen('w', width=2))
+
+            # self.accelx1.setText(str(round(accelx1_d, 2)))
+            # self.accely1.setText(str(round(accely1_d, 2)))
+            # self.accelz1.setText(str(round(accelz1_d, 2)))
 
 # driver code 
 if __name__ == '__main__': 

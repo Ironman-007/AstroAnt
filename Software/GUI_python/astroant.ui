@@ -47,7 +47,7 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="PlotWidget" name="gyroz1" native="true">
+    <widget class="PlotWidget" name="temp" native="true">
      <property name="geometry">
       <rect>
        <x>190</x>
@@ -66,10 +66,10 @@
        </rect>
       </property>
       <property name="text">
-       <string>gyroz</string>
+       <string>Temp (K)</string>
       </property>
      </widget>
-     <widget class="QLabel" name="gyroz1_label">
+     <widget class="QLabel" name="temp_label">
       <property name="geometry">
        <rect>
         <x>130</x>
@@ -391,8 +391,13 @@
        <x>10</x>
        <y>10</y>
        <width>261</width>
-       <height>32</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>Scan</string>
@@ -437,6 +442,11 @@
        <width>96</width>
        <height>32</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>Open</string>

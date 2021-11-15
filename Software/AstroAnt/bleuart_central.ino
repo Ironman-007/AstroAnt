@@ -44,6 +44,12 @@
  * board is 1, and so on.
  */
 
+/* LED PATTERNS
+ * ------------
+ * LED_RED   - Blinks pattern changes based on the number of connections.
+ * LED_BLUE  - Blinks constantly when scanning
+ */
+
 #include <bluefruit.h>
 
 // Struct containing peripheral info
@@ -74,31 +80,6 @@ prph_info_t prphs[BLE_MAX_CONNECTION];
 SoftwareTimer blinkTimer;
 uint8_t connection_num = 0; // for blink pattern
 
-// How many bytes in a msg
-#define data_cnt 20
-
-// uint8_t tst_cmd[data_cnt+1] = {0xEB,0x90,0x00,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x25};
-
-uint8_t start_cmd[data_cnt+1] = {0xEB,0x90,0x00,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xAF};
-uint8_t stop_cmd[data_cnt+1]  = {0xEB,0x90,0x00,0xEE,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xAF};
-uint8_t cali_cmd[data_cnt+1]  = {0xEB,0x90,0x00,0x11,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xAF};
-
-int CMD_TST_PIN = 9;
-int CMD_TST_PIN_val = 0;
-int CMD_TST_sent_flag = 0;
-
-int CALI_CMD_PIN  = 5;
-int START_CMD_PIN = 6;
-int STOP_CMD_PIN  = 9;
-
-int CALI_CMD_PIN_val  = 0;
-int START_CMD_PIN_val = 0;
-int STOP_CMD_PIN_val  = 0;
-
-int CALI_CMD_sent_flag  = 0;
-int START_CMD_sent_flag = 0;
-int STOP_CMD_sent_flag  = 0;
-
 void setup() 
 {
   Serial.begin(115200);
@@ -108,27 +89,16 @@ void setup()
   blinkTimer.begin(100, blink_timer_callback);
   blinkTimer.start();
 
-  // pinMode(CMD_TST_PIN, INPUT);
-  pinMode(CALI_CMD_PIN, INPUT);
-  pinMode(START_CMD_PIN, INPUT);
-  pinMode(STOP_CMD_PIN, INPUT);
-
-  // pinMode(CALI_CMD_PIN, INPUT_PULLUP);
-  // pinMode(START_CMD_PIN, INPUT_PULLUP);
-  // pinMode(STOP_CMD_PIN, INPUT_PULLUP);
-
-  // attachInterrupt(digitalPinToInterrupt(CMD_TST_PIN), send_tst_cmd, FALLING);
-
-  // Serial.println("Bluefruit52 Central Multi BLEUART Example");
-  // Serial.println("-----------------------------------------\n");
-
+  Serial.println("Bluefruit52 Central Multi BLEUART Example");
+  Serial.println("-----------------------------------------\n");
+  
   // Initialize Bluefruit with max concurrent connections as Peripheral = 0, Central = 4
   // SRAM usage required by SoftDevice will increase with number of connections
   Bluefruit.begin(0, 4);
 
   // Set Name
   Bluefruit.setName("Bluefruit52 Central");
-
+  
   // Init peripheral pool
   for (uint8_t idx=0; idx<BLE_MAX_CONNECTION; idx++)
   {
@@ -182,33 +152,35 @@ void connect_callback(uint16_t conn_handle)
 
   // Eeek: Exceeded the number of connections !!!
   if ( id < 0 ) return;
-
+  
   prph_info_t* peer = &prphs[id];
   peer->conn_handle = conn_handle;
-
+  
   Bluefruit.Connection(conn_handle)->getPeerName(peer->name, sizeof(peer->name)-1);
 
-  // Serial.print("Connected to ");
-  // Serial.println(peer->name);
+  Serial.print("Connected to ");
+  Serial.println(peer->name);
 
-  // Serial.print("Discovering BLE UART service ... ");
+  Serial.print("Discovering BLE UART service ... ");
 
   if ( peer->bleuart.discover(conn_handle) )
   {
-    // Serial.println("Found it");
-    // Serial.println("Enabling TXD characteristic's CCCD notify bit");
+    Serial.println("Found it");
+    Serial.println("Enabling TXD characteristic's CCCD notify bit");
     peer->bleuart.enableTXD();
 
-    // Serial.println("Continue scanning for more peripherals");
+    Serial.println("Continue scanning for more peripherals");
     Bluefruit.Scanner.start(0);
 
-    // Serial.println("Enter some text in the Serial Monitor to send it to all connected peripherals:");
-  }
-  else
+    Serial.println("Enter some text in the Serial Monitor to send it to all connected peripherals:");
+  } else
   {
+    Serial.println("Found ... NOTHING!");
+
     // disconnect since we couldn't find bleuart service
     Bluefruit.disconnect(conn_handle);
-  }
+  }  
+
   connection_num++;
 }
 
@@ -233,8 +205,8 @@ void disconnect_callback(uint16_t conn_handle, uint8_t reason)
   // Mark conn handle as invalid
   prphs[id].conn_handle = BLE_CONN_HANDLE_INVALID;
 
-  // Serial.print(prphs[id].name);
-  // Serial.println(" disconnected!");
+  Serial.print(prphs[id].name);
+  Serial.println(" disconnected!");
 }
 
 /**
@@ -249,20 +221,20 @@ void bleuart_rx_callback(BLEClientUart& uart_svc)
 
   int id = findConnHandle(conn_handle);
   prph_info_t* peer = &prphs[id];
-
+  
   // Print sender's name
-  // Serial.printf("[From %s]: ", peer->name);
+  Serial.printf("[From %s]: ", peer->name);
 
   // Read then forward to all peripherals
   while ( uart_svc.available() )
   {
     // default MTU with an extra byte for string terminator
-    char buf[data_cnt+1] = { 0 };
-
+    char buf[20+1] = { 0 };
+    
     if ( uart_svc.read(buf,sizeof(buf)-1) )
     {
-      Serial.write(buf, sizeof(buf)-1);
-      // sendAll(tst_cmd);
+      Serial.println(buf);
+      sendAll(buf);
     }
   }
 }
@@ -270,69 +242,35 @@ void bleuart_rx_callback(BLEClientUart& uart_svc)
 /**
  * Helper function to send a string to all connected peripherals
  */
-void sendAll(const uint8_t* str)
+void sendAll(const char* str)
 {
-  // Serial.print("[Send to All]: ");
-  // Serial.println(str);
+  Serial.print("[Send to All]: ");
+  Serial.println(str);
 
-  // for(uint8_t id=0; id < BLE_MAX_CONNECTION; id++)
-  // {
-    prph_info_t* peer = &prphs[0];
+  for(uint8_t id=0; id < BLE_MAX_CONNECTION; id++)
+  {
+    prph_info_t* peer = &prphs[id];
 
     if ( peer->bleuart.discovered() )
     {
-      // Serial.println("peer->bleuart.discovered()");
-      peer->bleuart.write(str, data_cnt);
+      peer->bleuart.print(str);
     }
-  // }
+  }
 }
-
-/*
-void send_tst_cmd () {
-  sendAll(tst_cmd);
-}
-*/
 
 void loop()
 {
   // First check if we are connected to any peripherals
-  if (Bluefruit.Central.connected()) {
-    CALI_CMD_PIN_val = digitalRead(CALI_CMD_PIN);
-    START_CMD_PIN_val = digitalRead(START_CMD_PIN);
-    STOP_CMD_PIN_val = digitalRead(STOP_CMD_PIN);
-
-    if (CALI_CMD_PIN_val == 0)
+  if ( Bluefruit.Central.connected() )
+  {
+    // default MTU with an extra byte for string terminator
+    char buf[20+1] = { 0 };
+    
+    // Read from HW Serial (normally USB Serial) and send to all peripherals
+    if ( Serial.readBytes(buf, sizeof(buf)-1) )
     {
-      if (CALI_CMD_sent_flag == 0)
-      {
-        sendAll(cali_cmd);
-        CALI_CMD_sent_flag = 1;
-      }
+      sendAll(buf);
     }
-    else
-      CALI_CMD_sent_flag = 0;
-
-    if (START_CMD_PIN_val == 0)
-    {
-      if (START_CMD_sent_flag == 0)
-      {
-        sendAll(start_cmd);
-        START_CMD_sent_flag = 1;
-      }
-    }
-    else
-      START_CMD_sent_flag = 0;
-
-    if (STOP_CMD_PIN_val == 0)
-    {
-      if (STOP_CMD_sent_flag == 0)
-      {
-        sendAll(stop_cmd);
-        STOP_CMD_sent_flag = 1;
-      }
-    }
-    else
-      STOP_CMD_sent_flag = 0;
   }
 }
 
