@@ -95,8 +95,8 @@ float yy_acc = 0;
 float yy_pre = 0;
 float dev_yy = 0;
 
-float tau_p = 5;
-float tau_d = 2;
+float tau_p = 50;
+float tau_d = 10;
 float tau_i = 1; // 1 for flat
 
 // Encoder counter
@@ -145,8 +145,8 @@ float steer_f = 0.0;
 
 void setup()
 {
-  Serial.begin(115200);
-  while (!Serial);
+  // Serial.begin(115200);
+  // while (!Serial);
 
   // Serial.println("BLE_GATT_ATT_MTU_DEFAULT = ");
   // Serial.println(BLE_GATT_ATT_MTU_DEFAULT);
@@ -443,11 +443,13 @@ void loop()
       else if (steer > 255) steer = 255;
       */
 
+      /*
       Serial.print(" dev_Zangle = "); Serial.print(dev_Zangle);
       Serial.print(" yy = "); Serial.print(yy);
       Serial.print(" dev_yy = "); Serial.print(dev_yy);
       Serial.print(" yy_acc = "); Serial.print(yy_acc);
       Serial.print(" steer = "); Serial.println(steer);
+      */
 
       byte * bz = (byte *) &gyroZangle;
 
