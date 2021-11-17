@@ -8,9 +8,13 @@ The AstroAnt is a modular design, and can carry different sensors to finish diff
 The 3D model of the robot is in the ./3dmodel/Small_magnets_R821_with_gearbox.
 
 The software for the robot is in ./Software/AstroAnt.
+<<<<<<< HEAD
 
 The PC program (UI) is the ./Software/GUI_python/gui.py. Open with command line: 'python3 gui.py'
 
+=======
+The PC program (UI) is the ./Software/GUI_python/gui.py. Open with command line: "python3 gui.py"
+>>>>>>> 20a100a53486c8007c4641b34a72969a47f25c6d
 The PCB design is in the ./PCB. The Mainboard/mainboard_v1 is the design of the main control board, developed with KiCAD.
 The others are sensor modules design.
 
