@@ -31,7 +31,7 @@ char* devece_name = "BridgeAnt";
 
 const int msg_bye_cnt = 20;
 
-const uint8_t node_address = 0x03;
+const uint8_t node_address = 0x01;
 
 // Data for test
 uint8_t reply_buf[20]     = {0xEB,0x9F,node_address,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
@@ -97,9 +97,10 @@ float yy_acc = 0;
 float yy_pre = 0;
 float dev_yy = 0;
 
-float tau_p = 5;
-float tau_d = 3;
-float tau_i = 1; // 1 for flat
+// Play with the PID parameters
+float tau_p = 20;
+float tau_d = 10;
+float tau_i = 1;
 
 // Encoder counter
 uint16_t encoder1Counter = 0;
@@ -411,13 +412,11 @@ void loop()
       */
 
       // for PID
-      /*
       analogWrite(M1_IN1, 200 + steer);
       analogWrite(M1_IN2, 0);
 
       analogWrite(M2_IN1, 0);
       analogWrite(M2_IN2, 200);
-      */
 
       // =================== Frame number ===================
       reply_buf[3] = counter;
@@ -467,6 +466,9 @@ void loop()
 
       steer_f = (-tau_p * yy) - (tau_d * dev_yy) - (tau_i * yy_acc);
       steer = round(steer_f);
+
+      if (steer >= 55) steer = 55;
+      else if (steer <= -200) steer = -200;
 
       byte * steer_b = (byte *) &steer;
       memcpy(&reply_buf[11], steer_b, 4);

@@ -99,7 +99,7 @@ float dev_yy = 0;
 
 float tau_p = 50;
 float tau_d = 10;
-float tau_i = 1; // 1 for flat
+float tau_i = 1;
 
 // Encoder counter
 uint16_t encoder1Counter = 0;
