@@ -31,13 +31,15 @@ char* devece_name = "BridgeAnt";
 
 const int msg_bye_cnt = 20;
 
+const uint8_t node_address = 0x02;
+
 // Data for test
-uint8_t reply_buf[20] = {0xEB,0x9F,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+uint8_t reply_buf[20]     = {0xEB,0x9F,node_address,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 // ACK frame
-uint8_t start_ack_buf[20] = {0xEB,0x90,0x00,0xAA,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-uint8_t cali_ack_buf[20]  = {0xEB,0x90,0x00,0x11,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-uint8_t stop_ack_buf[20]  = {0xEB,0x90,0x00,0xEE,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-uint8_t err_ack_buf[20]   = {0xEB,0x90,0x00,0xFF,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+uint8_t start_ack_buf[20] = {0xEB,0x90,node_address,0xAA,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+uint8_t cali_ack_buf[20]  = {0xEB,0x90,node_address,0x11,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+uint8_t stop_ack_buf[20]  = {0xEB,0x90,node_address,0xEE,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+uint8_t err_ack_buf[20]   = {0xEB,0x90,node_address,0xFF,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
 uint8_t recv_msg[msg_bye_cnt+1] = {0};
 
@@ -95,8 +97,8 @@ float yy_acc = 0;
 float yy_pre = 0;
 float dev_yy = 0;
 
-float tau_p = 50;
-float tau_d = 10;
+float tau_p = 5;
+float tau_d = 3;
 float tau_i = 1; // 1 for flat
 
 // Encoder counter
@@ -390,11 +392,33 @@ void loop()
     if (start_cmd_flag == 1)
     {
       // =================== Run motor ===================
+      // for #3
+      /*
+      analogWrite(M1_IN1, 200);
+      analogWrite(M1_IN2, 0);
+
+      analogWrite(M2_IN1, 0);
+      analogWrite(M2_IN2, 227);
+      */
+
+      // for #2
+      analogWrite(M1_IN1, 200);
+      analogWrite(M1_IN2, 0);
+
+      analogWrite(M2_IN1, 0);
+      analogWrite(M2_IN2, 216);
+
+      // for PID
+      /*
       analogWrite(M1_IN1, 200 + steer);
       analogWrite(M1_IN2, 0);
 
       analogWrite(M2_IN1, 0);
       analogWrite(M2_IN2, 200);
+      */
+
+      // =================== Frame number ===================
+      reply_buf[3] = counter;
 
       // =================== Read Battery level ===================
       battValue = analogRead(batt_pin);
@@ -409,17 +433,21 @@ void loop()
         batt_v = batt_v-3600;
         batt_level = (10 + (batt_v * 0.15F ))>100? 100:(10 + (batt_v * 0.15F ));
       }
-      reply_buf[7] = batt_level;
+      reply_buf[10] = batt_level;
 
       // =================== Encoder ===================
-      reply_buf[5] = encoder1Counter/256;
-      reply_buf[6] = encoder2Counter/256;
+      reply_buf[8] = encoder1Counter/256;
+      reply_buf[9] = encoder2Counter/256;
 
       // =================== PID control ===================
       float dt = (float)(micros() - timer) / 1000000; // Calculate delta time
       timer = micros();
 
       gyroZangle += gyroZrate * dt;
+
+      byte * bz = (byte *) &gyroZangle;
+
+      memcpy(&reply_buf[4], bz, 4);
 
       // Serial.print("gyroZangle = "); Serial.println(gyroZangle);
 
@@ -438,6 +466,9 @@ void loop()
       steer_f = (-tau_p * yy) - (tau_d * dev_yy) - (tau_i * yy_acc);
       steer = round(steer_f);
 
+      byte * steer_b = (byte *) &steer;
+      memcpy(&reply_buf[11], steer_b, 4);
+
       /*
       if (steer < 0) steer = 0;
       else if (steer > 255) steer = 255;
@@ -450,10 +481,6 @@ void loop()
       Serial.print(" yy_acc = "); Serial.print(yy_acc);
       Serial.print(" steer = "); Serial.println(steer);
       */
-
-      byte * bz = (byte *) &gyroZangle;
-
-      // memcpy(&data2send[10], bz, 4);
 
       // =================== Send data back ===================
       bleuart.write(reply_buf, msg_bye_cnt);
