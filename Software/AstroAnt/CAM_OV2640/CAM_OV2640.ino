@@ -24,17 +24,21 @@ const char bmp_header[BMPIMAGEOFFSET] PROGMEM =
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF8, 0x00, 0x00, 0xE0, 0x07, 0x00, 0x00, 0x1F, 0x00,
   0x00, 0x00
 };
+
 // set pin 7 as the slave select for the digital pot:
-const int CS = 7;
+const int CS = SS;
 bool is_header = false;
 int mode = 0;
 uint8_t start_capture = 0;
+
 #if defined (OV2640_MINI_2MP)
   ArduCAM myCAM( OV2640, CS );
 #else
   ArduCAM myCAM( OV5642, CS );
 #endif
+
 uint8_t read_fifo_burst(ArduCAM myCAM);
+
 void setup() {
 // put your setup code here, to run once:
 uint8_t vid, pid;
@@ -42,11 +46,15 @@ uint8_t temp;
 #if defined(__SAM3X8E__)
   Wire1.begin();
   Serial.begin(115200);
+  while(!Serial) delay(10);
 #else
   Wire.begin();
   Serial.begin(921600);
+  while(!Serial) delay(10);
 #endif
+
 Serial.println(F("ACK CMD ArduCAM Start! END"));
+
 // set the CS as an output:
 pinMode(CS, OUTPUT);
 digitalWrite(CS, HIGH);
@@ -57,6 +65,7 @@ myCAM.write_reg(0x07, 0x80);
 delay(100);
 myCAM.write_reg(0x07, 0x00);
 delay(100);
+
 while(1){
   //Check if the ArduCAM SPI bus is OK
   myCAM.write_reg(ARDUCHIP_TEST1, 0x55);
