@@ -31,7 +31,7 @@ char* devece_name = "BridgeAnt";
 
 const int msg_bye_cnt = 20;
 
-const uint8_t node_address = 0x02;
+const uint8_t node_address = 0x03;
 
 // Data for test
 uint8_t reply_buf[20]     = {0xEB,0x9F,node_address,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
@@ -402,11 +402,13 @@ void loop()
       */
 
       // for #2
+      /*
       analogWrite(M1_IN1, 200);
       analogWrite(M1_IN2, 0);
 
       analogWrite(M2_IN1, 0);
       analogWrite(M2_IN2, 216);
+      */
 
       // for PID
       /*
