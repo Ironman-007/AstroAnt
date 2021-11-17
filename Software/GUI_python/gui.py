@@ -48,33 +48,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
-        self.setFixedSize(1650, 650)
+        self.setFixedSize(850, 770)
 
         #Load the UI Page
         uic.loadUi('astroant.ui', self)
 
-        # self.gyroz1.setBackground('w')
-
-        # self.enl1.setBackground('w')
-        # self.enl2.setBackground('w')
-        # self.enl3.setBackground('w')
-        # self.enl4.setBackground('w')
-        # self.enl5.setBackground('w')
-        # self.enl6.setBackground('w')
-        # self.enl7.setBackground('w')
-        # self.enl8.setBackground('w')
-        # self.enl9.setBackground('w')
-        # self.enl10.setBackground('w')
-
-        # self.enr1.setBackground('w')
-        # self.enr2.setBackground('w')
-        # self.enr3.setBackground('w')
-        # self.enr4.setBackground('w')
-        # self.enr5.setBackground('w')
-        # self.enr6.setBackground('w')
-        # self.enr7.setBackground('w')
-        # self.enr8.setBackground('w')
-        # self.enr9.setBackground('w')
         # self.enr10.setBackground('w')
 
         self.serial_ports_list = []
@@ -85,32 +63,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ser=serial.Serial()
 
         self.scan_btn.clicked.connect(self.scan)
+        self.clear_btn.clicked.connect(self.clear_plot)
         self.open_btn.clicked.connect(self.open_port)
         self.close_btn.clicked.connect(self.close)
         self.start_btn.clicked.connect(self.start_read_port)
         self.stop_btn.clicked.connect(self.stop_read_port)
         self.cali_btn.clicked.connect(self.send_cali_cmd)
 
-        self.gyroz1_data = [0] * data_len
-        self.gyroz2_data = [0] * data_len
-        self.gyroz3_data = [0] * data_len
-        self.gyroz4_data = [0] * data_len
-        self.gyroz5_data = [0] * data_len
-        self.gyroz6_data = [0] * data_len
-
-        self.enl1_data = [0] * data_len
-        self.enl2_data = [0] * data_len
-        self.enl3_data = [0] * data_len
-        self.enl4_data = [0] * data_len
-        self.enl5_data = [0] * data_len
-        self.enl6_data = [0] * data_len
-
-        self.enr1_data = [0] * data_len
-        self.enr2_data = [0] * data_len
-        self.enr3_data = [0] * data_len
-        self.enr4_data = [0] * data_len
-        self.enr5_data = [0] * data_len
-        self.enr6_data = [0] * data_len
+        self.gyroz_data  = [0] * data_len
+        self.enl_data    = [0] * data_len
+        self.enr_data    = [0] * data_len
+        self.sensor_data = [0] * data_len
 
         self.time_index = list(range(1, data_len+1))
 
@@ -122,8 +85,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.botnumh = 0
         self.address = 0x01
 
-        self.speedi = ""
-        self.speedih = 0
+        self.connected_ant = 0
 
         for x in self.serial_speed:
             self.speed_comboBox.addItem(str(x))
@@ -160,47 +122,15 @@ class MainWindow(QtWidgets.QMainWindow):
         print(current_time, self.ser.name + " Opened @ " + str(self.serial_speed[index]) + "bps")
 
     def start_read_port(self):
-        self.gyroz1_data = [0] * data_len
-        self.gyroz2_data = [0] * data_len
-        self.gyroz3_data = [0] * data_len
-        self.gyroz4_data = [0] * data_len
-        self.gyroz5_data = [0] * data_len
-        self.gyroz6_data = [0] * data_len
+        self.sensor_data = [0] * data_len
+        self.gyroz_data  = [0] * data_len
+        self.enl_data    = [0] * data_len
+        self.enr_data    = [0] * data_len
 
-        self.enl1_data = [0] * data_len
-        self.enl2_data = [0] * data_len
-        self.enl3_data = [0] * data_len
-        self.enl4_data = [0] * data_len
-        self.enl5_data = [0] * data_len
-        self.enl6_data = [0] * data_len
-
-        self.enr1_data = [0] * data_len
-        self.enr2_data = [0] * data_len
-        self.enr3_data = [0] * data_len
-        self.enr4_data = [0] * data_len
-        self.enr5_data = [0] * data_len
-        self.enr6_data = [0] * data_len
-
-        self.gyroz1.clear()
-        self.gyroz2.clear()
-        self.gyroz3.clear()
-        self.gyroz4.clear()
-        self.gyroz5.clear()
-        self.gyroz6.clear()
-
-        self.enr1.clear()
-        self.enr2.clear()
-        self.enr3.clear()
-        self.enr4.clear()
-        self.enr5.clear()
-        self.enr6.clear()
-
-        self.enl1.clear()
-        self.enl2.clear()
-        self.enl3.clear()
-        self.enl4.clear()
-        self.enl5.clear()
-        self.enl6.clear()
+        self.sensor.clear()
+        self.enl.clear()
+        self.enr.clear()
+        self.gyroz.clear()
 
         # cmd_id = self.start_id & 0xFF
         # start_cmd_chk = (cmd_id+0xAA+0xFF) & 0xFF
@@ -220,7 +150,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #     self.address = 0x05
         # else:
         #     print(bcolors.WARNING + "Err: wrong Astroant number" + bcolors.ENDC)
-
+ 
         self.timer.start() # Start monitoring the serialport
 
         # start_cmd = [0xAA, self.address]
@@ -233,7 +163,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         current_time = read_current_time()
 
-        self.log.append(current_time + " :  Start monitoring the Serial Port...\n")
+        self.log.append(current_time + " :  Start monitoring the Serial Port...")
 
         self.msg_btn.setText("Start monitoring the Serial Port...")
         self.msg_btn.setStyleSheet("background-color : Green")
@@ -251,15 +181,12 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.file = open(recordingname, "wb")
 
     def send_cali_cmd(self):
-        self.gyroz1_data = [0] * data_len
-        self.enl1_data = [0] * data_len
-        self.enr1_data = [0] * data_len
+        self.sensor_data = [0] * data_len
+        self.enl_data = [0] * data_len
 
-        self.gyroz1.clear()
-        self.enr1.clear()
-        self.enl1.clear()
+        self.enr.clear()
+        self.enl.clear()
 
-        self.botnum = self.whichbot.text()
         self.botnumh = int(self.botnum, 16)
 
         self.speedi = self.speed.text()
@@ -284,7 +211,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ser.write(cali_cmd)
 
         current_time = read_current_time()
-        print(Back.LIGHTYELLOW_EX, "   -> ", current_time,"CALI cmd sent",Style.RESET_ALL)
+        print(Back.LIGHTRED_EX, "   -> ", current_time,"CALI cmd sent",Style.RESET_ALL)
 
         current_time = read_current_time()
 
@@ -296,94 +223,108 @@ class MainWindow(QtWidgets.QMainWindow):
         self.start_id = self.start_id + 1
 
     def stop_read_port(self):
-        self.botnum = self.whichbot.text()
-        self.botnumh = int(self.botnum, 16)
-
-        if (self.botnumh == 0x01 or self.botnumh == 0x04 or self.botnumh == 0x0E):
-            self.address = 0x01
-        elif (self.botnumh == 0x02 or self.botnumh == 0x05 or self.botnumh == 0x09):
-            self.address = 0x02
-        elif (self.botnumh == 0x06):
-            self.address = 0x03
-        elif (self.botnumh == 0x07):
-            self.address = 0x04
-        elif (self.botnumh == 0x08 or self.botnumh == 0x0A):
-            self.address = 0x05
-        else:
-            print(bcolors.WARNING + "Err: wrong Rovable number" + bcolors.ENDC)
-
-        stop_cmd = [0xFF, self.address]
-        stop_cmd = bytearray(stop_cmd)
-        print(stop_cmd)
-        self.ser.write(stop_cmd)
-
         current_time = read_current_time()
-        print(Back.LIGHTYELLOW_EX, "   -> ", current_time,"Stop cmd sent",Style.RESET_ALL)
+        print(Back.LIGHTRED_EX, "   -> ", current_time,"Stop cmd sent",Style.RESET_ALL)
 
         current_time = read_current_time()
 
-        self.log.append(current_time + ": Stop Cmd sent." + str(stop_cmd) + "\n")
+        self.log.append(current_time + " :  Stop monitoring the Serial Port.\n")
+        self.msg_btn.setText("Stop monitoring the Serial Port...")
+        self.msg_btn.setStyleSheet("background-color : Magenta")
 
         self.timer.stop() # Stop the timer
 
-        self.file.close()
+        # self.file.close()
 
     def read_port(self):
         if (self.ser.inWaiting()):
+            # print("data incoming...")
             current_time = read_current_time()
-            recv_data = self.ser.read(29)
+            recv_data = self.ser.read(20)
 
-            self.file.write(recv_data)
+            # print(recv_data)
 
-            rovable_num = self.whichbot.text()
+            if (recv_data[0] == 0xEB and recv_data[1] == 0x90):
+                if (recv_data[3] == 0xAA):   # start cmd ACK
+                    self.msg_btn.setText("Got start cmd ACK")
+                    self.msg_btn.setStyleSheet("background-color : Green")
+                elif (recv_data[3] == 0xEE): # stop cmd ACK
+                    self.msg_btn.setText("Got stop cmd ACK")
+                    self.msg_btn.setStyleSheet("background-color : #ff33ff;")
+                elif (recv_data[3] == 0x11): # cali cmd ACK
+                    self.msg_btn.setText("Got cali cmd ACK")
+                    self.msg_btn.setStyleSheet("background-color : Blue")
+                else:                        # Err cmd ACK
+                    self.msg_btn.setText("Got ERR cmd ACK")
+                    self.msg_btn.setStyleSheet("background-color : Red")
 
-            frame = recv_data[1]
+            elif (recv_data[0] == 0xEB and recv_data[1] == 0xAA):
+                self.connected_ant = int(recv_data[2])
+                self.ant_num.setText(str(self.connected_ant))
 
-            gyrox1_i = recv_data[2:6]
-            gyroy1_i = recv_data[6:10]
-            gyroz1_i = recv_data[10:14]
+            # Data back
+            elif (recv_data[0] == 0xEB and recv_data[1] == 0x9F):
+                ant_num = int(recv_data[2])
 
-            gyrox1_d = struct.unpack('f', gyrox1_i)[0]
-            gyroy1_d = struct.unpack('f', gyroy1_i)[0]
-            gyroz1_d = struct.unpack('f', gyroz1_i)[0]
+                frame_num = int(recv_data[3])
 
-            accelx1_i = recv_data[14:18]
-            accely1_i = recv_data[18:22]
-            accelz1_i = recv_data[22:26]
+                enl_i = int(recv_data[8])
+                enr_i = int(recv_data[9])
 
-            accelx1_d = struct.unpack('f', accelx1_i)[0]
-            accely1_d = struct.unpack('f', accely1_i)[0]
-            accelz1_d = struct.unpack('f', accelz1_i)[0]
+                gyroz_i = recv_data[4:8]
 
-            enl1_i = int(recv_data[26])
-            enr1_i = int(recv_data[27])
+                gyroz_d = struct.unpack('f', gyroz_i)[0]
 
-            chk_1 = recv_data[28]
+                steer = recv_data[11:15]
+                steer_d = struct.unpack('i', steer)[0]
+                print(steer_d)
 
-            self.rovable_num.setText(str(rovable_num))
-            self.frame1.setText(str(frame))
+                self.ant_num_label.setText(str(ant_num))
 
-            self.gyroz1_label.setText(str(round(gyroz1_d, 2)))
-            self.gyroz1_data.pop(0)
-            self.gyroz1_data.append(gyroz1_d)
-            self.gyroz1.clear()
-            self.gyroz1.plot(self.time_index, self.gyroz1_data, pen=pg.mkPen('b', width=2))
+                self.frame_num0.setText(str(frame_num))
 
-            self.enl1_label.setText(str(enl1_i))
-            self.enl1_data.pop(0)
-            self.enl1_data.append(enl1_i)
-            self.enl1.clear()
-            self.enl1.plot(self.time_index, self.enl1_data, pen=pg.mkPen('r', width=2))
+                self.bat1.setValue(recv_data[10])
+                self.batper1_2.setText("{:.0f}".format(recv_data[10]))
 
-            self.enr1_label.setText(str(enr1_i))
-            self.enr1_data.pop(0)
-            self.enr1_data.append(enr1_i)
-            self.enr1.clear()
-            self.enr1.plot(self.time_index, self.enr1_data, pen=pg.mkPen('k', width=2))
+                if (recv_data[2] == 0x00):
+                    objtemperature = recv_data[11:15]
+                    objtemperature_f = struct.unpack('f', objtemperature)[0]
 
-            self.accelx1.setText(str(round(accelx1_d, 2)))
-            self.accely1.setText(str(round(accely1_d, 2)))
-            self.accelz1.setText(str(round(accelz1_d, 2)))
+                    self.sensing.setText("Temperature(K)")
+
+                    # sensor data plot
+                    self.sensor_label.setText("{:.1f}".format(objtemperature_f))
+                    self.sensor_data.pop(0)
+                    self.sensor_data.append(objtemperature_f)
+                    self.sensor.clear()
+                    self.sensor.plot(self.time_index, self.sensor_data, pen=pg.mkPen('w', width=2))
+
+                # orientation data plot
+                self.gyroz_label.setText(str(gyroz_d))
+                self.gyroz_data.pop(0)
+                self.gyroz_data.append(gyroz_d)
+                self.gyroz.clear()
+                self.gyroz.plot(self.time_index, self.gyroz_data, pen=pg.mkPen('w', width=2))
+
+                # enl data plot
+                self.enl_label.setText(str(enl_i))
+                self.enl_data.pop(0)
+                self.enl_data.append(enl_i)
+                self.enl.clear()
+                self.enl.plot(self.time_index, self.enl_data, pen=pg.mkPen('w', width=2))
+
+                # enr data plot
+                self.enr_label.setText(str(enr_i))
+                self.enr_data.pop(0)
+                self.enr_data.append(enr_i)
+                self.enr.clear()
+                self.enr.plot(self.time_index, self.enr_data, pen=pg.mkPen('w', width=2))
+
+    def clear_plot(self):
+        self.sensor.clear()
+        self.enl.clear()
+        self.enr.clear()
+        self.gyroz.clear()
 
 # driver code 
 if __name__ == '__main__': 

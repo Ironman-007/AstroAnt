@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 //battery percentage (https://learn.adafruit.com/bluefruit-nrf52-feather-learning-guide/nrf52-adc)
 #define VBAT_PIN          A6            //A7 for nrf52832, A6 for nrf52840
 #define VBAT_RESOLUTION   0.73242188F   //For 12bit @ 3V reference, resolution is 3000mV/4096steps = 0.732421875mV/step.
@@ -75,7 +74,7 @@ void createBatteryService(){
     //For the permission, the first parameter is the READ, second the WRITE permission
   chrBattPercentage.begin();
 }
-=======
+
 //battery percentage (https://learn.adafruit.com/bluefruit-nrf52-feather-learning-guide/nrf52-adc)
 #define VBAT_PIN          A6            //A7 for nrf52832, A6 for nrf52840
 #define VBAT_RESOLUTION   0.73242188F   //For 12bit @ 3V reference, resolution is 3000mV/4096steps = 0.732421875mV/step.
