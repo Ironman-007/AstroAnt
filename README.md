@@ -13,7 +13,7 @@ Files descriptions:
 
 - The PC program (UI) is the [gui.py](Software/GUI_python/gui.py). Open with command line: ```python3 gui.py```
 
-- The PCB design is in the [PCB](PCB). The [mainboard_v1](Mainboard/mainboard_v1) is the design of the main control board, developed with KiCAD. The others are sensor modules design.
+- The PCB design is in the [PCB](PCB). The [mainboard_v1](PCB/Mainboard/mainboard_v1/) is the design of the main control board, developed with KiCAD. The others are sensor modules design.
 
 - The software of the central station for collecting data and distributing command is in [central_station](Software/Central_station/central_station/).
 
