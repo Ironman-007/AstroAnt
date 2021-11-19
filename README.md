@@ -7,7 +7,7 @@ The AstroAnt is a modular design, and can carry different sensors to finish diff
 
 Files descriptions:
 
-- The 3D model of the robot is in the ./3dmodel/Small_magnets_R821_with_gearbox.
+- The 3D model of the robot is in the [Small_magnets_R821_with_gearbox](3dmodel/Small_magnets_R821_with_gearbox)
 
 - The software for the robot is in ./Software/AstroAnt.
 
