@@ -16,3 +16,5 @@ Files descriptions:
 - The PCB design is in the ./PCB. The Mainboard/mainboard_v1 is the design of the main control board, developed with KiCAD. The others are sensor modules design.
 
 - The software of the central station for collecting data and distributing command is in ./Centralstation/centralstation
+
+- The software of the central station for Camera in ./Centralstation/cam_centralstation
