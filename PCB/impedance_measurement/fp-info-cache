@@ -1,4 +1,4 @@
-19893631884040167
+19898544494668257
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -58821,6 +58821,13 @@ ASFLMB-16.000MHz-LY-T
 4
 4
 Mylib
+Adafruit_feather_nRF52840
+
+
+0
+28
+28
+Mylib
 Arduino_pro_mini
 
 
@@ -59122,6 +59129,13 @@ TP_SMD_1mmx2mm
 1
 1
 Mylib
+TWTADE_12mmx12mm_tactile_switch
+
+
+0
+4
+4
+Mylib
 XB3_24_micro
 
 
@@ -59177,6 +59191,13 @@ mini_SMA_through_hole_connector
 0
 1
 1
+Mylib
+mission_logo
+
+
+0
+0
+0
 Mylib
 mounthole_1.8mm
 
@@ -76978,6 +76999,13 @@ Integrated Circuit
 0
 48
 48
+SamacSys_Parts
+SCD41DR2
+SCD41-D-R2-1
+Integrated Circuit
+0
+21
+21
 SamacSys_Parts
 SKY13416485LF
 SKY13416-485LF-2

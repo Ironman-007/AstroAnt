@@ -96,8 +96,6 @@
 //   // 46,      // P1.14 is not connected per schematic
 // };
 
-
-
 const uint32_t g_ADigitalPinMap[] =
 {
   // D0 .. D13
