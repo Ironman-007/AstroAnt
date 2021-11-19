@@ -11,7 +11,7 @@ Files descriptions:
 
 - The software for the robot is in ./Software/AstroAnt.
 
-- The PC program (UI) is the ./Software/GUI_python/gui.py. Open with command line: "python3 gui.py"
+- The PC program (UI) is the ./Software/GUI_python/gui.py. Open with command line: ```python3 gui.py```
 
 - The PCB design is in the ./PCB. The Mainboard/mainboard_v1 is the design of the main control board, developed with KiCAD. The others are sensor modules design.
 
