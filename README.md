@@ -9,7 +9,7 @@ Files descriptions:
 
 - The 3D model of the robot is in the [Small_magnets_R821_with_gearbox](3dmodel/Small_magnets_R821_with_gearbox).
 
-- The software for the robot is in [AstroAnt](Software/AstroAnt).
+- The firmware of the robot is in [AstroAnt](Software/AstroAnt).
 
 - The PC program (UI) is the [gui.py](Software/GUI_python/gui.py). Open with command line: ```python3 gui.py```
 
