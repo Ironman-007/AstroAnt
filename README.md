@@ -17,4 +17,4 @@ Files descriptions:
 
 - The software of the central station for collecting data and distributing command is in ./Centralstation/centralstation
 
-- The software of the central station for Camera in ./Centralstation/cam_centralstation
+- The software of the central station for Camera in ./Centralstation/cam_central
