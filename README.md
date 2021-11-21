@@ -19,4 +19,4 @@ Files descriptions:
 
 - The software of the central station for Camera in [cam_central](Software/Central_station/cam_central/).
 
-- The Box design for the Zero-G flight test is in [Ant_Test_Box_DEC](dmodel/Ant_Box_DEC/).
+- The Box design for the Zero-G flight test is in [Ant_Test_Box_DEC](3dmodel/Ant_Box_DEC/).
