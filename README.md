@@ -18,3 +18,5 @@ Files descriptions:
 - The software of the central station for collecting data and distributing command is in [central_station](Software/Central_station/central_station/).
 
 - The software of the central station for Camera in [cam_central](Software/Central_station/cam_central/).
+
+- The Box design for the Zero-G flight test is in [Ant_Test_Box_DEC](dmodel/Ant_Box_DEC/).
