@@ -33,7 +33,10 @@ const int msg_bye_cnt = 20;
 
 const int motor_speed = 200;
 
-const uint8_t node_address = 0x00;
+const uint8_t node_address = 0x02;
+
+const int RIGHT = -1;
+const int LEFT  =  1;
 
 // Data for test
 uint8_t reply_buf[20]     = {0xEB,0x9F,node_address,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
@@ -81,6 +84,8 @@ void TimerHandler()
 /* IMU Data */
 float gyroZangle = 0.0;     // Angle calculate using the gyro only
 float gyroZangle_pre = 0.0; // Angle calculate using the gyro only
+
+float gyroZangle_back = 0.0;
 
 float dev_Xangle = 0.0;
 float dev_Yangle = 0.0;
@@ -151,6 +156,18 @@ float steer_f = 0.0;
 // ========== SVD ==========
 float aa = 1.6924895;
 float bb = 6.1480306;
+
+int step_1 = 0;
+int step_2 = 0;
+int step_3 = 0;
+int step_4 = 0;
+int step_5 = 0;
+int step_6 = 0;
+int step_7 = 0;
+int step_8 = 0;
+int step_9 = 0;
+int step_10 = 0;
+int step_11 = 0;
 
 void setup()
 {
@@ -304,6 +321,7 @@ void loop()
         dev_yy = 0;
 
         gyroZangle = 0.0;
+        gyroZangle_pre = 0.0;
 
         // send back command ack
         bleuart.write(stop_ack_buf, msg_bye_cnt);
@@ -383,7 +401,53 @@ void loop()
     if (start_cmd_flag == 1)
     {
       // =================== Run motor ===================
-      run_motor();
+      if (step_1 == 0
+          && going_forward(100)) // going forward for 150mm
+        step_1 = 1;
+      if (step_1 == 1 && step_2 == 0
+          && turning_angle(RIGHT, 30)) // turning RIGHT for 30 degree
+        step_2 = 1;
+
+      if (step_1 == 1 && step_2 == 1 && step_3 == 0
+          && going_forward(100)) // going forward for 150mm
+        step_3 = 1;
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 0
+          && turning_angle(RIGHT, 60)) // turning RIGHT for 60 degree
+        step_4 = 1;
+
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 0
+          && going_forward(100)) // going forward for 150mm
+        step_5 = 1;
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 1 && step_6 == 0
+          && turning_angle(LEFT, 90)) // turning LEFT for 90 degree
+        step_6 = 1;
+
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 1 && step_6 == 1
+          && step_7 == 0
+          && going_forward(100)) // going forward for 100mm
+        step_7 = 1;
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 1 && step_6 == 1
+          && step_7 == 1 && step_8 == 0
+          && turning_angle(LEFT, 60)) // turning RIGHT for 60 degree
+        step_8 = 1;
+
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 1 && step_6 == 1
+          && step_7 == 1 && step_8 == 1 && step_9 == 0
+          && going_forward(100)) // going forward for 100mm
+        step_9 = 1;
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 1 && step_6 == 1
+          && step_7 == 1 && step_8 == 1 && step_9 == 1 && step_10 == 0
+          && turning_angle(LEFT, 120)) // turning RIGHT for 120 degree
+        step_10 = 1;
+
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 1 && step_6 == 1
+          && step_7 == 1 && step_8 == 1 && step_9 == 1 && step_10 == 1 && step_11 == 0
+          && going_forward(150)) // going forward for 100mm
+        step_11 = 1;
+
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 1 && step_6 == 1
+          && step_7 == 1 && step_8 == 1 && step_9 == 1 && step_10 == 1 && step_11 == 1)
+        stop_motor();
 
       // =================== Frame number ===================
       reply_buf[3] = counter;
@@ -409,8 +473,9 @@ void loop()
       timer = micros();
 
       gyroZangle += gyroZrate * dt;
+      gyroZangle_back += gyroZrate * dt;
 
-      byte * bz = (byte *) &gyroZangle;
+      byte * bz = (byte *) &gyroZangle_back;
 
       memcpy(&reply_buf[4], bz, 4);
 
@@ -438,8 +503,10 @@ void loop()
       // =================== Send data back ===================
       bleuart.write(reply_buf, msg_bye_cnt);
 
+      // =================== Flashing LED ===================
       digitalWrite(LED_RED, !digitalRead(LED_RED));
     }
+
     else if (stop_cmd_flag == 1)
     {
       analogWrite(M1_IN1, 0);
@@ -451,34 +518,36 @@ void loop()
       encoder1Counter = 0;
       encoder2Counter = 0;
     }
+
     timer4Interrupt = false;
+
   }
 }
 
 void stop_motor() {
-  analogWrite(M1_IN1, 0);
-  analogWrite(M1_IN2, 0);
+  analogWrite(M1_IN1, 255);
+  analogWrite(M1_IN2, 255);
 
-  analogWrite(M2_IN1, 0);
-  analogWrite(M2_IN2, 0);
+  analogWrite(M2_IN1, 255);
+  analogWrite(M2_IN2, 255);
 }
 
 void run_motor() {
   // NO PID
-  /*
-  analogWrite(M1_IN1, 230);
+  analogWrite(M1_IN1, 240);
   analogWrite(M1_IN2, 0);
 
   analogWrite(M2_IN1, 0);
-  analogWrite(M2_IN2, 200);
-  */
+  analogWrite(M2_IN2, 250);
 
   // for PID
+  /*
   analogWrite(M1_IN1, motor_speed + steer);
   analogWrite(M1_IN2, 0);
 
   analogWrite(M2_IN1, 0);
   analogWrite(M2_IN2, motor_speed);
+  */
 }
 
 void timer_handler() {
@@ -509,13 +578,76 @@ void connect_callback(uint16_t conn_handle)
 }
 
 // going forward for a distance (dist), in mm
-void going_forward(int dist) {
+int going_forward(int dist) {
   int enl_target = (dist-bb)/aa;
+
+  if ((encoder1Counter/256) < enl_target) {
+    run_motor();
+    return 0;
+  }
+  else {
+    stop_motor();
+    encoder1Counter = 0;
+    encoder2Counter = 0;
+
+    return 1;
+  }
 }
 
 // Turning an angle (dist), in degree
-void turning_angle(int angle) {
-  ;
+int turning_angle(int direction, int angle) {
+  if (direction == RIGHT) {
+    if (gyroZangle >= RIGHT * angle) {
+      turning_right();
+
+      return 0;
+    }
+
+    stop_motor();
+
+    encoder1Counter = 0;
+    encoder2Counter = 0;
+
+    gyroZangle = 0.0;
+    gyroZangle_pre = 0.0;
+
+    return 1;
+  }
+
+  if (direction == LEFT) {
+    if (gyroZangle <= LEFT * angle) {
+      turning_left();
+      return 0;
+    }
+
+    stop_motor();
+
+    encoder1Counter = 0;
+    encoder2Counter = 0;
+
+    gyroZangle = 0.0;
+    gyroZangle_pre = 0.0;
+
+    return 1;
+  }
+}
+
+void turning_left()
+{
+  analogWrite(M1_IN1, 0);
+  analogWrite(M1_IN2, 100);
+
+  analogWrite(M2_IN1, 0);
+  analogWrite(M2_IN2, 100);
+}
+
+void turning_right()
+{
+  analogWrite(M1_IN1, 100);
+  analogWrite(M1_IN2, 0);
+
+  analogWrite(M2_IN1, 100);
+  analogWrite(M2_IN2, 0);
 }
 
 /**
@@ -527,8 +659,4 @@ void disconnect_callback(uint16_t conn_handle, uint8_t reason)
 {
   (void) conn_handle;
   (void) reason;
-
-  // Serial.println();
-  // Serial.print("Disconnected, reason = 0x");
-  // Serial.println(reason, HEX);
 }

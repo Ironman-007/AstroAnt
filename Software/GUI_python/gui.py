@@ -238,11 +238,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def read_port(self):
         if (self.ser.inWaiting()):
-            # print("data incoming...")
             current_time = read_current_time()
+            # print(current_time)
             recv_data = self.ser.read(20)
-
-            # print(recv_data)
 
             if (recv_data[0] == 0xEB and recv_data[1] == 0x90):
                 if (recv_data[3] == 0xAA):   # start cmd ACK
@@ -277,7 +275,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 steer = recv_data[11:15]
                 steer_d = struct.unpack('i', steer)[0]
-                print(steer_d)
+                # print(steer_d)
 
                 self.ant_num_label.setText(str(ant_num))
 

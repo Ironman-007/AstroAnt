@@ -35,8 +35,8 @@ void setup() {
 // the loop function runs over and over again forever
 void loop() {
   analogWrite(M1_IN1, 255);   // turn the LED on (HIGH is the voltage level)
-  analogWrite(M1_IN2, 10);    // turn the LED off by making the voltage LOW
+  analogWrite(M1_IN2, 255);    // turn the LED off by making the voltage LOW
 
-  analogWrite(M2_IN1, 10);   // turn the LED on (HIGH is the voltage level)
+  analogWrite(M2_IN1, 255);   // turn the LED on (HIGH is the voltage level)
   analogWrite(M2_IN2, 255);    // turn the LED off by making the voltage LOW
 }
