@@ -416,7 +416,7 @@ void loop()
         step_4 = 1;
 
       if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 0
-          && going_forward(100)) // going forward for 150mm
+          && going_forward(80)) // going forward for 80mm
         step_5 = 1;
       if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 1 && step_6 == 0
           && turning_angle(LEFT, 90)) // turning LEFT for 90 degree
@@ -635,18 +635,18 @@ int turning_angle(int direction, int angle) {
 void turning_left()
 {
   analogWrite(M1_IN1, 0);
-  analogWrite(M1_IN2, 100);
+  analogWrite(M1_IN2, 160);
 
   analogWrite(M2_IN1, 0);
-  analogWrite(M2_IN2, 100);
+  analogWrite(M2_IN2, 160);
 }
 
 void turning_right()
 {
-  analogWrite(M1_IN1, 100);
+  analogWrite(M1_IN1, 160);
   analogWrite(M1_IN2, 0);
 
-  analogWrite(M2_IN1, 100);
+  analogWrite(M2_IN1, 160);
   analogWrite(M2_IN2, 0);
 }
 

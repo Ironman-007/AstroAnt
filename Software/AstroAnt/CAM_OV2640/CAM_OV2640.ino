@@ -98,8 +98,8 @@ uint8_t start_capture = 0;
 uint8_t read_fifo_burst(ArduCAM myCAM);
 
 void setup() {
-  Serial.begin(115200);
-  while ( !Serial ) delay(10);   // for nrf52840 with native usb
+  // Serial.begin(115200);
+  // while ( !Serial ) delay(10);   // for nrf52840 with native usb
 
   // ======================= BLE setup =======================
   Bluefruit.autoConnLed(true);
@@ -141,12 +141,12 @@ void setup() {
   uint8_t temp;
   #if defined(__SAM3X8E__)
     Wire1.begin();
-    Serial.begin(115200);
-    while(!Serial) delay(10);
+    // Serial.begin(115200);
+    // while(!Serial) delay(10);
   #else
     Wire.begin();
-    Serial.begin(921600);
-    while(!Serial) delay(10);
+    // Serial.begin(921600);
+    // while(!Serial) delay(10);
   #endif
 
   send_ack(CAM_START);
@@ -380,8 +380,8 @@ void send_ack(uint8_t type) {
   ack_buf[3] = type;
   bleuart.write(ack_buf, msg_bye_cnt);
 
-  Serial.print("reply: ");
-  Serial.println(type);
+  // Serial.print("reply: ");
+  // Serial.println(type);
 
   delay(5);
 }
@@ -410,15 +410,15 @@ uint8_t read_fifo_burst(ArduCAM myCAM)
   uint8_t temp = 0, temp_last = 0;
   uint32_t length = 0;
   length = myCAM.read_fifo_length();
-  Serial.println(length, DEC);
+  // Serial.println(length, DEC);
   if (length >= MAX_FIFO_SIZE) //512 kb
   {
-    Serial.println(F("ACK CMD Over size. END"));
+    // Serial.println(F("ACK CMD Over size. END"));
     return 0;
   }
   if (length == 0 ) //0 kb
   {
-    Serial.println(F("ACK CMD Size is 0. END"));
+    // Serial.println(F("ACK CMD Size is 0. END"));
     return 0;
   }
   myCAM.CS_LOW();
@@ -432,14 +432,14 @@ uint8_t read_fifo_burst(ArduCAM myCAM)
     temp =  SPI.transfer(0x00);
     if (is_header == true)
     {
-      Serial.write(temp);
+      //Serial.write(temp);
     }
     else if ((temp == 0xD8) & (temp_last == 0xFF))
     {
       is_header = true;
-      Serial.println(F("ACK IMG END"));
-      Serial.write(temp_last);
-      Serial.write(temp);
+      // Serial.println(F("ACK IMG END"));
+      // Serial.write(temp_last);
+      // Serial.write(temp);
     }
     if ( (temp == 0xD9) && (temp_last == 0xFF) ) //If find the end ,break while,
     break;

@@ -33,7 +33,7 @@ const int msg_bye_cnt = 20;
 
 const int motor_speed = 200;
 
-const uint8_t node_address = 0x00;
+const uint8_t node_address = 0x07;
 
 // Data for test
 uint8_t reply_buf[20]     = {0xEB,0x9F,node_address,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
@@ -465,20 +465,20 @@ void stop_motor() {
 
 void run_motor() {
   // NO PID
-  /*
   analogWrite(M1_IN1, 230);
   analogWrite(M1_IN2, 0);
 
   analogWrite(M2_IN1, 0);
   analogWrite(M2_IN2, 200);
-  */
 
   // for PID
+  /*
   analogWrite(M1_IN1, motor_speed + steer);
   analogWrite(M1_IN2, 0);
 
   analogWrite(M2_IN1, 0);
   analogWrite(M2_IN2, motor_speed);
+  */
 }
 
 void timer_handler() {

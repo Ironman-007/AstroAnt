@@ -324,6 +324,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.enr.clear()
         self.gyroz.clear()
 
+        self.gyroz_data  = [0] * data_len
+        self.enl_data    = [0] * data_len
+        self.enr_data    = [0] * data_len
+        self.sensor_data = [0] * data_len
+
 # driver code 
 if __name__ == '__main__': 
     # creating apyqt5 application 
