@@ -298,7 +298,7 @@ void loop()
 
     bleuart.flush();
 
-    if (recv_msg[2] == 0x00) // Cmd is for this ant.
+    if (recv_msg[2] == node_address) // Cmd is for this ant.
     {
       if (recv_msg[3] == 0xAA) { // Start cmd
         start_cmd_flag = 1;

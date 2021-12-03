@@ -48,12 +48,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
-        self.setFixedSize(850, 770)
+        self.setFixedSize(1497, 770)
 
         #Load the UI Page
         uic.loadUi('astroant.ui', self)
-
-        # self.enr10.setBackground('w')
 
         self.serial_ports_list = []
         self.serial_speed = [115200]

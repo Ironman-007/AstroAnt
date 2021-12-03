@@ -82,15 +82,38 @@ uint8_t connection_num = 0; // for blink pattern
 uint8_t start_cmd[data_cnt+1] = {0xEB,0x90,0x00,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xAF};
 uint8_t stop_cmd[data_cnt+1]  = {0xEB,0x90,0x00,0xEE,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xAF};
 uint8_t cali_cmd[data_cnt+1]  = {0xEB,0x90,0x00,0x11,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xAF};
+
+// command back to PC t indicate a new robot connection
 uint8_t connection_ack[data_cnt+1]  = {0xEB,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
 int CMD_TST_PIN = 9;
 int CMD_TST_PIN_val = 0;
 int CMD_TST_sent_flag = 0;
 
-int CALI_CMD_PIN  = 5;
-int START_CMD_PIN = 6;
-int STOP_CMD_PIN  = 9;
+// ============= Control pins for each robot =============
+// #4: bridging test
+int CALI_CMD_PIN_4  = 22; // b1
+int START_CMD_PIN_4 = 5;  // b2
+int STOP_CMD_PIN_4  = 6;  // b3
+
+// #5: impedance test
+int CALI_CMD_PIN_5  = 11; // b4
+int START_CMD_PIN_5 = 10; // b5
+int STOP_CMD_PIN_5  = 9;  // b6
+
+// #1: knocking
+int START_CMD_PIN_1 = 13; // b7
+int STOP_CMD_PIN_1  = 12; // b8
+
+// #2: tracking
+int CALI_CMD_PIN_2  = A5; // b9
+int START_CMD_PIN_2 = A4; // b10
+int STOP_CMD_PIN_2  = A3; // b11
+
+// #0: Temperature
+int CALI_CMD_PIN_0  = A0; // b12
+int START_CMD_PIN_0 = A1; // b13
+int STOP_CMD_PIN_0  = A2; // b14
 
 int CALI_CMD_PIN_val  = 0;
 int START_CMD_PIN_val = 0;
@@ -109,14 +132,24 @@ void setup()
   blinkTimer.begin(100, blink_timer_callback);
   blinkTimer.start();
 
-  // pinMode(CMD_TST_PIN, INPUT);
-  pinMode(CALI_CMD_PIN, INPUT);
-  pinMode(START_CMD_PIN, INPUT);
-  pinMode(STOP_CMD_PIN, INPUT);
+  pinMode(CALI_CMD_PIN_4, INPUT);
+  pinMode(START_CMD_PIN_4, INPUT);
+  pinMode(STOP_CMD_PIN_4, INPUT);
 
-  // pinMode(CALI_CMD_PIN, INPUT_PULLUP);
-  // pinMode(START_CMD_PIN, INPUT_PULLUP);
-  // pinMode(STOP_CMD_PIN, INPUT_PULLUP);
+  pinMode(CALI_CMD_PIN_5, INPUT);
+  pinMode(START_CMD_PIN_5, INPUT);
+  pinMode(STOP_CMD_PIN_5, INPUT);
+
+  pinMode(START_CMD_PIN_1, INPUT);
+  pinMode(STOP_CMD_PIN_1, INPUT);
+
+  pinMode(CALI_CMD_PIN_2, INPUT);
+  pinMode(START_CMD_PIN_2, INPUT);
+  pinMode(STOP_CMD_PIN_2, INPUT);
+
+  pinMode(CALI_CMD_PIN_0, INPUT);
+  pinMode(START_CMD_PIN_0, INPUT);
+  pinMode(STOP_CMD_PIN_0, INPUT);
 
   // attachInterrupt(digitalPinToInterrupt(CMD_TST_PIN), send_tst_cmd, FALLING);
 
@@ -277,19 +310,16 @@ void bleuart_rx_callback(BLEClientUart& uart_svc)
  */
 void sendAll(const uint8_t* str)
 {
-  // Serial.print("[Send to All]: ");
-  // Serial.println(str);
-
-  // for(uint8_t id=0; id < BLE_MAX_CONNECTION; id++)
-  // {
-    prph_info_t* peer = &prphs[0];
+  for(uint8_t id=0; id < BLE_MAX_CONNECTION; id++)
+  {
+    prph_info_t* peer = &prphs[id];
 
     if ( peer->bleuart.discovered() )
     {
       // Serial.println("peer->bleuart.discovered()");
       peer->bleuart.write(str, data_cnt);
     }
-  // }
+  }
 }
 
 /*
@@ -302,14 +332,37 @@ void loop()
 {
   // First check if we are connected to any peripherals
   if (Bluefruit.Central.connected()) {
-    CALI_CMD_PIN_val = digitalRead(CALI_CMD_PIN);
-    START_CMD_PIN_val = digitalRead(START_CMD_PIN);
-    STOP_CMD_PIN_val = digitalRead(STOP_CMD_PIN);
+    if (digitalRead(CALI_CMD_PIN_4) == LOW || digitalRead(CALI_CMD_PIN_5) == LOW ||
+        digitalRead(CALI_CMD_PIN_2) == LOW || digitalRead(CALI_CMD_PIN_0) == LOW)
+      CALI_CMD_PIN_val = 0;
+    else
+      CALI_CMD_PIN_val = 1;
+
+    if (digitalRead(START_CMD_PIN_4) == LOW || digitalRead(START_CMD_PIN_5) == LOW ||
+        digitalRead(START_CMD_PIN_1) == LOW || digitalRead(START_CMD_PIN_2) == LOW ||
+        digitalRead(START_CMD_PIN_0) == LOW)
+      START_CMD_PIN_val = 0;
+    else
+      START_CMD_PIN_val = 1;
+
+    if (digitalRead(STOP_CMD_PIN_4) == LOW || digitalRead(STOP_CMD_PIN_5) == LOW ||
+        digitalRead(STOP_CMD_PIN_1) == LOW || digitalRead(STOP_CMD_PIN_2) == LOW ||
+        digitalRead(STOP_CMD_PIN_0) == LOW)
+      STOP_CMD_PIN_val = 0;
+    else
+      STOP_CMD_PIN_val = 1;
+
+    /*
+    CALI_CMD_PIN_val  = digitalRead(CALI_CMD_PIN_4)  & digitalRead(CALI_CMD_PIN_5)  & digitalRead(CALI_CMD_PIN_2)  & digitalRead(CALI_CMD_PIN_0);
+    START_CMD_PIN_val = digitalRead(START_CMD_PIN_4) & digitalRead(START_CMD_PIN_5) & digitalRead(START_CMD_PIN_1) & digitalRead(START_CMD_PIN_2) & digitalRead(START_CMD_PIN_0);
+    STOP_CMD_PIN_val  = digitalRead(STOP_CMD_PIN_4)  & digitalRead(STOP_CMD_PIN_5)  & digitalRead(STOP_CMD_PIN_1)  & digitalRead(STOP_CMD_PIN_2)  & digitalRead(STOP_CMD_PIN_0);
+    */
 
     if (CALI_CMD_PIN_val == 0)
     {
       if (CALI_CMD_sent_flag == 0)
       {
+        assemble_cali_cmd();
         sendAll(cali_cmd);
         CALI_CMD_sent_flag = 1;
       }
@@ -321,6 +374,7 @@ void loop()
     {
       if (START_CMD_sent_flag == 0)
       {
+        assemble_start_cmd();
         sendAll(start_cmd);
         START_CMD_sent_flag = 1;
       }
@@ -332,6 +386,7 @@ void loop()
     {
       if (STOP_CMD_sent_flag == 0)
       {
+        assemble_stop_cmd();
         sendAll(stop_cmd);
         STOP_CMD_sent_flag = 1;
       }
@@ -339,6 +394,29 @@ void loop()
     else
       STOP_CMD_sent_flag = 0;
   }
+}
+
+void assemble_cali_cmd() {
+  if (digitalRead(CALI_CMD_PIN_4) == 0) cali_cmd[2] = 0x04;
+  if (digitalRead(CALI_CMD_PIN_5) == 0) cali_cmd[2] = 0x05;
+  if (digitalRead(CALI_CMD_PIN_2) == 0) cali_cmd[2] = 0x02;
+  if (digitalRead(CALI_CMD_PIN_0) == 0) cali_cmd[2] = 0x00;
+}
+
+void assemble_start_cmd(){
+  if (digitalRead(START_CMD_PIN_4) == 0) start_cmd[2] = 0x04;
+  if (digitalRead(START_CMD_PIN_5) == 0) start_cmd[2] = 0x05;
+  if (digitalRead(START_CMD_PIN_1) == 0) start_cmd[2] = 0x01;
+  if (digitalRead(START_CMD_PIN_2) == 0) start_cmd[2] = 0x02;
+  if (digitalRead(START_CMD_PIN_0) == 0) start_cmd[2] = 0x00;
+}
+
+void assemble_stop_cmd(){
+  if (digitalRead(STOP_CMD_PIN_4) == 0) stop_cmd[2] = 0x04;
+  if (digitalRead(STOP_CMD_PIN_5) == 0) stop_cmd[2] = 0x05;
+  if (digitalRead(STOP_CMD_PIN_1) == 0) stop_cmd[2] = 0x01;
+  if (digitalRead(STOP_CMD_PIN_2) == 0) stop_cmd[2] = 0x02;
+  if (digitalRead(STOP_CMD_PIN_0) == 0) stop_cmd[2] = 0x00;
 }
 
 /**
