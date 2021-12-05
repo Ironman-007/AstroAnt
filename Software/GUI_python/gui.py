@@ -66,7 +66,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.close_btn.clicked.connect(self.close)
         self.start_btn.clicked.connect(self.start_read_port)
         self.stop_btn.clicked.connect(self.stop_read_port)
-        self.cali_btn.clicked.connect(self.send_cali_cmd)
 
         self.gyroz_data  = [0] * data_len
         self.enl_data    = [0] * data_len
@@ -244,12 +243,16 @@ class MainWindow(QtWidgets.QMainWindow):
                 if (recv_data[3] == 0xAA):   # start cmd ACK
                     self.msg_btn.setText("Got start cmd ACK")
                     self.msg_btn.setStyleSheet("background-color : Green")
+
                 elif (recv_data[3] == 0xEE): # stop cmd ACK
                     self.msg_btn.setText("Got stop cmd ACK")
                     self.msg_btn.setStyleSheet("background-color : #ff33ff;")
+                    self.file.close()
+
                 elif (recv_data[3] == 0x11): # cali cmd ACK
                     self.msg_btn.setText("Got cali cmd ACK")
                     self.msg_btn.setStyleSheet("background-color : Blue")
+
                 else:                        # Err cmd ACK
                     self.msg_btn.setText("Got ERR cmd ACK")
                     self.msg_btn.setStyleSheet("background-color : Red")
@@ -258,11 +261,44 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.connected_ant = int(recv_data[2])
                 self.ant_num.setText(str(self.connected_ant))
 
+            elif (recv_data[0] == 0xEB and recv_data[1] == 0xFF):
+                which_ant = str(recv_data[2])
+
+                while (os.path.isfile(which_ant)):
+                    which_ant = which_ant + "1"
+                self.file = open(which_ant, "wb")
+
+            # elif (recv_data[0] == 0xEB and recv_data[1] == 0x11):
+                # self.file.close()
+                # pass
+
             # Data back
             elif (recv_data[0] == 0xEB and recv_data[1] == 0x9F):
-                ant_num = int(recv_data[2])
+                self.file.write(recv_data)
 
+                ant_num = int(recv_data[2])
                 frame_num = int(recv_data[3])
+
+                which_ant = str(ant_num)
+
+                self.info1.setText("#"+which_ant)
+                self.info1.setStyleSheet("background-color : Blue")
+
+                self.info2.setText(str(frame_num))
+                self.info2.setStyleSheet("background-color : Green")
+
+                self.info3.setStyleSheet("background-color : Red")
+
+                if (recv_data[2] == 0x00):
+                    self.info3.setText("Temperature")
+                elif (recv_data[2] == 0x04):
+                    self.info3.setText("Bridging")
+                elif (recv_data[2] == 0x02):
+                    self.info3.setText("Tracking")
+                elif (recv_data[2] == 0x05):
+                    self.info3.setText("Impedance")
+                elif (recv_data[2] == 0x01):
+                    self.info3.setText("knocking")
 
                 enl_i = int(recv_data[8])
                 enr_i = int(recv_data[9])
@@ -282,7 +318,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.bat1.setValue(recv_data[10])
                 self.batper1_2.setText("{:.0f}".format(recv_data[10]))
 
-                if (recv_data[2] == 0x00):
+                if (recv_data[2] == 0x00): # data from Temp_ant
                     objtemperature = recv_data[11:15]
                     objtemperature_f = struct.unpack('f', objtemperature)[0]
 
@@ -292,6 +328,20 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.sensor_label.setText("{:.1f}".format(objtemperature_f))
                     self.sensor_data.pop(0)
                     self.sensor_data.append(objtemperature_f)
+                    self.sensor.clear()
+                    self.sensor.plot(self.time_index, self.sensor_data, pen=pg.mkPen('w', width=2))
+
+                if (recv_data[2] == 0x05): # data from Temp_ant
+                    impedance = recv_data[11:19]
+                    impedance_f = struct.unpack('d', impedance)[0] # double datatype
+                    impedance_f = float(impedance_f)
+
+                    self.sensing.setText("Absolute Impedance")
+
+                    # sensor data plot
+                    self.sensor_label.setText("{:.1f}".format(impedance_f))
+                    self.sensor_data.pop(0)
+                    self.sensor_data.append(impedance_f)
                     self.sensor.clear()
                     self.sensor.plot(self.time_index, self.sensor_data, pen=pg.mkPen('w', width=2))
 

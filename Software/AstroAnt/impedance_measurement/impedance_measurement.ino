@@ -1,78 +1,253 @@
-/*
-ad5933-test
-    Reads impedance values from the AD5933 over I2C and prints them serially.
-*/
+/*********************************************************************
+ This is an example for our nRF52 based Bluefruit LE modules
 
-#include <Wire.h>
-#include <SPI.h>
-#include "AD5933.h"
+ Pick one up today in the adafruit shop!
+
+ Adafruit invests time and resources providing this open source code,
+ please support Adafruit and open-source hardware by purchasing
+ products from Adafruit!
+
+ MIT license, check LICENSE for more information
+ All text above, and the splash screen below must be included in
+ any redistribution
+*********************************************************************/
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
+#include <SPI.h>
+#include <Wire.h>
 #include <bluefruit.h>
 #include <Adafruit_LittleFS.h>
 #include <InternalFileSystem.h>
 #include "NRF52TimerInterrupt.h"
 #include "NRF52_ISR_Timer.h"
+#include "AD5933.h"
 
-//#define START_FREQ  (1000)
-//#define FREQ_INCR   (500)
-#define NUM_INCR    (99)
-//#define REF_RESIST  (10000)
+// BLE Service
+BLEDfu  bledfu;  // OTA DFU service
+BLEDis  bledis;  // device information
+BLEUart bleuart; // uart over ble
+BLEBas  blebas;  // battery
 
+char* devece_name = "BridgeAnt";
+
+const int msg_bye_cnt = 20;
+
+const int motor_speed = 200;
+
+const uint8_t node_address = 0x05;
+
+// Data for test
+uint8_t reply_buf[20]     = {0xEB,0x9F,node_address,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+// ACK frame
+uint8_t start_ack_buf[20] = {0xEB,0x90,node_address,0xAA,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+uint8_t cali_ack_buf[20]  = {0xEB,0x90,node_address,0x11,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+uint8_t stop_ack_buf[20]  = {0xEB,0x90,node_address,0xEE,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+uint8_t err_ack_buf[20]   = {0xEB,0x90,node_address,0xFF,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+
+uint8_t recv_msg[msg_bye_cnt+1] = {0};
+
+int start_cmd_flag = 0;
+int stop_cmd_flag = 0;
+int cali_cmd_flag = 0;
+int cali_done_flag = 0;
+int error_cmd_flag = 0;
+
+uint8_t recv_cmd = 0;
+
+const int batt_pin = A0;
+int batt_v = 0;
+int battValue = 0;
+uint8_t batt_level = 0x00;
+uint8_t counter = 0;
+
+// =========== MPU6050 ===========
+Adafruit_MPU6050 mpu;
+
+// =========== interrupt parameter ===========
+#define HW_TIMER_INTERVAL_MS 1
+
+NRF52Timer ITimer(NRF_TIMER_1);
+NRF52_ISR_Timer ISR_Timer;
+
+// interrupt interval: send back data every 50ms
+#define TIMER_INTERVAL_50ms 50L
+bool timer4Interrupt = false;
+
+void TimerHandler()
+{
+  ISR_Timer.run();
+}
+
+// ========= PID parameters ==========
+/* IMU Data */
+float gyroZangle = 0.0;     // Angle calculate using the gyro only
+float gyroZangle_pre = 0.0; // Angle calculate using the gyro only
+
+float dev_Xangle = 0.0;
+float dev_Yangle = 0.0;
+float dev_Zangle = 0.0;
+
+float gyroXrate = 0.0;
+float gyroYrate = 0.0;
+float gyroZrate = 0.0;
+
+float accelx = 0.0;
+float accely = 0.0;
+float accelz = 0.0;
+
+float yy = 0;
+float yy_acc = 0;
+float yy_pre = 0;
+float dev_yy = 0;
+
+// Play with the PID parameters
+float tau_p = 50;
+float tau_d = 10;
+float tau_i = 1;
+
+// Encoder counter
+uint16_t encoder1Counter = 0;
+uint16_t encoder2Counter = 0;
+
+uint8_t encoder1Counter_pre = 0;
+uint8_t encoder2Counter_pre = 0;
+
+signed char dev_encoder1Counter = 0;
+signed char dev_encoder2Counter = 0;
+
+const int cali_data_len = 40; // accumulate 2s of IMU data for calibration.
+
+float shift_reg_x[cali_data_len] = {0};
+float shift_reg_y[cali_data_len] = {0};
+float shift_reg_z[cali_data_len] = {0};
+
+uint32_t timer = 0;
+
+int i = 0;
+int ii = 0;
+
+float cali_sum_x = 0.0;
+float cali_x = 0.0;
+
+float cali_sum_y = 0.0;
+float cali_y = 0.0;
+
+float cali_sum_z = 0.0;
+float cali_z = 0.0;
+
+float cali_bias_x = 0.0;
+float cali_bias_y = 0.0;
+float cali_bias_z = 0.0;
+
+int ix = 0;
+int iy = 0;
+int iz = 0;
+int ig = 0;
+
+int steer = 0;
+float steer_f = 0.0;
+
+// int overflow_flag = 0;
+
+// ========== SVD ==========
+float aa = 1.6924895;
+float bb = 6.1480306;
+
+//=========== AD5933 ===========
 unsigned long START_FREQ =  1000;
-unsigned long FREQ_INCR  =   500;
-//int NUM_INCR   =    10;
+unsigned long FREQ_INCR  =   100;
+const int NUM_INCR = 0;
 unsigned long REF_RESIST = 10000;
-
-#define CMD_BYTE_CNT 17
-
-// Pins
-// Node
-
-#define SET_PARA_CMD 1
-#define CALI_CMD     2
-#define SWEEP_CMD    3
-#define START_CALI   4
-#define START_SWEEP  5
-#define SWEEP_DATA   6
-#define SWEEP_DONE   7
-
-#define IGNORE_CMD   0
-
-const byte address[6] = "0000F";
-
-const byte sweep_done_ack[CMD_BYTE_CNT] = {0xBB,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA};
-const byte sweep_start_ack[CMD_BYTE_CNT] = {0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA};
-byte sweep_data_ack[CMD_BYTE_CNT] = {0xEE};
 
 double gain[NUM_INCR+1];
 int phase[NUM_INCR+1];
 
-int A=5;
-int B=6;
-int C=7;
+// the pin used for on-board calibration the AD5933
+int cali_pin = 9;
 
-// which antenna
-int side_number = 4;
-
-int com_v1 = 4;
-int com_v2 = 3;
-int com_v3 = 2;
-
-uint8_t cmd_recv[CMD_BYTE_CNT] = {0};
-uint8_t ack[CMD_BYTE_CNT] = {0};
-
-int cmd = 0;
-int i = 0;
-
-int cali_pin = ;
-
-void setup(void)
+void setup()
 {
   pinMode(cali_pin, OUTPUT);
+  digitalWrite(cali_pin, LOW); // if low, connected with the 20ohm cali resistor.
 
-  digitalWrite(cali_pin, HIGH);
+  pinMode(LED_RED, OUTPUT);
 
+  pinMode(M1_IN1, OUTPUT);
+  pinMode(M1_IN2, OUTPUT);
+  pinMode(M2_IN1, OUTPUT);
+  pinMode(M2_IN2, OUTPUT);
+
+  pinMode(Encoder_A1, INPUT);
+  pinMode(Encoder_A2, INPUT);
+
+  attachInterrupt(Encoder_A1, ENC1_INT_Routine, RISING);
+  attachInterrupt(Encoder_A2, ENC2_INT_Routine, RISING);
+
+  // Setup the BLE LED to be enabled on CONNECT
+  // Note: This is actually the default behavior, but provided
+  // here in case you want to control this LED manually via PIN 19
+  Bluefruit.autoConnLed(true);
+
+  // Config the peripheral connection with maximum bandwidth 
+  // more SRAM required by SoftDevice
+  // Note: All config***() function must be called before begin()
+  Bluefruit.configPrphBandwidth(BANDWIDTH_MAX);
+
+  Bluefruit.begin();
+  Bluefruit.setTxPower(4);    // Check bluefruit.h for supported values
+  //Bluefruit.setName(getMcuUniqueID()); // useful testing with multiple central connections
+  Bluefruit.setName(devece_name);
+  Bluefruit.Periph.setConnectCallback(connect_callback);
+  Bluefruit.Periph.setDisconnectCallback(disconnect_callback);
+
+  // To be consistent OTA DFU should be added first if it exists
+  bledfu.begin();
+
+  // Configure and Start Device Information Service
+  bledis.setManufacturer("Adafruit Industries");
+  bledis.setModel("Bluefruit Feather52");
+  bledis.begin();
+
+  // Configure and Start BLE Uart Service
+  bleuart.begin();
+
+  // Start BLE Battery Service
+  blebas.begin();
+  blebas.write(10);
+
+  // Set up and start advertising
+  startAdv();
+
+  // Serial.println("Please use Adafruit's Bluefruit LE app to connect in UART mode");
+  // Serial.println("Once connected, enter character(s) that you wish to send");
+
+  // ============== Interrupt ==============
+  // Interval in microsecs
+  ITimer.attachInterruptInterval(HW_TIMER_INTERVAL_MS * 1000, TimerHandler);
+
+  // Just to demonstrate, don't use too many ISR Timers if not absolutely necessary
+  // You can use up to 16 timer for each ISR_Timer
+  ISR_Timer.setInterval(TIMER_INTERVAL_50ms, timer_handler);
+
+  // ============== MPU6050 ==============
+  cali_sum_x = 0.0;
+  cali_sum_y = 0.0;
+  cali_sum_z = 0.0;
+
+  // Try to initialize!
+  mpu.begin();
+
+  mpu.setAccelerometerRange(MPU6050_RANGE_2_G);
+  mpu.setGyroRange(MPU6050_RANGE_250_DEG);
+  mpu.setFilterBandwidth(MPU6050_BAND_10_HZ);
+  delay(10);
+
+  gyroZangle = 0.0;
+
+  yy = 0;
+  dev_yy = 0;
+
+  // ================= AD5933 parameters =================
   // Begin I2C
   Wire.begin();
 
@@ -85,76 +260,230 @@ void setup(void)
         {
             while (true) ;
         }
+
+  timer = micros();
 }
 
-void loop(void)
+void startAdv(void)
 {
-  if (radio.available()) {
-    radio.read(&cmd_recv, CMD_BYTE_CNT);
+  // Advertising packet
+  Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);
+  Bluefruit.Advertising.addTxPower();
 
-    cmd = parse_cmd(cmd_recv[0]);
+  // Include bleuart 128-bit uuid
+  Bluefruit.Advertising.addService(bleuart);
 
-    switch(cmd) {
-      case SET_PARA_CMD:
-        set_sweep_parameters();
-        send_ack(SET_PARA_CMD);
-        break;
+  // Secondary Scan Response packet (optional)
+  // Since there is no room for 'Name' in Advertising packet
+  Bluefruit.ScanResponse.addName();
 
-      case CALI_CMD:
-        send_ack(START_CALI);
-        initiate_calibration();
-        send_ack(CALI_CMD);
-        break;
+  /* Start Advertising
+   * - Enable auto advertising if disconnected
+   * - Interval:  fast mode = 20 ms, slow mode = 152.5 ms
+   * - Timeout for fast mode is 30 seconds
+   * - Start(timeout) with timeout = 0 will advertise forever (until connected)
+   * 
+   * For recommended advertising interval
+   * https://developer.apple.com/library/content/qa/qa1931/_index.html   
+   */
+  Bluefruit.Advertising.restartOnDisconnect(true);
+  Bluefruit.Advertising.setInterval(32, 244);    // in unit of 0.625 ms
+  Bluefruit.Advertising.setFastTimeout(30);      // number of seconds in fast mode
+  Bluefruit.Advertising.start(0);                // 0 = Don't stop advertising after n seconds  
+}
 
-      case SWEEP_CMD:
-        send_ack(START_SWEEP);
-        frequencySweepEasy();
-//        start_sweep();
-        send_ack(SWEEP_DONE);
-        break;
+void loop()
+{
+  // Forward from BLEUART to HW Serial
+  if ( bleuart.available() )
+  {
+    // char ch[msg_bye_cnt+1] = {0};
+    int ch = 0;
+    ch = bleuart.read(recv_msg, msg_bye_cnt);
 
-      default:
-//        Serial.println("OTHERS");
-        break;
+    recv_cmd = recv_msg[3];
+
+    bleuart.flush();
+
+    if (recv_msg[2] == node_address) // Cmd is for this ant.
+    {
+      if (recv_msg[3] == 0xAA) { // Start cmd
+        start_cmd_flag = 1;
+        stop_cmd_flag  = 0;
+        cali_cmd_flag  = 0;
+        cali_done_flag = 0;
+        // send back command ack
+        bleuart.write(start_ack_buf, msg_bye_cnt);
+        delay(5);
+      }
+      else if (recv_msg[3] == 0xEE) { // Stop cmd
+        start_cmd_flag = 0;
+        stop_cmd_flag  = 1;
+        cali_cmd_flag  = 0;
+        cali_done_flag = 0;
+
+        yy_acc = 0;
+        yy_pre = 0;
+        yy = 0;
+        dev_yy = 0;
+
+        gyroZangle = 0.0;
+
+        // send back command ack
+        bleuart.write(stop_ack_buf, msg_bye_cnt);
+        delay(5);
+      }
+      else if (recv_msg[3] == 0x11) { // Cali cmd
+        start_cmd_flag = 0;
+        stop_cmd_flag  = 0;
+        cali_cmd_flag  = 1;
+        cali_done_flag = 0;
+        // send back command ack
+        delay(5);
+      }
+      else { // Wrong cmd
+        start_cmd_flag = 0;
+        stop_cmd_flag  = 0;
+        cali_cmd_flag  = 0;
+        cali_done_flag = 0;
+        // send back command ack
+        bleuart.write(err_ack_buf, msg_bye_cnt);
+        delay(5);
+      }
     }
   }
-}
 
-void radio_listening() {
-  radio.openReadingPipe(0, address);
-  radio.startListening();
-}
+  if (timer4Interrupt == true)
+  {
+    // ============= capturing gyro data in shift register =============
+    sensors_event_t a, g, temp;
+    mpu.getEvent(&a, &g, &temp);
 
-void radio_sending() {
-  radio.openWritingPipe(address);
-  radio.stopListening();
-}
+    gyroXrate = (g.gyro.x)*57.2958-cali_x;
+    gyroYrate = (g.gyro.y)*57.2958-cali_y;
+    gyroZrate = (g.gyro.z)*57.2958-cali_z;
 
-int parse_cmd(byte cmd_id) {
-  if (cmd_id == 0xEA)
-    return SET_PARA_CMD;
-  else if (cmd_id == 0xCA)
-    return CALI_CMD;
-  else if (cmd_id == 0xEE)
-    return SWEEP_CMD;
-  else
-    return IGNORE_CMD;
-}
+    // Storing data in shift registers
+    for (ix=cali_data_len-1; ix>0; ix--)
+      shift_reg_x[ix] = shift_reg_x[ix-1];
+    shift_reg_x[0] = gyroXrate;
 
-void set_sweep_parameters() {
-  START_FREQ = cmd_recv[1]*pow(256, 3) + cmd_recv[2]*pow(256, 2) + cmd_recv[3]*pow(256, 1) + cmd_recv[4];
-  FREQ_INCR =  cmd_recv[5]*pow(256, 3) + cmd_recv[6]*pow(256, 2) + cmd_recv[7]*pow(256, 1) + cmd_recv[8];
-  REF_RESIST = cmd_recv[9]*pow(256, 3) + cmd_recv[10]*pow(256, 2) + cmd_recv[11]*pow(256, 1) + cmd_recv[12];
+    for (iy=cali_data_len-1; iy>0; iy--)
+      shift_reg_y[iy] = shift_reg_y[iy-1];
+    shift_reg_y[0] = gyroYrate;
 
-  if (!(AD5933::reset() &&
-        AD5933::setInternalClock(true) &&
-        AD5933::setStartFrequency(START_FREQ) &&
-        AD5933::setIncrementFrequency(FREQ_INCR) &&
-        AD5933::setNumberIncrements(NUM_INCR) &&
-        AD5933::setPGAGain(PGA_GAIN_X1)))
-        {
-            while (true) ;
-        }
+    for (iz=cali_data_len-1; iz>0; iz--)
+      shift_reg_z[iz] = shift_reg_z[iz-1];
+    shift_reg_z[0] = gyroZrate;
+
+    // ====================================================
+    // ===               Cali command                   ===
+    // ====================================================
+    // Got the cali cmd and the cali is not done
+    if (cali_cmd_flag == 1 && cali_done_flag == 0)
+    {
+      // IMU calibration
+      cali_sum_x = 0.0;
+      cali_sum_y = 0.0;
+      cali_sum_z = 0.0;
+
+      for (ix=0; ix<cali_data_len; ix++) cali_sum_x += shift_reg_x[ix];
+      for (iy=0; iy<cali_data_len; iy++) cali_sum_y += shift_reg_y[iy];
+      for (iz=0; iz<cali_data_len; iz++) cali_sum_z += shift_reg_z[iz];
+
+      cali_bias_x = cali_sum_x/cali_data_len;
+      cali_bias_y = cali_sum_y/cali_data_len;
+      cali_bias_z = cali_sum_z/cali_data_len;
+
+      // calculate bias
+      cali_x = cali_bias_x + cali_x;
+      cali_y = cali_bias_y + cali_y;
+      cali_z = cali_bias_z + cali_z;
+
+      cali_done_flag = 1;
+
+      // AD5933 calibration
+      digitalWrite(cali_pin, LOW);
+      initiate_calibration();
+
+      bleuart.write(cali_ack_buf, msg_bye_cnt);
+    }
+
+    if (start_cmd_flag == 1)
+    {
+      // =================== Run motor ===================
+      run_motor();
+
+      // =================== Frame number ===================
+      reply_buf[3] = counter;
+
+      // =================== Read Battery level ===================
+      battValue = analogRead(batt_pin);
+      batt_v = float(battValue)/1024*3.3*2*1.09*1000;
+
+      if(batt_v<3300) batt_level = 0;
+      if(batt_v<3600) batt_level = (batt_v-3300)/30;
+      else {
+        batt_v = batt_v-3600;
+        batt_level = (10 + (batt_v * 0.15F ))>100? 100:(10 + (batt_v * 0.15F ));
+      }
+      reply_buf[10] = batt_level;
+
+      // =================== Encoder ===================
+      reply_buf[8] = encoder1Counter/256;
+      reply_buf[9] = encoder2Counter/256;
+
+      // =================== PID control ===================
+      float dt = (float)(micros() - timer) / 1000000; // Calculate delta time
+      timer = micros();
+
+      gyroZangle += gyroZrate * dt;
+
+      byte * bz = (byte *) &gyroZangle;
+
+      memcpy(&reply_buf[4], bz, 4);
+
+      dev_encoder2Counter = encoder2Counter - encoder2Counter_pre;
+      if (dev_encoder2Counter < 0)  dev_encoder2Counter += 255;
+      encoder2Counter_pre = encoder2Counter;
+
+      dev_Zangle = gyroZangle - gyroZangle_pre;
+      gyroZangle_pre = gyroZangle;
+
+      yy_acc += yy;
+      yy_pre = yy;
+      yy = yy_pre + dev_encoder2Counter * sin(dev_Zangle * 0.0174533);
+      dev_yy = yy - yy_pre;
+
+      steer_f = (-tau_p * yy) - (tau_d * dev_yy) - (tau_i * yy_acc);
+      steer = round(steer_f);
+
+      if (steer >= (255-motor_speed)) steer = 255-motor_speed;
+      else if (steer <= -motor_speed) steer = -motor_speed;
+
+      // =================== AD5933 data ===================
+      digitalWrite(cali_pin, HIGH);
+      byte * magnitude = frequencySweepEasy();
+      memcpy(&reply_buf[11], magnitude, 8);
+
+      // =================== Send data back ===================
+      bleuart.write(reply_buf, msg_bye_cnt);
+
+      digitalWrite(LED_RED, !digitalRead(LED_RED));
+    }
+    else if (stop_cmd_flag == 1)
+    {
+      analogWrite(M1_IN1, 0);
+      analogWrite(M1_IN2, 0);
+
+      analogWrite(M2_IN1, 0);
+      analogWrite(M2_IN2, 0);
+
+      encoder1Counter = 0;
+      encoder2Counter = 0;
+    }
+    timer4Interrupt = false;
+  }
 }
 
 void initiate_calibration() {
@@ -164,95 +493,103 @@ void initiate_calibration() {
   AD5933::calibrate(gain, phase, REF_RESIST, NUM_INCR+1);
 }
 
-void start_sweep() {
-//  Serial.println("start_sweep");
-  delay(5000);
-//  Serial.println("sweep done");
-
-  int real[NUM_INCR+1] = {-100, -10, -11, -13, 0, 2, 19991, 90, 1, -10};
-  int img[NUM_INCR+1] = {20, 19, 18, 17, 16, 15, 14, -1, -2, -3};
-  double magnitude[NUM_INCR+1] = {0.0};
-
+byte * frequencySweepEasy() {
+  byte * impedance_b;
   int iii = 0;
+  // Create arrays to hold the data
+  int real[NUM_INCR+1], imag[NUM_INCR+1];
 
-  for (iii = 0; iii < NUM_INCR+1; iii++) {
-    // Compute impedance
-    magnitude[iii] = sqrt(pow(real[iii], 2) + pow(img[iii], 2));
+  // Perform the frequency sweep
+  if (AD5933::frequencySweep(real, imag, NUM_INCR+1)) {
+    for (int iii = 0; iii < NUM_INCR+1; iii++) {
+      byte * real_b = (byte *) &real[iii];
+      byte * img_b = (byte *) &imag[iii];
 
-    byte * real_b = (byte *) &real[iii];
-    byte * img_b = (byte *) &img[iii];
-    byte * magnitude_b = (byte *) &magnitude[iii];
+      // Compute impedance
+      double magnitude = sqrt(pow(real[iii], 2) + pow(imag[iii], 2));
+      double impedance = 1/(magnitude*gain[iii]);
 
-    memcpy(&sweep_data_ack[1], real_b, 2);
-    memcpy(&sweep_data_ack[3], img_b, 2);
-    memcpy(&sweep_data_ack[5], magnitude_b, 8);
-
-    send_ack(SWEEP_DATA);
-
-    delay(100);
-  }
-}
-
-void send_ack(int cmd_type) {
-  radio_sending();
-
-  if (cmd_type == SET_PARA_CMD)
-    radio.write(&cmd_recv, sizeof(cmd_recv));
-
-  else if (cmd_type == CALI_CMD) {
-    cmd_recv[1] = 0xAA;
-    radio.write(&cmd_recv, sizeof(cmd_recv));
-  }
-
-  else if (cmd_type == START_CALI) {
-    cmd_recv[1] = 0x00;
-    radio.write(&cmd_recv, sizeof(cmd_recv));
-  }
-
-  else if (cmd_type == START_SWEEP) {
-    radio.write(&sweep_start_ack, sizeof(sweep_start_ack));
-  }
-
-  else if (cmd_type == SWEEP_DATA) {
-    radio.write(&sweep_data_ack, sizeof(sweep_data_ack));
-  }
-
-  else if (cmd_type == SWEEP_DONE) {
-    radio.write(&sweep_done_ack, sizeof(sweep_done_ack));
-  }
-}
-
-// Easy way to do a frequency sweep. Does an entire frequency sweep at once and
-// stores the data into arrays for processing afterwards. This is easy-to-use,
-// but doesn't allow you to process data in real time.
-void frequencySweepEasy() {
-
-    int iii = 0;
-    // Create arrays to hold the data
-    int real[NUM_INCR+1], imag[NUM_INCR+1];
-
-    // Perform the frequency sweep
-    if (AD5933::frequencySweep(real, imag, NUM_INCR+1)) {
-      // Print the frequency data
-//      int cfreq = START_FREQ;
-//      for (int i = 0; i < NUM_INCR+1; i++, cfreq += FREQ_INCR) {
-      for (int iii = 0; iii < NUM_INCR+1; iii++) {
-        byte * real_b = (byte *) &real[iii];
-        byte * img_b = (byte *) &imag[iii];
-
-        // Compute impedance
-        double magnitude = sqrt(pow(real[iii], 2) + pow(imag[iii], 2));
-        double impedance = 1/(magnitude*gain[iii]);
-
-        byte * impedance_b = (byte *) &impedance;
-
-        memcpy(&sweep_data_ack[1], real_b, 2);
-        memcpy(&sweep_data_ack[3], img_b, 2);
-        memcpy(&sweep_data_ack[5], impedance_b, 8); //for nRF52, double is 8 bytes
-
-        send_ack(SWEEP_DATA);
-
-        delay(100);
-      }
+      impedance_b = (byte *) &impedance;
     }
+
+    return impedance_b;
+  }
+}
+
+void stop_motor() {
+  analogWrite(M1_IN1, 0);
+  analogWrite(M1_IN2, 0);
+
+  analogWrite(M2_IN1, 0);
+  analogWrite(M2_IN2, 0);
+}
+
+void run_motor() {
+  // NO PID
+  /*
+  analogWrite(M1_IN1, 230);
+  analogWrite(M1_IN2, 0);
+
+  analogWrite(M2_IN1, 0);
+  analogWrite(M2_IN2, 200);
+  */
+
+  // for PID
+  analogWrite(M1_IN1, motor_speed + steer);
+  analogWrite(M1_IN2, 0);
+
+  analogWrite(M2_IN1, 0);
+  analogWrite(M2_IN2, motor_speed);
+}
+
+void timer_handler() {
+  timer4Interrupt = true;
+  counter++;
+}
+
+//------------HANDLE ENCODER INTERRUPTS---------------
+void ENC1_INT_Routine() { 
+  encoder1Counter++; 
+}
+
+void ENC2_INT_Routine() { 
+  encoder2Counter++;
+}
+
+// callback invoked when central connects
+void connect_callback(uint16_t conn_handle)
+{
+  // Get the reference to current connection
+  BLEConnection* connection = Bluefruit.Connection(conn_handle);
+
+  char central_name[32] = { 0 };
+  connection->getPeerName(central_name, sizeof(central_name));
+
+  // Serial.print("Connected to ");
+  // Serial.println(central_name);
+}
+
+// going forward for a distance (dist), in mm
+void going_forward(int dist) {
+  int enl_target = (dist-bb)/aa;
+}
+
+// Turning an angle (dist), in degree
+void turning_angle(int angle) {
+  ;
+}
+
+/**
+ * Callback invoked when a connection is dropped
+ * @param conn_handle connection where this event happens
+ * @param reason is a BLE_HCI_STATUS_CODE which can be found in ble_hci.h
+ */
+void disconnect_callback(uint16_t conn_handle, uint8_t reason)
+{
+  (void) conn_handle;
+  (void) reason;
+
+  // Serial.println();
+  // Serial.print("Disconnected, reason = 0x");
+  // Serial.println(reason, HEX);
 }

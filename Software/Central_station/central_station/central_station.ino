@@ -83,6 +83,9 @@ uint8_t start_cmd[data_cnt+1] = {0xEB,0x90,0x00,0xAA,0x00,0x00,0x00,0x00,0x00,0x
 uint8_t stop_cmd[data_cnt+1]  = {0xEB,0x90,0x00,0xEE,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xAF};
 uint8_t cali_cmd[data_cnt+1]  = {0xEB,0x90,0x00,0x11,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xAF};
 
+uint8_t which_ant[data_cnt+1] = {0xEB,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+uint8_t ant_stop[data_cnt+1]  = {0xEB,0x11,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+
 // command back to PC t indicate a new robot connection
 uint8_t connection_ack[data_cnt+1]  = {0xEB,0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
@@ -168,7 +171,7 @@ void setup()
   {
     // Invalid all connection handle
     prphs[idx].conn_handle = BLE_CONN_HANDLE_INVALID;
-    
+
     // All of BLE Central Uart Serivce
     prphs[idx].bleuart.begin();
     prphs[idx].bleuart.setRxCallback(bleuart_rx_callback);
@@ -352,16 +355,15 @@ void loop()
     else
       STOP_CMD_PIN_val = 1;
 
-    /*
-    CALI_CMD_PIN_val  = digitalRead(CALI_CMD_PIN_4)  & digitalRead(CALI_CMD_PIN_5)  & digitalRead(CALI_CMD_PIN_2)  & digitalRead(CALI_CMD_PIN_0);
-    START_CMD_PIN_val = digitalRead(START_CMD_PIN_4) & digitalRead(START_CMD_PIN_5) & digitalRead(START_CMD_PIN_1) & digitalRead(START_CMD_PIN_2) & digitalRead(START_CMD_PIN_0);
-    STOP_CMD_PIN_val  = digitalRead(STOP_CMD_PIN_4)  & digitalRead(STOP_CMD_PIN_5)  & digitalRead(STOP_CMD_PIN_1)  & digitalRead(STOP_CMD_PIN_2)  & digitalRead(STOP_CMD_PIN_0);
-    */
-
     if (CALI_CMD_PIN_val == 0)
     {
       if (CALI_CMD_sent_flag == 0)
       {
+        if (digitalRead(CALI_CMD_PIN_4) == LOW) which_ant[2] = 0x04;
+        if (digitalRead(CALI_CMD_PIN_5) == LOW) which_ant[2] = 0x05;
+        if (digitalRead(CALI_CMD_PIN_2) == LOW) which_ant[2] = 0x02;
+        if (digitalRead(CALI_CMD_PIN_0) == LOW) which_ant[2] = 0x00;
+        Serial.write(which_ant, data_cnt);
         assemble_cali_cmd();
         sendAll(cali_cmd);
         CALI_CMD_sent_flag = 1;
@@ -386,6 +388,11 @@ void loop()
     {
       if (STOP_CMD_sent_flag == 0)
       {
+        if (digitalRead(CALI_CMD_PIN_4) == LOW) ant_stop[2] = 0x04;
+        if (digitalRead(CALI_CMD_PIN_5) == LOW) ant_stop[2] = 0x05;
+        if (digitalRead(CALI_CMD_PIN_2) == LOW) ant_stop[2] = 0x02;
+        if (digitalRead(CALI_CMD_PIN_0) == LOW) ant_stop[2] = 0x00;
+        Serial.write(ant_stop, data_cnt);
         assemble_stop_cmd();
         sendAll(stop_cmd);
         STOP_CMD_sent_flag = 1;

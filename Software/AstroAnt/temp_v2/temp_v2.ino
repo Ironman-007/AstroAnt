@@ -1,4 +1,4 @@
- /*********************************************************************
+/*********************************************************************
  This is an example for our nRF52 based Bluefruit LE modules
 
  Pick one up today in the adafruit shop!
@@ -27,11 +27,16 @@ BLEDis  bledis;  // device information
 BLEUart bleuart; // uart over ble
 BLEBas  blebas;  // battery
 
-char* devece_name = "TempAnt";
+char* devece_name = "BridgeAnt";
 
 const int msg_bye_cnt = 20;
 
+const int motor_speed = 200;
+
 const uint8_t node_address = 0x00;
+
+const int RIGHT = -1;
+const int LEFT  =  1;
 
 // Data for test
 uint8_t reply_buf[20]     = {0xEB,0x9F,node_address,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
@@ -76,11 +81,11 @@ void TimerHandler()
 }
 
 // ========= PID parameters ==========
-const int motor_speed = 200;
-
 /* IMU Data */
 float gyroZangle = 0.0;     // Angle calculate using the gyro only
 float gyroZangle_pre = 0.0; // Angle calculate using the gyro only
+
+float gyroZangle_back = 0.0;
 
 float dev_Xangle = 0.0;
 float dev_Yangle = 0.0;
@@ -99,6 +104,7 @@ float yy_acc = 0;
 float yy_pre = 0;
 float dev_yy = 0;
 
+// Play with the PID parameters
 float tau_p = 50;
 float tau_d = 10;
 float tau_i = 1;
@@ -144,6 +150,16 @@ int ig = 0;
 
 int steer = 0;
 float steer_f = 0.0;
+
+// int overflow_flag = 0;
+
+// ========== SVD ==========
+float aa = 1.6924895;
+float bb = 6.1480306;
+
+int step_1 = 0;
+int step_2 = 0;
+int step_3 = 0;
 
 //https://www.pacer-usa.com/Assets/User/2077-CaliPile_TPiS_1S_1385_5029_27.04.2017.pdf
 // CaliPile Registers
@@ -223,6 +239,9 @@ float Tamb, Tamblp3, Tobj, Tobjlp1, Tobjlp2, Tobjlp2frzn, Tpres, Tmot, Tambshk, 
 
 void setup()
 {
+  // Serial.begin(115200);
+  // while (!Serial);
+
   pinMode(LED_RED, OUTPUT);
 
   pinMode(M1_IN1, OUTPUT);
@@ -270,6 +289,9 @@ void setup()
 
   // Set up and start advertising
   startAdv();
+
+  // Serial.println("Please use Adafruit's Bluefruit LE app to connect in UART mode");
+  // Serial.println("Once connected, enter character(s) that you wish to send");
 
   // ============== Interrupt ==============
   // Interval in microsecs
@@ -435,13 +457,10 @@ void loop()
     ch = bleuart.read(recv_msg, msg_bye_cnt);
 
     recv_cmd = recv_msg[3];
-    // Serial.print(bleuart.available());
-    // Serial.print(" | ");
-    // Serial.println(recv_cmd, HEX);
 
     bleuart.flush();
 
-    if (recv_msg[2] == 0x00) // Cmd is for this ant.
+    if (recv_msg[2] == node_address) // Cmd is for this ant.
     {
       if (recv_msg[3] == 0xAA) { // Start cmd
         start_cmd_flag = 1;
@@ -463,6 +482,9 @@ void loop()
         yy = 0;
         dev_yy = 0;
 
+        gyroZangle = 0.0;
+        gyroZangle_pre = 0.0;
+
         // send back command ack
         bleuart.write(stop_ack_buf, msg_bye_cnt);
         delay(5);
@@ -473,7 +495,6 @@ void loop()
         cali_cmd_flag  = 1;
         cali_done_flag = 0;
         // send back command ack
-        // bleuart.write(cali_ack_buf, msg_bye_cnt);
         delay(5);
       }
       else { // Wrong cmd
@@ -497,10 +518,6 @@ void loop()
     gyroXrate = (g.gyro.x)*57.2958-cali_x;
     gyroYrate = (g.gyro.y)*57.2958-cali_y;
     gyroZrate = (g.gyro.z)*57.2958-cali_z;
-
-    // Serial.print("gyroXrate "); Serial.print(gyroXrate); Serial.print(",");
-    // Serial.print("gyroYrate "); Serial.print(gyroYrate); Serial.print(",");
-    // Serial.print("gyroZrate "); Serial.println(gyroZrate);
 
     // Storing data in shift registers
     for (ix=cali_data_len-1; ix>0; ix--)
@@ -538,16 +555,6 @@ void loop()
       cali_y = cali_bias_y + cali_y;
       cali_z = cali_bias_z + cali_z;
 
-      /*
-      Serial.print("cali_bias_x"); Serial.println(cali_bias_x);
-      Serial.print("cali_bias_y"); Serial.println(cali_bias_y);
-      Serial.print("cali_bias_z"); Serial.println(cali_bias_z);
-
-      Serial.print("cali_x"); Serial.println(cali_x);
-      Serial.print("cali_y"); Serial.println(cali_y);
-      Serial.print("cali_z"); Serial.println(cali_z);
-      */
-
       cali_done_flag = 1;
 
       bleuart.write(cali_ack_buf, msg_bye_cnt);
@@ -556,21 +563,26 @@ void loop()
     if (start_cmd_flag == 1)
     {
       // =================== Run motor ===================
-      analogWrite(M1_IN1, motor_speed + steer);
-      analogWrite(M1_IN2, 0);
+      if (step_1 == 0
+          && going_forward(250)) // going forward for 150mm
+        step_1 = 1;
+      if (step_1 == 1 && step_2 == 0
+          && turning_angle(LEFT, 90)) // turning RIGHT for 30 degree
+        step_2 = 1;
 
-      analogWrite(M2_IN1, 0);
-      analogWrite(M2_IN2, motor_speed);
+      if (step_1 == 1 && step_2 == 1 && step_3 == 0
+          && going_forward(170)) // going forward for 150mm
+        step_3 = 1;
+
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1)
+        stop_motor();
 
       // =================== Frame number ===================
       reply_buf[3] = counter;
 
       // =================== Read Battery level ===================
       battValue = analogRead(batt_pin);
-      // Serial.print(battValue);
-      // Serial.print(" | ");
       batt_v = float(battValue)/1024*3.3*2*1.09*1000;
-      // Serial.println(batt_v);
 
       if(batt_v<3300) batt_level = 0;
       if(batt_v<3600) batt_level = (batt_v-3300)/30;
@@ -594,12 +606,11 @@ void loop()
       timer = micros();
 
       gyroZangle += gyroZrate * dt;
+      gyroZangle_back += gyroZrate * dt;
 
-      byte * bz = (byte *) &gyroZangle;
+      byte * bz = (byte *) &gyroZangle_back;
 
       memcpy(&reply_buf[4], bz, 4);
-
-      // Serial.print("gyroZangle = "); Serial.println(gyroZangle);
 
       dev_encoder2Counter = encoder2Counter - encoder2Counter_pre;
       if (dev_encoder2Counter < 0)  dev_encoder2Counter += 255;
@@ -619,24 +630,13 @@ void loop()
       if (steer >= (255-motor_speed)) steer = 255-motor_speed;
       else if (steer <= -motor_speed) steer = -motor_speed;
 
-      /*
-      if (steer < 0) steer = 0;
-      else if (steer > 255) steer = 255;
-      */
-
-      /*
-      Serial.print(" dev_Zangle = "); Serial.print(dev_Zangle);
-      Serial.print(" yy = "); Serial.print(yy);
-      Serial.print(" dev_yy = "); Serial.print(dev_yy);
-      Serial.print(" yy_acc = "); Serial.print(yy_acc);
-      Serial.print(" steer = "); Serial.println(steer);
-      */
-
       // =================== Send data back ===================
       bleuart.write(reply_buf, msg_bye_cnt);
 
+      // =================== Flashing LED ===================
       digitalWrite(LED_RED, !digitalRead(LED_RED));
     }
+
     else if (stop_cmd_flag == 1)
     {
       analogWrite(M1_IN1, 0);
@@ -648,8 +648,36 @@ void loop()
       encoder1Counter = 0;
       encoder2Counter = 0;
     }
+
     timer4Interrupt = false;
+
   }
+}
+
+void stop_motor() {
+  analogWrite(M1_IN1, 255);
+  analogWrite(M1_IN2, 255);
+
+  analogWrite(M2_IN1, 255);
+  analogWrite(M2_IN2, 255);
+}
+
+void run_motor() {
+  // NO PID
+  analogWrite(M1_IN1, 220);
+  analogWrite(M1_IN2, 0);
+
+  analogWrite(M2_IN1, 0);
+  analogWrite(M2_IN2, 240);
+
+  // for PID
+  /*
+  analogWrite(M1_IN1, motor_speed + steer);
+  analogWrite(M1_IN2, 0);
+
+  analogWrite(M2_IN1, 0);
+  analogWrite(M2_IN2, motor_speed);
+  */
 }
 
 void timer_handler() {
@@ -679,6 +707,79 @@ void connect_callback(uint16_t conn_handle)
   // Serial.println(central_name);
 }
 
+// going forward for a distance (dist), in mm
+int going_forward(int dist) {
+  int enl_target = (dist-bb)/aa;
+
+  if ((encoder1Counter/256) < enl_target) {
+    run_motor();
+    return 0;
+  }
+  else {
+    stop_motor();
+    encoder1Counter = 0;
+    encoder2Counter = 0;
+
+    return 1;
+  }
+}
+
+// Turning an angle (dist), in degree
+int turning_angle(int direction, int angle) {
+  if (direction == RIGHT) {
+    if (gyroZangle >= RIGHT * angle) {
+      turning_right();
+
+      return 0;
+    }
+
+    stop_motor();
+
+    encoder1Counter = 0;
+    encoder2Counter = 0;
+
+    gyroZangle = 0.0;
+    gyroZangle_pre = 0.0;
+
+    return 1;
+  }
+
+  if (direction == LEFT) {
+    if (gyroZangle <= LEFT * angle) {
+      turning_left();
+      return 0;
+    }
+
+    stop_motor();
+
+    encoder1Counter = 0;
+    encoder2Counter = 0;
+
+    gyroZangle = 0.0;
+    gyroZangle_pre = 0.0;
+
+    return 1;
+  }
+}
+
+void turning_left()
+{
+  analogWrite(M1_IN1, 0);
+  analogWrite(M1_IN2, 160);
+
+  analogWrite(M2_IN1, 0);
+  analogWrite(M2_IN2, 160);
+}
+
+void turning_right()
+{
+  analogWrite(M1_IN1, 160);
+  analogWrite(M1_IN2, 0);
+
+  analogWrite(M2_IN1, 160);
+  analogWrite(M2_IN2, 0);
+}
+
 /**
  * Callback invoked when a connection is dropped
  * @param conn_handle connection where this event happens
@@ -688,10 +789,6 @@ void disconnect_callback(uint16_t conn_handle, uint8_t reason)
 {
   (void) conn_handle;
   (void) reason;
-
-  // Serial.println();
-  // Serial.print("Disconnected, reason = 0x");
-  // Serial.println(reason, HEX);
 }
 
 // I2C scan function
