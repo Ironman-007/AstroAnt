@@ -400,6 +400,7 @@ void loop()
 
     if (start_cmd_flag == 1)
     {
+      /*
       // =================== Run motor ===================
       if (step_1 == 0
           && going_forward(100)) // going forward for 150mm
@@ -447,6 +448,38 @@ void loop()
 
       if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 1 && step_6 == 1
           && step_7 == 1 && step_8 == 1 && step_9 == 1 && step_10 == 1 && step_11 == 1)
+        stop_motor();
+        */
+
+      // =================== Run motor ===================
+      if (step_1 == 0
+          && going_forward(100)) // going forward for 150mm
+        step_1 = 1;
+      if (step_1 == 1 && step_2 == 0
+          && turning_angle(RIGHT, 60)) // turning RIGHT for 30 degree
+        step_2 = 1;
+
+      if (step_1 == 1 && step_2 == 1 && step_3 == 0
+          && going_forward(130)) // going forward for 150mm
+        step_3 = 1;
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 0
+          && turning_angle(LEFT, 150)) // turning RIGHT for 60 degree
+        step_4 = 1;
+
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 0
+          && going_forward(100)) // going forward for 80mm
+        step_5 = 1;
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 1 && step_6 == 0
+          && turning_angle(LEFT, 90)) // turning LEFT for 90 degree
+        step_6 = 1;
+
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 1 && step_6 == 1
+          && step_7 == 0
+          && going_forward(150)) // going forward for 100mm
+        step_7 = 1;
+
+      if (step_1 == 1 && step_2 == 1 && step_3 == 1 && step_4 == 1 && step_5 == 1 && step_6 == 1
+          && step_7 == 1)
         stop_motor();
 
       // =================== Frame number ===================

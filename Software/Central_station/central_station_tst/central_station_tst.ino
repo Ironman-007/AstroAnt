@@ -121,29 +121,24 @@ void setup()
   blinkTimer.begin(100, blink_timer_callback);
   blinkTimer.start();
 
-  pinMode(CALI_CMD_PIN_4, INPUT);
-  pinMode(START_CMD_PIN_4, INPUT);
-  pinMode(STOP_CMD_PIN_4, INPUT);
+  pinMode(CALI_CMD_PIN_4, INPUT_PULLUP);
+  pinMode(START_CMD_PIN_4, INPUT_PULLUP);
+  pinMode(STOP_CMD_PIN_4, INPUT_PULLUP);
 
-  pinMode(CALI_CMD_PIN_5, INPUT);
-  pinMode(START_CMD_PIN_5, INPUT);
-  pinMode(STOP_CMD_PIN_5, INPUT);
+  pinMode(CALI_CMD_PIN_5, INPUT_PULLUP);
+  pinMode(START_CMD_PIN_5, INPUT_PULLUP);
+  pinMode(STOP_CMD_PIN_5, INPUT_PULLUP);
 
-  pinMode(START_CMD_PIN_1, INPUT);
-  pinMode(STOP_CMD_PIN_1, INPUT);
+  pinMode(START_CMD_PIN_1, INPUT_PULLUP);
+  pinMode(STOP_CMD_PIN_1, INPUT_PULLUP);
 
-  pinMode(CALI_CMD_PIN_2, INPUT);
-  pinMode(START_CMD_PIN_2, INPUT);
-  pinMode(STOP_CMD_PIN_2, INPUT);
+  pinMode(CALI_CMD_PIN_2, INPUT_PULLUP);
+  pinMode(START_CMD_PIN_2, INPUT_PULLUP);
+  pinMode(STOP_CMD_PIN_2, INPUT_PULLUP);
 
-  pinMode(CALI_CMD_PIN_0, INPUT);
-  pinMode(START_CMD_PIN_0, INPUT);
-  pinMode(STOP_CMD_PIN_0, INPUT);
-
-  // attachInterrupt(digitalPinToInterrupt(CMD_TST_PIN), send_tst_cmd, FALLING);
-
-  // Serial.println("Bluefruit52 Central Multi BLEUART Example");
-  // Serial.println("-----------------------------------------\n");
+  pinMode(CALI_CMD_PIN_0, INPUT_PULLUP);
+  pinMode(START_CMD_PIN_0, INPUT_PULLUP);
+  pinMode(STOP_CMD_PIN_0, INPUT_PULLUP);
 
   // Initialize Bluefruit with max concurrent connections as Peripheral = 0, Central = 4
   // SRAM usage required by SoftDevice will increase with number of connections

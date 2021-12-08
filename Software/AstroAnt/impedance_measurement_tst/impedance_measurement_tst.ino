@@ -230,7 +230,7 @@ void setup()
 
   // ============== Interrupt ==============
   // Interval in microsecs
-  ITimer.attachInterruptInterval(HW_TIMER_INTERVAL_MS * 1000, TimerHandler);
+  // ITimer.attachInterruptInterval(HW_TIMER_INTERVAL_MS * 1000, TimerHandler);
 
   // Just to demonstrate, don't use too many ISR Timers if not absolutely necessary
   // You can use up to 16 timer for each ISR_Timer
@@ -360,139 +360,148 @@ void loop()
     }
   }
 
+  // ============= capturing gyro data in shift register =============
+  sensors_event_t a, g, temp;
+  mpu.getEvent(&a, &g, &temp);
+
+  gyroXrate = (g.gyro.x)*57.2958-cali_x;
+  gyroYrate = (g.gyro.y)*57.2958-cali_y;
+  gyroZrate = (g.gyro.z)*57.2958-cali_z;
+
+  // Storing data in shift registers
+  for (ix=cali_data_len-1; ix>0; ix--)
+    shift_reg_x[ix] = shift_reg_x[ix-1];
+  shift_reg_x[0] = gyroXrate;
+
+  for (iy=cali_data_len-1; iy>0; iy--)
+    shift_reg_y[iy] = shift_reg_y[iy-1];
+  shift_reg_y[0] = gyroYrate;
+
+  for (iz=cali_data_len-1; iz>0; iz--)
+    shift_reg_z[iz] = shift_reg_z[iz-1];
+  shift_reg_z[0] = gyroZrate;
+
+  // ====================================================
+  // ===               Cali command                   ===
+  // ====================================================
+  // Got the cali cmd and the cali is not done
+  if (cali_cmd_flag == 1 && cali_done_flag == 0)
+  {
+    // IMU calibration
+    cali_sum_x = 0.0;
+    cali_sum_y = 0.0;
+    cali_sum_z = 0.0;
+
+    for (ix=0; ix<cali_data_len; ix++) cali_sum_x += shift_reg_x[ix];
+    for (iy=0; iy<cali_data_len; iy++) cali_sum_y += shift_reg_y[iy];
+    for (iz=0; iz<cali_data_len; iz++) cali_sum_z += shift_reg_z[iz];
+
+    cali_bias_x = cali_sum_x/cali_data_len;
+    cali_bias_y = cali_sum_y/cali_data_len;
+    cali_bias_z = cali_sum_z/cali_data_len;
+
+    // calculate bias
+    cali_x = cali_bias_x + cali_x;
+    cali_y = cali_bias_y + cali_y;
+    cali_z = cali_bias_z + cali_z;
+
+    cali_done_flag = 1;
+
+    // AD5933 calibration
+    digitalWrite(cali_pin, LOW);
+    delay(10);
+
+    initiate_calibration();
+
+    // Serial.println("initiate_calibration() finished");
+
+    bleuart.write(cali_ack_buf, msg_bye_cnt);
+  }
+
+  if (start_cmd_flag == 1)
+  {
+    TimerHandler();
+
+    // =================== Run motor ===================
+    run_motor();
+
+    // =================== Frame number ===================
+    reply_buf[3] = counter;
+
+    // =================== Read Battery level ===================
+    battValue = analogRead(batt_pin);
+    batt_v = float(battValue)/1024*3.3*2*1.09*1000;
+
+    if(batt_v<3300) batt_level = 0;
+    if(batt_v<3600) batt_level = (batt_v-3300)/30;
+    else {
+      batt_v = batt_v-3600;
+      batt_level = (10 + (batt_v * 0.15F ))>100? 100:(10 + (batt_v * 0.15F ));
+    }
+    reply_buf[10] = batt_level;
+
+    // =================== Encoder ===================
+    reply_buf[8] = encoder1Counter/256;
+    reply_buf[9] = encoder2Counter/256;
+
+    // =================== PID control ===================
+    float dt = (float)(micros() - timer) / 1000000; // Calculate delta time
+    timer = micros();
+
+    gyroZangle += gyroZrate * dt;
+
+    byte * bz = (byte *) &gyroZangle;
+
+    memcpy(&reply_buf[4], bz, 4);
+
+    dev_encoder2Counter = encoder2Counter - encoder2Counter_pre;
+    if (dev_encoder2Counter < 0)  dev_encoder2Counter += 255;
+    encoder2Counter_pre = encoder2Counter;
+
+    dev_Zangle = gyroZangle - gyroZangle_pre;
+    gyroZangle_pre = gyroZangle;
+
+    yy_acc += yy;
+    yy_pre = yy;
+    yy = yy_pre + dev_encoder2Counter * sin(dev_Zangle * 0.0174533);
+    dev_yy = yy - yy_pre;
+
+    steer_f = (-tau_p * yy) - (tau_d * dev_yy) - (tau_i * yy_acc);
+    steer = round(steer_f);
+
+    if (steer >= (255-motor_speed)) steer = 255-motor_speed;
+    else if (steer <= -motor_speed) steer = -motor_speed;
+
+    // =================== AD5933 data ===================
+    digitalWrite(cali_pin, LOW);
+    byte * magnitude = frequencySweepEasy();
+    memcpy(&reply_buf[11], magnitude, 8);
+
+    // =================== Send data back ===================
+    // bleuart.write(reply_buf, msg_bye_cnt);
+
+    // digitalWrite(LED_RED, !digitalRead(LED_RED));
+  }
+  else if (stop_cmd_flag == 1)
+  {
+    analogWrite(M1_IN1, 0);
+    analogWrite(M1_IN2, 0);
+
+    analogWrite(M2_IN1, 0);
+    analogWrite(M2_IN2, 0);
+
+    encoder1Counter = 0;
+    encoder2Counter = 0;
+  }
+
+  /*
   if (timer4Interrupt == true)
   {
-    // ============= capturing gyro data in shift register =============
-    sensors_event_t a, g, temp;
-    mpu.getEvent(&a, &g, &temp);
-
-    gyroXrate = (g.gyro.x)*57.2958-cali_x;
-    gyroYrate = (g.gyro.y)*57.2958-cali_y;
-    gyroZrate = (g.gyro.z)*57.2958-cali_z;
-
-    // Storing data in shift registers
-    for (ix=cali_data_len-1; ix>0; ix--)
-      shift_reg_x[ix] = shift_reg_x[ix-1];
-    shift_reg_x[0] = gyroXrate;
-
-    for (iy=cali_data_len-1; iy>0; iy--)
-      shift_reg_y[iy] = shift_reg_y[iy-1];
-    shift_reg_y[0] = gyroYrate;
-
-    for (iz=cali_data_len-1; iz>0; iz--)
-      shift_reg_z[iz] = shift_reg_z[iz-1];
-    shift_reg_z[0] = gyroZrate;
-
-    // ====================================================
-    // ===               Cali command                   ===
-    // ====================================================
-    // Got the cali cmd and the cali is not done
-    if (cali_cmd_flag == 1 && cali_done_flag == 0)
-    {
-      // IMU calibration
-      cali_sum_x = 0.0;
-      cali_sum_y = 0.0;
-      cali_sum_z = 0.0;
-
-      for (ix=0; ix<cali_data_len; ix++) cali_sum_x += shift_reg_x[ix];
-      for (iy=0; iy<cali_data_len; iy++) cali_sum_y += shift_reg_y[iy];
-      for (iz=0; iz<cali_data_len; iz++) cali_sum_z += shift_reg_z[iz];
-
-      cali_bias_x = cali_sum_x/cali_data_len;
-      cali_bias_y = cali_sum_y/cali_data_len;
-      cali_bias_z = cali_sum_z/cali_data_len;
-
-      // calculate bias
-      cali_x = cali_bias_x + cali_x;
-      cali_y = cali_bias_y + cali_y;
-      cali_z = cali_bias_z + cali_z;
-
-      cali_done_flag = 1;
-
-      // AD5933 calibration
-      digitalWrite(cali_pin, LOW);
-      initiate_calibration();
-
-      // Serial.println("initiate_calibration() finished");
-
-      bleuart.write(cali_ack_buf, msg_bye_cnt);
-    }
-
-    if (start_cmd_flag == 1)
-    {
-      // =================== Run motor ===================
-      run_motor();
-
-      // =================== Frame number ===================
-      reply_buf[3] = counter;
-
-      // =================== Read Battery level ===================
-      battValue = analogRead(batt_pin);
-      batt_v = float(battValue)/1024*3.3*2*1.09*1000;
-
-      if(batt_v<3300) batt_level = 0;
-      if(batt_v<3600) batt_level = (batt_v-3300)/30;
-      else {
-        batt_v = batt_v-3600;
-        batt_level = (10 + (batt_v * 0.15F ))>100? 100:(10 + (batt_v * 0.15F ));
-      }
-      reply_buf[10] = batt_level;
-
-      // =================== Encoder ===================
-      reply_buf[8] = encoder1Counter/256;
-      reply_buf[9] = encoder2Counter/256;
-
-      // =================== PID control ===================
-      float dt = (float)(micros() - timer) / 1000000; // Calculate delta time
-      timer = micros();
-
-      gyroZangle += gyroZrate * dt;
-
-      byte * bz = (byte *) &gyroZangle;
-
-      memcpy(&reply_buf[4], bz, 4);
-
-      dev_encoder2Counter = encoder2Counter - encoder2Counter_pre;
-      if (dev_encoder2Counter < 0)  dev_encoder2Counter += 255;
-      encoder2Counter_pre = encoder2Counter;
-
-      dev_Zangle = gyroZangle - gyroZangle_pre;
-      gyroZangle_pre = gyroZangle;
-
-      yy_acc += yy;
-      yy_pre = yy;
-      yy = yy_pre + dev_encoder2Counter * sin(dev_Zangle * 0.0174533);
-      dev_yy = yy - yy_pre;
-
-      steer_f = (-tau_p * yy) - (tau_d * dev_yy) - (tau_i * yy_acc);
-      steer = round(steer_f);
-
-      if (steer >= (255-motor_speed)) steer = 255-motor_speed;
-      else if (steer <= -motor_speed) steer = -motor_speed;
-
-      // =================== AD5933 data ===================
-      digitalWrite(cali_pin, HIGH);
-      byte * magnitude = frequencySweepEasy();
-      memcpy(&reply_buf[11], magnitude, 8);
-
-      // =================== Send data back ===================
-      bleuart.write(reply_buf, msg_bye_cnt);
-
-      digitalWrite(LED_RED, !digitalRead(LED_RED));
-    }
-    else if (stop_cmd_flag == 1)
-    {
-      analogWrite(M1_IN1, 0);
-      analogWrite(M1_IN2, 0);
-
-      analogWrite(M2_IN1, 0);
-      analogWrite(M2_IN2, 0);
-
-      encoder1Counter = 0;
-      encoder2Counter = 0;
-    }
+    bleuart.write(reply_buf, msg_bye_cnt);
+    digitalWrite(LED_RED, !digitalRead(LED_RED));
     timer4Interrupt = false;
   }
+  */
 }
 
 void initiate_calibration() {
@@ -553,7 +562,10 @@ void run_motor() {
 }
 
 void timer_handler() {
-  timer4Interrupt = true;
+  // timer4Interrupt = true;
+  bleuart.write(reply_buf, msg_bye_cnt);
+  digitalWrite(LED_RED, !digitalRead(LED_RED));
+  // timer4Interrupt = false;
   counter++;
 }
 

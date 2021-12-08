@@ -231,26 +231,31 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.timer.stop() # Stop the timer
 
-        # self.file.close()
-
     def read_port(self):
         if (self.ser.inWaiting()):
             current_time = read_current_time()
-            # print(current_time)
             recv_data = self.ser.read(20)
+
+            # print(recv_data)
 
             if (recv_data[0] == 0xEB and recv_data[1] == 0x90):
                 if (recv_data[3] == 0xAA):   # start cmd ACK
-                    self.msg_btn.setText("Got start cmd ACK")
+                    whichant = str(int(recv_data[2]))
+                    whichant = "Start cmd ACK " + whichant
+                    self.msg_btn.setText(whichant)
                     self.msg_btn.setStyleSheet("background-color : Green")
 
                 elif (recv_data[3] == 0xEE): # stop cmd ACK
-                    self.msg_btn.setText("Got stop cmd ACK")
+                    whichant = str(int(recv_data[2]))
+                    whichant = "Stop cmd ACK " + whichant
+                    self.msg_btn.setText(whichant)
                     self.msg_btn.setStyleSheet("background-color : #ff33ff;")
                     self.file.close()
 
                 elif (recv_data[3] == 0x11): # cali cmd ACK
-                    self.msg_btn.setText("Got cali cmd ACK")
+                    whichant = str(int(recv_data[2]))
+                    whichant = "Cali cmd ACK " + whichant
+                    self.msg_btn.setText(whichant)
                     self.msg_btn.setStyleSheet("background-color : Blue")
 
                 else:                        # Err cmd ACK
@@ -268,9 +273,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     which_ant = which_ant + "1"
                 self.file = open(which_ant, "wb")
 
-            # elif (recv_data[0] == 0xEB and recv_data[1] == 0x11):
-                # self.file.close()
-                # pass
+            elif (recv_data[0] == 0xEB and recv_data[1] == 0x11):
+                pass
 
             # Data back
             elif (recv_data[0] == 0xEB and recv_data[1] == 0x9F):
@@ -332,6 +336,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.sensor.plot(self.time_index, self.sensor_data, pen=pg.mkPen('w', width=2))
 
                 if (recv_data[2] == 0x05): # data from Temp_ant
+                    print(recv_data)
                     impedance = recv_data[11:19]
                     impedance_f = struct.unpack('d', impedance)[0] # double datatype
                     impedance_f = float(impedance_f)

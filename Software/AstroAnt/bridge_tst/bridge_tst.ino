@@ -465,20 +465,20 @@ void stop_motor() {
 
 void run_motor() {
   // NO PID
-  /*
-  analogWrite(M1_IN1, 230);
+  analogWrite(M1_IN1, motor_speed+30);
   analogWrite(M1_IN2, 0);
 
   analogWrite(M2_IN1, 0);
-  analogWrite(M2_IN2, 200);
-  */
+  analogWrite(M2_IN2, motor_speed);
 
   // for PID
+  /*
   analogWrite(M1_IN1, motor_speed + steer);
   analogWrite(M1_IN2, 0);
 
   analogWrite(M2_IN1, 0);
   analogWrite(M2_IN2, motor_speed);
+  */
 }
 
 void timer_handler() {
