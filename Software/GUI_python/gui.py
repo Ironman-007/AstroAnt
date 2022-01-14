@@ -48,12 +48,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
-        self.setFixedSize(850, 770)
+        self.setFixedSize(1497, 770)
 
         #Load the UI Page
         uic.loadUi('astroant.ui', self)
-
-        # self.enr10.setBackground('w')
 
         self.serial_ports_list = []
         self.serial_speed = [115200]
@@ -68,7 +66,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.close_btn.clicked.connect(self.close)
         self.start_btn.clicked.connect(self.start_read_port)
         self.stop_btn.clicked.connect(self.stop_read_port)
-        self.cali_btn.clicked.connect(self.send_cali_cmd)
 
         self.gyroz_data  = [0] * data_len
         self.enl_data    = [0] * data_len
@@ -234,11 +231,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.timer.stop() # Stop the timer
 
-        # self.file.close()
-
     def read_port(self):
         if (self.ser.inWaiting()):
-            # print("data incoming...")
             current_time = read_current_time()
             recv_data = self.ser.read(20)
 
@@ -246,14 +240,24 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if (recv_data[0] == 0xEB and recv_data[1] == 0x90):
                 if (recv_data[3] == 0xAA):   # start cmd ACK
-                    self.msg_btn.setText("Got start cmd ACK")
+                    whichant = str(int(recv_data[2]))
+                    whichant = "Start cmd ACK " + whichant
+                    self.msg_btn.setText(whichant)
                     self.msg_btn.setStyleSheet("background-color : Green")
+
                 elif (recv_data[3] == 0xEE): # stop cmd ACK
-                    self.msg_btn.setText("Got stop cmd ACK")
+                    whichant = str(int(recv_data[2]))
+                    whichant = "Stop cmd ACK " + whichant
+                    self.msg_btn.setText(whichant)
                     self.msg_btn.setStyleSheet("background-color : #ff33ff;")
+                    self.file.close()
+
                 elif (recv_data[3] == 0x11): # cali cmd ACK
-                    self.msg_btn.setText("Got cali cmd ACK")
+                    whichant = str(int(recv_data[2]))
+                    whichant = "Cali cmd ACK " + whichant
+                    self.msg_btn.setText(whichant)
                     self.msg_btn.setStyleSheet("background-color : Blue")
+
                 else:                        # Err cmd ACK
                     self.msg_btn.setText("Got ERR cmd ACK")
                     self.msg_btn.setStyleSheet("background-color : Red")
@@ -262,11 +266,43 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.connected_ant = int(recv_data[2])
                 self.ant_num.setText(str(self.connected_ant))
 
+            elif (recv_data[0] == 0xEB and recv_data[1] == 0xFF):
+                which_ant = str(recv_data[2])
+
+                while (os.path.isfile(which_ant)):
+                    which_ant = which_ant + "1"
+                self.file = open(which_ant, "wb")
+
+            elif (recv_data[0] == 0xEB and recv_data[1] == 0x11):
+                pass
+
             # Data back
             elif (recv_data[0] == 0xEB and recv_data[1] == 0x9F):
-                ant_num = int(recv_data[2])
+                self.file.write(recv_data)
 
+                ant_num = int(recv_data[2])
                 frame_num = int(recv_data[3])
+
+                which_ant = str(ant_num)
+
+                self.info1.setText("#"+which_ant)
+                self.info1.setStyleSheet("background-color : Blue")
+
+                self.info2.setText(str(frame_num))
+                self.info2.setStyleSheet("background-color : Green")
+
+                self.info3.setStyleSheet("background-color : Red")
+
+                if (recv_data[2] == 0x00):
+                    self.info3.setText("Temperature")
+                elif (recv_data[2] == 0x04):
+                    self.info3.setText("Bridging")
+                elif (recv_data[2] == 0x02):
+                    self.info3.setText("Tracking")
+                elif (recv_data[2] == 0x05):
+                    self.info3.setText("Impedance")
+                elif (recv_data[2] == 0x01):
+                    self.info3.setText("knocking")
 
                 enl_i = int(recv_data[8])
                 enr_i = int(recv_data[9])
@@ -277,7 +313,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 steer = recv_data[11:15]
                 steer_d = struct.unpack('i', steer)[0]
-                print(steer_d)
+                # print(steer_d)
 
                 self.ant_num_label.setText(str(ant_num))
 
@@ -286,7 +322,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.bat1.setValue(recv_data[10])
                 self.batper1_2.setText("{:.0f}".format(recv_data[10]))
 
-                if (recv_data[2] == 0x00):
+                if (recv_data[2] == 0x00): # data from Temp_ant
                     objtemperature = recv_data[11:15]
                     objtemperature_f = struct.unpack('f', objtemperature)[0]
 
@@ -296,6 +332,21 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.sensor_label.setText("{:.1f}".format(objtemperature_f))
                     self.sensor_data.pop(0)
                     self.sensor_data.append(objtemperature_f)
+                    self.sensor.clear()
+                    self.sensor.plot(self.time_index, self.sensor_data, pen=pg.mkPen('w', width=2))
+
+                if (recv_data[2] == 0x05): # data from Temp_ant
+                    print(recv_data)
+                    impedance = recv_data[11:19]
+                    impedance_f = struct.unpack('d', impedance)[0] # double datatype
+                    impedance_f = float(impedance_f)
+
+                    self.sensing.setText("Absolute Impedance")
+
+                    # sensor data plot
+                    self.sensor_label.setText("{:.1f}".format(impedance_f))
+                    self.sensor_data.pop(0)
+                    self.sensor_data.append(impedance_f)
                     self.sensor.clear()
                     self.sensor.plot(self.time_index, self.sensor_data, pen=pg.mkPen('w', width=2))
 
@@ -325,6 +376,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.enl.clear()
         self.enr.clear()
         self.gyroz.clear()
+
+        self.gyroz_data  = [0] * data_len
+        self.enl_data    = [0] * data_len
+        self.enr_data    = [0] * data_len
+        self.sensor_data = [0] * data_len
 
 # driver code 
 if __name__ == '__main__': 

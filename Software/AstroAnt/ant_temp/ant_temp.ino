@@ -76,6 +76,8 @@ void TimerHandler()
 }
 
 // ========= PID parameters ==========
+const int motor_speed = 200;
+
 /* IMU Data */
 float gyroZangle = 0.0;     // Angle calculate using the gyro only
 float gyroZangle_pre = 0.0; // Angle calculate using the gyro only
@@ -554,11 +556,11 @@ void loop()
     if (start_cmd_flag == 1)
     {
       // =================== Run motor ===================
-      analogWrite(M1_IN1, 200 + steer);
+      analogWrite(M1_IN1, motor_speed + steer);
       analogWrite(M1_IN2, 0);
 
       analogWrite(M2_IN1, 0);
-      analogWrite(M2_IN2, 200);
+      analogWrite(M2_IN2, motor_speed);
 
       // =================== Frame number ===================
       reply_buf[3] = counter;
@@ -613,6 +615,9 @@ void loop()
 
       steer_f = (-tau_p * yy) - (tau_d * dev_yy) - (tau_i * yy_acc);
       steer = round(steer_f);
+
+      if (steer >= (255-motor_speed)) steer = 255-motor_speed;
+      else if (steer <= -motor_speed) steer = -motor_speed;
 
       /*
       if (steer < 0) steer = 0;
